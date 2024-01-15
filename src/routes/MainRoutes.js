@@ -20,6 +20,7 @@ const Exam = Loadable(lazy(() => import('pages/exam')));
 const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
 const HomeWork = Loadable(lazy(() => import('pages/homework')));
 const Fees = Loadable(lazy(() => import('pages/fees')));
+const ExamMarks = Loadable(lazy(() => import('pages/exam/mark')));
 const Test = Loadable(lazy(() => import('pages/testForm')));
 const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
 const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
@@ -58,6 +59,10 @@ const MainRoutes = {
     {
       path: 'homework',
       element: <HomeWork />
+    },
+    {
+      path: '/exam/marks',
+      element: <ExamMarks />
     },
     {
       path: 'teacher',

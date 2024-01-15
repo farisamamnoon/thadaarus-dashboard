@@ -3,7 +3,6 @@ import { Link as RouterLink } from "react-router-dom";
 
 // material-ui
 import {
-  // Box,
   Button,
   Divider,
   FormHelperText,
@@ -21,35 +20,10 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
-import FormRepeater from "components/FormRepeater";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Student = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
-
+const Class = () => {
   return (
     <>
       <Formik
@@ -95,137 +69,124 @@ const Student = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">
-                    First Name*
-                  </InputLabel>
+                  <InputLabel htmlFor="class-name">Class Standard</InputLabel>
                   <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
+                    id="class-name"
+                    type="number"
+                    value={values.className}
+                    name="className"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="John"
                     fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
+                    error={Boolean(touched.className && errors.className)}
                   />
-                  {touched.firstname && errors.firstname && (
-                    <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
+                  {touched.className && errors.className && (
+                    <FormHelperText error id="helper-text-className-signup">
+                      {errors.className}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
+                  <InputLabel htmlFor="division">Division</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
+                    error={Boolean(touched.division && errors.division)}
+                    id="division"
+                    value={values.division}
+                    name="division"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Doe"
                     inputProps={{}}
                   />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
+                  {touched.division && errors.division && (
+                    <FormHelperText error id="helper-text-division-signup">
+                      {errors.division}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="age">Age</InputLabel>
+                  <InputLabel htmlFor="teacher">Class Teacher</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.age && errors.age)}
-                    id="age"
-                    value={values.age}
-                    name="age"
+                    error={Boolean(touched.teacher && errors.teacher)}
+                    id="teacher"
+                    value={values.teacher}
+                    name="teacher"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.age && errors.age && (
-                    <FormHelperText error id="helper-text-age-signup">
-                      {errors.age}
+                  {touched.teacher && errors.teacher && (
+                    <FormHelperText error id="helper-text-teacher-signup">
+                      {errors.teacher}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                  <InputLabel htmlFor="subjects">Subjects</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-signup"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    error={Boolean(touched.subjects && errors.subjects)}
+                    id="subjects"
+                    value={values.subjects}
+                    name="subjects"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@company.com"
                     inputProps={{}}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
+                  {touched.subjects && errors.subjects && (
+                    <FormHelperText error id="helper-text-subjects-signup">
+                      {errors.subjects}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="address">Address</InputLabel>
+                  <InputLabel htmlFor="batch-start">Batch Start</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.address && errors.address)}
-                    id="address"
-                    inputComponent={TextareaAutosize}
-                    rowsMin={3}
-                    value={values.address}
-                    name="address"
+                    error={Boolean(touched.batchStart && errors.batchStart)}
+                    id="batch-start"
+                    value={values.batchStart}
+                    name="batchStart"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    placeholder="2019"
                     inputProps={{}}
                   />
-                  {touched.address && errors.address && (
-                    <FormHelperText error id="helper-text-address-signup">
-                      {errors.address}
+                  {touched.batchStart && errors.batchStart && (
+                    <FormHelperText error id="helper-text-batchStart-signup">
+                      {errors.batchStart}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
+                  <InputLabel htmlFor="batch-end">Batch End</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.phone && errors.phone)}
-                    id="phone-signup"
-                    value={values.phone}
-                    name="phone"
+                    error={Boolean(touched.batchEnd && errors.batchEnd)}
+                    id="batch-end"
+                    value={values.batchEnd}
+                    name="batchEnd"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="+91 9876543210"
+                    placeholder="2020"
                     inputProps={{}}
                   />
-                  {touched.phone && errors.phone && (
-                    <FormHelperText error id="helper-text-phone-signup">
-                      {errors.phone}
+                  {touched.batchEnd && errors.batchEnd && (
+                    <FormHelperText error id="helper-text-batchEnd-signup">
+                      {errors.batchEnd}
                     </FormHelperText>
                   )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <FormRepeater label={['Subject', 'Class']} type={['text', 'text']}/>
                 </Stack>
               </Grid>
               <Grid item xs={12}>
@@ -273,4 +234,6 @@ const Student = () => {
   );
 };
 
-export default Student;
+export default Class;
+
+

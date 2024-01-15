@@ -1,5 +1,5 @@
 // import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 
 // material-ui
 import {
@@ -11,30 +11,27 @@ import {
   Grid,
   Link,
   // IconButton,
-  // InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import * as Yup from "yup";
+import { Formik } from "formik";
 
 // project import
-import AnimateButton from 'components/@extended/AnimateButton';
+import AnimateButton from "components/@extended/AnimateButton";
 // import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-// import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
-import FormikFormRepeater from 'components/FormikFormRepeater';
+import FormRepeater from "components/FormRepeater";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Events = () => {
-  
+const Exam = () => {
   // const [level, setLevel] = useState();
   // const [showPassword, setShowPassword] = useState(false);
   // const handleClickShowPassword = () => {
@@ -58,18 +55,21 @@ const Events = () => {
     <>
       <Formik
         initialValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
-          company: '',
-          password: '',
-          submit: null
+          firstname: "",
+          lastname: "",
+          email: "",
+          company: "",
+          password: "",
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('First Name is required'),
-          lastname: Yup.string().max(255).required('Last Name is required'),
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          firstname: Yup.string().max(255).required("First Name is required"),
+          lastname: Yup.string().max(255).required("Last Name is required"),
+          email: Yup.string()
+            .email("Must be a valid email")
+            .max(255)
+            .required("Email is required"),
+          password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -83,54 +83,65 @@ const Events = () => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({
+          errors,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          isSubmitting,
+          touched,
+          values,
+        }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="event">Event Name</InputLabel>
+                  <InputLabel htmlFor="name">Student Name</InputLabel>
                   <OutlinedInput
-                    id="event"
-                    value={values.event}
-                    name="event"
+                    id="name"
+                    type="name"
+                    value={values.name}
+                    name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    placeholder="John"
                     fullWidth
-                    error={Boolean(touched.event && errors.event)}
+                    error={Boolean(touched.name && errors.name)}
                   />
-                  {touched.event && errors.event && (
-                    <FormHelperText error id="helper-text-event-signup">
-                      {errors.event}
+                  {touched.name && errors.name && (
+                    <FormHelperText error id="helper-text-name">
+                      {errors.name}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="eventDate">Date</InputLabel>
+                  <InputLabel htmlFor="class-signup">Class</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.eventDate && errors.eventDate)}
-                    id="eventDate"
-                    type="date"
-                    value={values.eventDate}
-                    name="eventDate"
+                    error={Boolean(touched.class && errors.class)}
+                    id="class-signup"
+                    type="class"
+                    value={values.class}
+                    name="class"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.eventDate && errors.eventDate && (
-                    <FormHelperText error id="helper-text-eventDate-signup">
-                      {errors.eventDate}
+                  {touched.class && errors.class && (
+                    <FormHelperText error id="helper-text-class-signup">
+                      {errors.class}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <FormikFormRepeater />
+                  <FormRepeater type={['text', 'text']} label={['Subject', 'Marks']}/>
                 </Stack>
               </Grid>
+              
               <Grid item xs={12}>
                 <Typography variant="body2">
                   By Signing up, you agree to our &nbsp;
@@ -150,7 +161,15 @@ const Events = () => {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  <Button
+                    disableElevation
+                    disabled={isSubmitting}
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
                     Create Account
                   </Button>
                 </AnimateButton>
@@ -160,7 +179,6 @@ const Events = () => {
                   <Typography variant="caption">Sign up with</Typography>
                 </Divider>
               </Grid>
-              
             </Grid>
           </form>
         )}
@@ -169,4 +187,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default Exam;

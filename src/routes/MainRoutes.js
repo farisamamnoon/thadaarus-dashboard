@@ -16,6 +16,7 @@ const Events = Loadable(lazy(() => import('pages/events')));
 const Student = Loadable(lazy(() => import('pages/student')));
 const Teacher = Loadable(lazy(() => import('pages/teacher')));
 const Class = Loadable(lazy(() => import('pages/class')));
+const ClassAdd = Loadable(lazy(() => import('pages/class/form')));
 const Exam = Loadable(lazy(() => import('pages/exam')));
 const Color = Loadable(lazy(() => import('pages/components-overview/Color')));
 const HomeWork = Loadable(lazy(() => import('pages/homework')));
@@ -55,6 +56,10 @@ const MainRoutes = {
     {
       path: 'class',
       element: <Class />
+    },
+    {
+      path: 'class/add',
+      element: <ClassAdd />
     },
     {
       path: 'homework',

@@ -1,15 +1,10 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Card, IconButton, Tooltip, CardHeader, Button } from "@mui/material";
+import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
+import { Link } from 'react-router-dom';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-// import { toast } from "react-hot-toast";
-// import DeleteConfirmationDialog from "src/layouts/components/DeleteConfimationDialogBox";
-// import { useDebounce } from "src/hooks/useDebounce";
-import axios from "axios";
-
-// type SortType = 'asc' | 'desc' | undefined | null
 
 function ManageFaq() {
   const buttonRef = useRef(null);
@@ -174,8 +169,8 @@ function ManageFaq() {
           <Button
                 size="medium"
                 variant="contained"
-                component={""}
-                href={""}
+                component={Link}
+                to="/student"
               >
                 View Students
               </Button>
@@ -230,10 +225,10 @@ function ManageFaq() {
               <Button
                 size="medium"
                 variant="contained"
-                component={""}
-                href={""}
+                component={Link}
+                to={`add`}
               >
-                Add New FAQ
+                Add Class
               </Button>
             </div>
           }

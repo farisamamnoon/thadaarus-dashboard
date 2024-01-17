@@ -21,10 +21,10 @@ function Exam() {
   // const [rows, setRows] = useState([]);
 
   const rows = [
-    { _id: 1, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 2, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 3, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 4, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
+    { _id: 1, class: "Class 1", batch: '2014-15' ,teacher: "Name" },
+    { _id: 2, class: "Class 2", batch: '2014-15' ,teacher: "Name" },
+    { _id: 3, class: "Class 3", batch: '2014-15' ,teacher: "Name" },
+    { _id: 4, class: "Class 4", batch: '2014-15' ,teacher: "Name" },
   ];
   // const query = useDebounce(searchValue, 1000);
 
@@ -85,8 +85,8 @@ function Exam() {
     {
       flex: 1,
       minWidth: 290,
-      field: "name",
-      headerName: "Student Name",
+      field: "date",
+      headerName: "Date",
       sortable: false,
       disableColumnMenu: true,
 
@@ -100,7 +100,7 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.name}
+              {row.batch}
             </Typography>
           </Box>
         );
@@ -109,8 +109,8 @@ function Exam() {
     {
       flex: 1,
       minWidth: 290,
-      field: "class",
-      headerName: "Class",
+      field: "subject",
+      headerName: "Subject",
       sortable: false,
       disableColumnMenu: true,
 
@@ -125,78 +125,6 @@ function Exam() {
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
               {row.class}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 1,
-      minWidth: 290,
-      field: "discount",
-      headerName: "Discount",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.discount}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 1,
-      minWidth: 290,
-      field: "feesPaid",
-      headerName: "Paid",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.fees}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 1,
-      minWidth: 290,
-      field: "balance",
-      headerName: "Balance",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.fees}
             </Typography>
           </Box>
         );
@@ -224,7 +152,7 @@ function Exam() {
                 component={Link}
                 to={`add`}
               >
-                Add Fees
+                Add Exam
               </Button>
             </div>
           }

@@ -28,13 +28,6 @@ const forms = {
       icon: icons.BookOutlined,
     },
     {
-      id: "mark",
-      title: "Exam Marks",
-      type: "item",
-      url: "/exam/marks",
-      icon: icons.BookOutlined,
-    },
-    {
       id: "teacher",
       title: "Teacher",
       type: "item",
@@ -54,6 +47,13 @@ const forms = {
       type: "item",
       url: "/exam",
       icon: icons.BulbOutlined,
+    },
+    {
+      id: "mark",
+      title: "Exam Marks",
+      type: "item",
+      url: "/exam/marks",
+      icon: icons.BookOutlined,
     },
     {
       id: "homework",

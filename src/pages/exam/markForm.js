@@ -11,7 +11,6 @@ import {
   Grid,
   Link,
   // IconButton,
-  // InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
@@ -28,12 +27,11 @@ import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-// import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
 import FormRepeater from "components/FormRepeater";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Events = () => {
+const Exam = () => {
   // const [level, setLevel] = useState();
   // const [showPassword, setShowPassword] = useState(false);
   // const handleClickShowPassword = () => {
@@ -96,46 +94,54 @@ const Events = () => {
         }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="event">Event Name</InputLabel>
+                  <InputLabel htmlFor="name">Student Name</InputLabel>
                   <OutlinedInput
-                    id="event"
-                    value={values.event}
-                    name="event"
+                    id="name"
+                    type="name"
+                    value={values.name}
+                    name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
+                    placeholder="John"
                     fullWidth
-                    error={Boolean(touched.event && errors.event)}
+                    error={Boolean(touched.name && errors.name)}
                   />
-                  {touched.event && errors.event && (
-                    <FormHelperText error id="helper-text-event-signup">
-                      {errors.event}
+                  {touched.name && errors.name && (
+                    <FormHelperText error id="helper-text-name">
+                      {errors.name}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={6} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="eventDate">Date</InputLabel>
+                  <InputLabel htmlFor="class-signup">Class</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.eventDate && errors.eventDate)}
-                    id="eventDate"
-                    type="date"
-                    value={values.eventDate}
-                    name="eventDate"
+                    error={Boolean(touched.class && errors.class)}
+                    id="class-signup"
+                    type="class"
+                    value={values.class}
+                    name="class"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.eventDate && errors.eventDate && (
-                    <FormHelperText error id="helper-text-eventDate-signup">
-                      {errors.eventDate}
+                  {touched.class && errors.class && (
+                    <FormHelperText error id="helper-text-class-signup">
+                      {errors.class}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <FormRepeater type={['text', 'text']} label={['Subject', 'Marks']}/>
+                </Stack>
+              </Grid>
+              
               <Grid item xs={12}>
                 <Typography variant="body2">
                   By Signing up, you agree to our &nbsp;
@@ -181,4 +187,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default Exam;

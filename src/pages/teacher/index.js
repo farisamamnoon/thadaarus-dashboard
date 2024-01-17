@@ -1,276 +1,216 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
+import { DataGrid } from "@mui/x-data-grid";
+import { Card, CardHeader, Button, Breadcrumbs } from "@mui/material";
+import { useState, useRef } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 
-// material-ui
-import {
-  // Box,
-  Button,
-  Divider,
-  FormHelperText,
-  Grid,
-  Link,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
+function Teacher() {
+  const rows = [
+    {
+      _id: 1,
+      name: "Faris",
+      phone: "09485094",
+      class: "1",
+      classSubjects: "2 Arabic",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 2,
+      name: "Faris",
+      phone: "09485094",
+      class: "1",
+      classSubjects: "2 Arabic",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 3,
+      name: "Faris",
+      phone: "09485094",
+      class: "1",
+      classSubjects: "2 Arabic",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 4,
+      name: "Faris",
+      phone: "09485094",
+      class: "1",
+      classSubjects: "2 Arabic",
+      attendance: "78%",
+      fees: "90%",
+    },
+  ];
 
-// third party
-import * as Yup from "yup";
-import { Formik } from "formik";
+  const columns = [
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "teachername",
+      headerName: "Teacher Name",
+      sortable: false,
+      disableColumnMenu: true,
 
-// project import
-import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
+      renderCell: (params) => {
+        const { row } = params;
 
-// assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
-import FormRepeater from "components/FormRepeater";
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.name}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "contact",
+      headerName: "Contact No.",
+      sortable: false,
+      disableColumnMenu: true,
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+      renderCell: (params) => {
+        const { row } = params;
 
-const Student = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.phone}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "class",
+      headerName: "Class",
+      sortable: false,
+      disableColumnMenu: true,
 
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
+      renderCell: (params) => {
+        const { row } = params;
 
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.class}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "group",
+      headerName: "Class Subjects",
+      sortable: false,
+      disableColumnMenu: true,
 
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.classSubjects}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+  ];
 
   return (
-    <>
-      <Formik
-        initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
-          submit: null,
-        }}
-        validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
-        })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            console.error(err);
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">
-                    First Name*
-                  </InputLabel>
-                  <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="John"
-                    fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
-                  />
-                  {touched.firstname && errors.firstname && (
-                    <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    inputProps={{}}
-                  />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="age">Age</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.age && errors.age)}
-                    id="age"
-                    value={values.age}
-                    name="age"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.age && errors.age && (
-                    <FormHelperText error id="helper-text-age-signup">
-                      {errors.age}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-signup"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="demo@company.com"
-                    inputProps={{}}
-                  />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="address">Address</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.address && errors.address)}
-                    id="address"
-                    inputComponent={TextareaAutosize}
-                    rowsMin={3}
-                    value={values.address}
-                    name="address"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.address && errors.address && (
-                    <FormHelperText error id="helper-text-address-signup">
-                      {errors.address}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.phone && errors.phone)}
-                    id="phone-signup"
-                    value={values.phone}
-                    name="phone"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="+91 9876543210"
-                    inputProps={{}}
-                  />
-                  {touched.phone && errors.phone && (
-                    <FormHelperText error id="helper-text-phone-signup">
-                      {errors.phone}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <FormRepeater label={['Subject', 'Class']} type={['text', 'text']}/>
-                </Stack>
-              </Grid>
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <AnimateButton>
-                  <Button
-                    disableElevation
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                  >
-                    Create Account
-                  </Button>
-                </AnimateButton>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption">Sign up with</Typography>
-                </Divider>
-              </Grid>
-            </Grid>
-          </form>
-        )}
-      </Formik>
-    </>
-  );
-};
+    <div>
+      {/* Breadcrumbs */}
 
-export default Student;
+      {/* <Breadcrumbs sx={{ mb: 4 }}>
+        <Link >Home</Link>
+        <Link >FAQ</Link>
+        <Typography>Manage </Typography>
+      </Breadcrumbs> */}
+      <Card>
+        <CardHeader
+          title="Teachers"
+          action={
+            <div>
+              <Button
+                size="medium"
+                variant="contained"
+                component={Link}
+                to={`add`}
+              >
+                Add New Teacher
+              </Button>
+            </div>
+          }
+        />
+        <DataGrid
+          autoHeight
+          rows={rows || []}
+          // rowCount={total}
+          columns={columns}
+          getRowId={(row) => row._id}
+          // pagination
+          sortingMode="server"
+          // paginationMode="server"
+          pageSizeOptions={[2]}
+          // paginationModel={paginationModel}
+          // onPaginationModelChange={setPaginationModel}
+          slotProps={{
+            baseButton: {
+              size: "medium",
+              variant: "tonal",
+            },
+            toolbar: {
+              csvOptions: { disableToolbarButton: true },
+              printOptions: { disableToolbarButton: true },
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 1000 },
+              // value: searchValue,
+              // clearSearch: () => handleSearch(""),
+              // onChange: (event) => handleSearch(event.target.value),
+            },
+          }}
+        />
+      </Card>
+
+      {/* {openDeleteDialog && (
+        <DeleteConfirmationDialog
+          id={dialogId}
+          buttonRef={buttonRef}
+          name=""
+          open={true}
+          setOpen={setOpenDeleteDialog}
+          // deleteFunction={deleteFaqData}
+        />
+      )} */}
+    </div>
+  );
+}
+
+export default Teacher;

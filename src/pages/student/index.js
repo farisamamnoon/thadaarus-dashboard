@@ -1,83 +1,50 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Card, IconButton, Tooltip, CardHeader, Button } from "@mui/material";
-import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { Card, CardHeader, Button } from "@mui/material";
+import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
-// import { toast } from "react-hot-toast";
-// import DeleteConfirmationDialog from "src/layouts/components/DeleteConfimationDialogBox";
-// import { useDebounce } from "src/hooks/useDebounce";
-import axios from "axios";
-
-// type SortType = 'asc' | 'desc' | undefined | null
+import { Link } from 'react-router-dom';
 
 function ManageFaq() {
-  const buttonRef = useRef(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [dialogId, setDialogId] = useState("");
-
-  const [total, setTotal] = useState(0);
-  const [searchValue, setSearchValue] = useState("");
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 15,
-  });
-
-  const [rows, setRows] = useState([]);
-  // const query = useDebounce(searchValue, 1000);
-
-  // const fetchTableData = useCallback(
-  //   async (sort, q) => {
-  //     await dataTableApi
-  //       .getFaqDataTable({ query: { sort, q, page: paginationModel.page + 1 } })
-  //       .then((res) => {
-  //         setTotal(res.data.data.totalCount);
-  //         setRows(res.data.data.faqs);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [paginationModel]
-  // );
-
-  // useEffect(() => {
-  //   fetchTableData("asc", query);
-  // }, [fetchTableData, query]);
-
-  const handleSearch = (value) => {
-    setSearchValue(value);
-  };
-
-  const deleteFaq = (id) => {
-    setOpenDeleteDialog(true);
-    setDialogId(id);
-  };
-
-  // const deleteFaqData = async (id) => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.disabled = true;
-  //   }
-
-  //   try {
-  //     const response = await faqApi.deleteFaq(id, reqAuthHeader());
-  //     toast.success(response?.data?.message);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("An error occurred.");
-  //       }
-  //     } else {
-  //       toast.error("An unexpected error occurred.");
-  //     }
-  //     if (buttonRef.current) {
-  //       buttonRef.current.disabled = false;
-  //     }
-  //   } finally {
-  //     setOpenDeleteDialog(false);
-  //   }
-  // };
+  
+  const rows = [
+    {
+      _id: 1,
+      name: "Faris",
+      phone: "09485094",
+      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
+      group: "زهرة",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 2,
+      name: "Faris",
+      phone: "09485094",
+      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
+      group: "زهرة",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 3,
+      name: "Faris",
+      phone: "09485094",
+      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
+      group: "زهرة",
+      attendance: "78%",
+      fees: "90%",
+    },
+    {
+      _id: 4,
+      name: "Faris",
+      phone: "09485094",
+      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
+      group: "زهرة",
+      attendance: "78%",
+      fees: "90%",
+    },
+  ];
 
   const columns = [
     {
@@ -98,7 +65,7 @@ function ManageFaq() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.question}
+              {row.name}
             </Typography>
           </Box>
         );
@@ -107,8 +74,8 @@ function ManageFaq() {
     {
       flex: 0.275,
       minWidth: 290,
-      field: "questions",
-      headerName: "Questions",
+      field: "contact",
+      headerName: "Contact No.",
       sortable: false,
       disableColumnMenu: true,
 
@@ -122,7 +89,7 @@ function ManageFaq() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.question}
+              {row.phone}
             </Typography>
           </Box>
         );
@@ -131,8 +98,8 @@ function ManageFaq() {
     {
       flex: 0.275,
       minWidth: 290,
-      field: "answers",
-      headerName: "Answers",
+      field: "addres",
+      headerName: "Address",
       sortable: false,
       disableColumnMenu: true,
 
@@ -146,7 +113,79 @@ function ManageFaq() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.answer}
+              {row.address}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "group",
+      headerName: "Event Group",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.group}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.1,
+      // minWidth: 290,
+      field: "attendance",
+      headerName: "Attendance",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.attendance}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 0.1,
+      // minWidth: 290,
+      field: "fees",
+      headerName: "Fees",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.fees}
             </Typography>
           </Box>
         );
@@ -200,10 +239,10 @@ function ManageFaq() {
               <Button
                 size="medium"
                 variant="contained"
-                component={""}
-                href={""}
+                component={Link}
+                to={`add`}
               >
-                Add New FAQ
+                Add New Student
               </Button>
             </div>
           }
@@ -211,15 +250,15 @@ function ManageFaq() {
         <DataGrid
           autoHeight
           rows={rows || []}
-          rowCount={total}
+          // rowCount={total}
           columns={columns}
           getRowId={(row) => row._id}
-          pagination
+          // pagination
           sortingMode="server"
-          paginationMode="server"
+          // paginationMode="server"
           pageSizeOptions={[2]}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
+          // paginationModel={paginationModel}
+          // onPaginationModelChange={setPaginationModel}
           slotProps={{
             baseButton: {
               size: "medium",
@@ -230,9 +269,9 @@ function ManageFaq() {
               printOptions: { disableToolbarButton: true },
               showQuickFilter: true,
               quickFilterProps: { debounceMs: 1000 },
-              value: searchValue,
-              clearSearch: () => handleSearch(""),
-              onChange: (event) => handleSearch(event.target.value),
+              // value: searchValue,
+              // clearSearch: () => handleSearch(""),
+              // onChange: (event) => handleSearch(event.target.value),
             },
           }}
         />

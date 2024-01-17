@@ -29,11 +29,10 @@ import AnimateButton from "components/@extended/AnimateButton";
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 // import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
-import FormRepeater from "components/FormRepeater";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Events = () => {
+const HomeWork = () => {
   // const [level, setLevel] = useState();
   // const [showPassword, setShowPassword] = useState(false);
   // const handleClickShowPassword = () => {
@@ -98,40 +97,103 @@ const Events = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="event">Event Name</InputLabel>
+                  <InputLabel htmlFor="name">Name of Student</InputLabel>
                   <OutlinedInput
-                    id="event"
-                    value={values.event}
-                    name="event"
+                    id="name"
+                    value={values.name}
+                    name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     fullWidth
-                    error={Boolean(touched.event && errors.event)}
+                    error={Boolean(touched.name && errors.name)}
                   />
-                  {touched.event && errors.event && (
-                    <FormHelperText error id="helper-text-event-signup">
-                      {errors.event}
+                  {touched.name && errors.name && (
+                    <FormHelperText error id="helper-text-name-signup">
+                      {errors.name}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="eventDate">Date</InputLabel>
+                  <InputLabel htmlFor="stClass">Class</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.eventDate && errors.eventDate)}
-                    id="eventDate"
-                    type="date"
-                    value={values.eventDate}
-                    name="eventDate"
+                    error={Boolean(touched.stClass && errors.stClass)}
+                    id="stClass"
+                    type="number"
+                    value={values.stClass}
+                    name="stClass"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.eventDate && errors.eventDate && (
-                    <FormHelperText error id="helper-text-eventDate-signup">
-                      {errors.eventDate}
+                  {touched.stClass && errors.stClass && (
+                    <FormHelperText error id="helper-text-stClass-signup">
+                      {errors.stClass}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="date">Date</InputLabel>
+                  <OutlinedInput
+                    fullWidth
+                    error={Boolean(touched.date && errors.date)}
+                    id="date"
+                    type="date"
+                    value={values.date}
+                    name="date"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    inputProps={{}}
+                  />
+                  {touched.date && errors.date && (
+                    <FormHelperText error id="helper-text-date-signup">
+                      {errors.date}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="amount">Amount</InputLabel>
+                  <OutlinedInput
+                    fullWidth
+                    error={Boolean(touched.amount && errors.amount)}
+                    id="amount"
+                    type="number"
+                    value={values.amount}
+                    name="amount"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    inputProps={{}}
+                  />
+                  {touched.amount && errors.amount && (
+                    <FormHelperText error id="helper-text-amount-signup">
+                      {errors.amount}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="discount">Discount</InputLabel>
+                  <OutlinedInput
+                    fullWidth
+                    error={Boolean(touched.discount && errors.discount)}
+                    id="discount"
+                    type="number"
+                    value={values.discount}
+                    name="discount"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    inputProps={{}}
+                  />
+                  {touched.discount && errors.discount && (
+                    <FormHelperText error id="helper-text-discount-signup">
+                      {errors.discount}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -181,4 +243,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default HomeWork;

@@ -96,21 +96,21 @@ const Exam = () => {
             <Grid container spacing={3}>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="name">Student Name</InputLabel>
+                  <InputLabel htmlFor="examName-signup">Exam Name</InputLabel>
                   <OutlinedInput
-                    id="name"
-                    type="name"
-                    value={values.name}
-                    name="name"
+                    id="examName-login"
+                    type="examName"
+                    value={values.examName}
+                    name="examName"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder="John"
                     fullWidth
-                    error={Boolean(touched.name && errors.name)}
+                    error={Boolean(touched.examName && errors.examName)}
                   />
-                  {touched.name && errors.name && (
-                    <FormHelperText error id="helper-text-name">
-                      {errors.name}
+                  {touched.examName && errors.examName && (
+                    <FormHelperText error id="helper-text-examName-signup">
+                      {errors.examName}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -138,7 +138,7 @@ const Exam = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <FormRepeater type={['text', 'text']} label={['Subject', 'Marks']}/>
+                  <FormRepeater type={['date', 'text']} label={['', 'Subject']}/>
                 </Stack>
               </Grid>
               

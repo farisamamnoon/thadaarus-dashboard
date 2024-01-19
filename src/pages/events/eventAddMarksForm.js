@@ -6,9 +6,12 @@ import {
   // Box,
   Button,
   Divider,
+  // FormControl,
   FormHelperText,
   Grid,
   Link,
+  // IconButton,
+  // InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
@@ -25,12 +28,12 @@ import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
+// import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
 import FormRepeater from "components/FormRepeater";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Teacher = () => {
+const Events = () => {
   // const [level, setLevel] = useState();
   // const [showPassword, setShowPassword] = useState(false);
   // const handleClickShowPassword = () => {
@@ -93,127 +96,65 @@ const Teacher = () => {
         }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">
-                    First Name*
-                  </InputLabel>
+                  <InputLabel htmlFor="first">First</InputLabel>
                   <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
+                    id="first"
+                    value={values.first}
+                    name="first"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="John"
                     fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
+                    error={Boolean(touched.first && errors.first)}
                   />
-                  {touched.firstname && errors.firstname && (
-                    <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
+                  {touched.first && errors.first && (
+                    <FormHelperText error id="helper-text-first-signup">
+                      {errors.first}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
+                  <InputLabel htmlFor="second">Second</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    inputProps={{}}
-                  />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="age">Age</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.age && errors.age)}
-                    id="age"
-                    value={values.age}
-                    name="age"
+                    error={Boolean(touched.second && errors.second)}
+                    id="second"
+                    value={values.second}
+                    name="second"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.age && errors.age && (
-                    <FormHelperText error id="helper-text-age-signup">
-                      {errors.age}
+                  {touched.second && errors.second && (
+                    <FormHelperText error id="helper-text-second-signup">
+                      {errors.second}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
+                  <InputLabel htmlFor="third">Third</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-signup"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    error={Boolean(touched.third && errors.third)}
+                    id="third"
+                    value={values.third}
+                    name="third"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@company.com"
                     inputProps={{}}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
+                  {touched.third && errors.third && (
+                    <FormHelperText error id="helper-text-third-signup">
+                      {errors.third}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.phone && errors.phone)}
-                    id="phone-signup"
-                    value={values.phone}
-                    name="phone"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="+91 9876543210"
-                    inputProps={{}}
-                  />
-                  {touched.phone && errors.phone && (
-                    <FormHelperText error id="helper-text-phone-signup">
-                      {errors.phone}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <FormRepeater
-                    label={["Subject", "Class"]}
-                    type={["text", "text"]}
-                  />
-                </Stack>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button
@@ -236,4 +177,4 @@ const Teacher = () => {
   );
 };
 
-export default Teacher;
+export default Events;

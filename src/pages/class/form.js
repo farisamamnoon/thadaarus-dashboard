@@ -190,41 +190,18 @@ const Class = () => {
                 </Stack>
               </Grid>
               <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
-              <Grid item xs={12}>
                 <AnimateButton>
                   <Button
                     disableElevation
                     disabled={isSubmitting}
-                    fullWidth
                     size="large"
                     type="submit"
                     variant="contained"
                     color="primary"
                   >
-                    Create Account
+                    Submit
                   </Button>
                 </AnimateButton>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption">Sign up with</Typography>
-                </Divider>
               </Grid>
             </Grid>
           </form>

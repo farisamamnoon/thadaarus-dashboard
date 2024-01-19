@@ -1,10 +1,9 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
 
 function ManageFaq() {
   const buttonRef = useRef(null);
@@ -21,10 +20,10 @@ function ManageFaq() {
   // const [rows, setRows] = useState([]);
 
   const rows = [
-    { _id: 1, class: "Class 1", batch: '2014-15' ,teacher: "Name" },
-    { _id: 2, class: "Class 2", batch: '2014-15' ,teacher: "Name" },
-    { _id: 3, class: "Class 3", batch: '2014-15' ,teacher: "Name" },
-    { _id: 4, class: "Class 4", batch: '2014-15' ,teacher: "Name" },
+    { _id: 1, class: "Class 1", batch: "2014-15", teacher: "Name" },
+    { _id: 2, class: "Class 2", batch: "2014-15", teacher: "Name" },
+    { _id: 3, class: "Class 3", batch: "2014-15", teacher: "Name" },
+    { _id: 4, class: "Class 4", batch: "2014-15", teacher: "Name" },
   ];
   // const query = useDebounce(searchValue, 1000);
 
@@ -167,13 +166,13 @@ function ManageFaq() {
 
         return (
           <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to="/student"
-              >
-                View Students
-              </Button>
+            size="medium"
+            variant="contained"
+            component={Link}
+            to="/student"
+          >
+            View Students
+          </Button>
         );
       },
     },

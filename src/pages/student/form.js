@@ -1,5 +1,5 @@
 // import { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 
 // material-ui
 import {
@@ -15,20 +15,23 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography
-} from '@mui/material';
+  Typography,
+  Select,
+  MenuItem
+} from "@mui/material";
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import * as Yup from "yup";
+import { Formik } from "formik";
 
 // project import
-import AnimateButton from 'components/@extended/AnimateButton';
+import AnimateButton from "components/@extended/AnimateButton";
 // import { strengthColor, strengthIndicator } from 'utils/password-strength';
+// import { Select, Option } from '@mui/base';
 
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
+import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
@@ -56,18 +59,21 @@ const Student = () => {
     <>
       <Formik
         initialValues={{
-          firstname: '',
-          lastname: '',
-          email: '',
-          company: '',
-          password: '',
-          submit: null
+          firstname: "",
+          lastname: "",
+          email: "",
+          company: "",
+          password: "",
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required('First Name is required'),
-          lastname: Yup.string().max(255).required('Last Name is required'),
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          firstname: Yup.string().max(255).required("First Name is required"),
+          lastname: Yup.string().max(255).required("Last Name is required"),
+          email: Yup.string()
+            .email("Must be a valid email")
+            .max(255)
+            .required("Email is required"),
+          password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
@@ -81,12 +87,22 @@ const Student = () => {
           }
         }}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({
+          errors,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          isSubmitting,
+          touched,
+          values,
+        }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
+                  <InputLabel htmlFor="firstname-signup">
+                    First Name*
+                  </InputLabel>
                   <OutlinedInput
                     id="firstname-login"
                     type="firstname"
@@ -136,7 +152,7 @@ const Student = () => {
                     id="dob"
                     value={values.dob}
                     name="dob"
-                    type='date'
+                    type="date"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
@@ -170,28 +186,6 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-signup"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="demo@company.com"
-                    inputProps={{}}
-                  />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
                   <InputLabel htmlFor="address">Address</InputLabel>
                   <OutlinedInput
                     fullWidth
@@ -199,16 +193,31 @@ const Student = () => {
                     id="address"
                     inputComponent={TextareaAutosize}
                     rowsMin={3}
-                    value={values.email}
-                    name="email"
+                    value={values.address}
+                    name="address"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="demo@company.com"
                     inputProps={{}}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
+                  {touched.address && errors.address && (
+                    <FormHelperText error id="helper-text-address-signup">
+                      {errors.address}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="group">Event Group</InputLabel>
+                  <Select>
+                    <MenuItem value={1}>ابيض</MenuItem>
+                    <MenuItem value={2}>اسود</MenuItem>
+                    <MenuItem value={3}>احمر</MenuItem>
+                    <MenuItem value={4}>اخضر</MenuItem>
+                  </Select>
+                  {touched.group && errors.group && (
+                    <FormHelperText error id="helper-text-group-signup">
+                      {errors.group}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -241,7 +250,7 @@ const Student = () => {
                     fullWidth
                     error={Boolean(touched.class && errors.class)}
                     id="class"
-                    type='number'
+                    type="number"
                     value={values.class}
                     name="class"
                     onBlur={handleBlur}
@@ -257,7 +266,9 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="prev-madrasa">Previous Madrasa</InputLabel>
+                  <InputLabel htmlFor="prev-madrasa">
+                    Previous Madrasa
+                  </InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.prevMadrasa && errors.prevMadrasa)}
@@ -277,12 +288,14 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="prev-class">Last Studied Class</InputLabel>
+                  <InputLabel htmlFor="prev-class">
+                    Last Studied Class
+                  </InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.prevClass && errors.prevClass)}
                     id="prev-class"
-                    type='number'
+                    type="number"
                     value={values.prevClass}
                     name="prevClass"
                     onBlur={handleBlur}
@@ -317,68 +330,6 @@ const Student = () => {
                     </FormHelperText>
                   )}
                 </Stack>
-              </Grid>        
-              {/* <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="password-signup">Password</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.password && errors.password)}
-                    id="password-signup"
-                    type={showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={(e) => {
-                      handleChange(e);
-                      changePassword(e.target.value);
-                    }}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          size="large"
-                        >
-                          {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    placeholder="*****f*"
-                    inputProps={{}}
-                  />
-                  {touched.password && errors.password && (
-                    <FormHelperText error id="helper-text-password-signup">
-                      {errors.password}
-                    </FormHelperText>
-                  )}
-                </Stack>
-                <FormControl fullWidth sx={{ mt: 2 }}>
-                  <Grid container spacing={2} alignItems="center">
-                    <Grid item>
-                      <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1" fontSize="0.75rem">
-                        {level?.label}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </FormControl>
-              </Grid> */}
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
               </Grid>
               {errors.submit && (
                 <Grid item xs={12}>
@@ -387,17 +338,18 @@ const Student = () => {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Create Account
+                  <Button
+                    disableElevation
+                    disabled={isSubmitting}
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
+                    Submit
                   </Button>
                 </AnimateButton>
               </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption">Sign up with</Typography>
-                </Divider>
-              </Grid>
-              
             </Grid>
           </form>
         )}

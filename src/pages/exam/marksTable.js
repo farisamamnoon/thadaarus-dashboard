@@ -1,12 +1,11 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-
-function Exam() {
+function ExamMarks() {
   const buttonRef = useRef(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [dialogId, setDialogId] = useState("");
@@ -21,10 +20,11 @@ function Exam() {
   // const [rows, setRows] = useState([]);
 
   const rows = [
-    { _id: 1, class: "Class 1", batch: '2014-15' ,teacher: "Name" },
-    { _id: 2, class: "Class 2", batch: '2014-15' ,teacher: "Name" },
-    { _id: 3, class: "Class 3", batch: '2014-15' ,teacher: "Name" },
-    { _id: 4, class: "Class 4", batch: '2014-15' ,teacher: "Name" },
+    { _id: 1, name: 'Faris', sub1: "Thaareekh", sub2: "Fiqh", sub3: "Quran", sub4: 'Arabic', total: '350/400' },
+    { _id: 2, name: 'Faris', sub1: "Thaareekh", sub2: "Fiqh", sub3: "Quran", sub4: 'Arabic', total: '350/400' },
+    { _id: 3, name: 'Faris', sub1: "Thaareekh", sub2: "Fiqh", sub3: "Quran", sub4: 'Arabic', total: '350/400' },
+    { _id: 4, name: 'Faris', sub1: "Thaareekh", sub2: "Fiqh", sub3: "Quran", sub4: 'Arabic', total: '350/400' },
+    
   ];
   // const query = useDebounce(searchValue, 1000);
 
@@ -85,8 +85,8 @@ function Exam() {
     {
       flex: 1,
       minWidth: 290,
-      field: "date",
-      headerName: "Date",
+      field: "name",
+      headerName: "Student Name",
       sortable: false,
       disableColumnMenu: true,
 
@@ -100,7 +100,7 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.batch}
+              {row.name}
             </Typography>
           </Box>
         );
@@ -109,8 +109,8 @@ function Exam() {
     {
       flex: 1,
       minWidth: 290,
-      field: "subject",
-      headerName: "Subject",
+      field: "subject1",
+      headerName: "Subject 1",
       sortable: false,
       disableColumnMenu: true,
 
@@ -124,7 +124,103 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.class}
+              {row.sub1}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "subject2",
+      headerName: "Subject 2",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.sub2}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "subject3",
+      headerName: "Subject 3",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.sub3}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "subject4",
+      headerName: "Subject 4",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.sub4}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "total",
+      headerName: "Total",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.total}
             </Typography>
           </Box>
         );
@@ -152,7 +248,7 @@ function Exam() {
                 component={Link}
                 to={`add`}
               >
-                Add Exam
+                Add Marks
               </Button>
             </div>
           }
@@ -201,4 +297,4 @@ function Exam() {
   );
 }
 
-export default Exam;
+export default ExamMarks;

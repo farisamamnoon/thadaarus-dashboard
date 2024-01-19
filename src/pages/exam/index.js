@@ -1,10 +1,9 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-
 
 function Exam() {
   const buttonRef = useRef(null);
@@ -21,9 +20,9 @@ function Exam() {
   // const [rows, setRows] = useState([]);
 
   const rows = [
-    { _id: 1, date: '28/12/2009', subject: "Arabic"},
-    { _id: 2, date: '28/12/2009', subject: "Arabic"},
-    { _id: 3, date: '28/12/2009', subject: "Arabic"},
+    { _id: 1, date: "28/12/2009", subject: "Arabic" },
+    { _id: 2, date: "28/12/2009", subject: "Arabic" },
+    { _id: 3, date: "28/12/2009", subject: "Arabic" },
   ];
   // const query = useDebounce(searchValue, 1000);
 
@@ -129,6 +128,30 @@ function Exam() {
         );
       },
     },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "subject",
+      headerName: "Subject",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              noWrap
+              variant="body2"
+              sx={{ color: "text.primary", fontWeight: 600 }}
+            >
+              {row.subject}
+            </Typography>
+          </Box>
+        );
+      },
+    },
   ];
 
   return (
@@ -140,18 +163,25 @@ function Exam() {
         <Link href={/faq}>FAQ</Link>
         <Typography>Manage </Typography>
       </Breadcrumbs> */}
-      <Card>
+      <Box display="flex" sx={{ flexDirection: "row-reverse", mb: '2px' }}>
+        <Button size="medium" variant="contained" component={Link} to={`add`}>
+          Add Exam
+        </Button>
+      </Box>
+      <Box boxShadow={4} sx={{ borderRadius: 4 }}>
         <CardHeader
-          title="Exam Timetable"
+          sx={{ bgcolor: "secondary.200" }}
+          title="Time Table for First Terminal Examination 2013(class specific)"
           action={
             <div>
               <Button
                 size="medium"
+                sx={{ margin: 2 }}
                 variant="contained"
                 component={Link}
-                to={`add`}
+                to={`marks`}
               >
-                Add Exam
+                View Marks
               </Button>
             </div>
           }
@@ -184,7 +214,7 @@ function Exam() {
             },
           }}
         />
-      </Card>
+      </Box>
 
       {/* {openDeleteDialog && (
         <DeleteConfirmationDialog

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
 import { DeleteOutlined } from "@ant-design/icons";
+import InputLabel from "themes/overrides/InputLabel";
 
 const FormRepeater = ({ label, type }) => {
   const [formFields, setFormFields] = useState([
@@ -31,6 +32,7 @@ const FormRepeater = ({ label, type }) => {
       {formFields.map((field) => (
         <div key={field.id} style={{ marginBottom: "10px" }}>
           <TextField
+            id="input1"
             fullWidth
             type={type[0]}
             sx={{ marginBottom: "10px" }}
@@ -39,6 +41,7 @@ const FormRepeater = ({ label, type }) => {
             onChange={(e) => handleChange(field.id, "value1", e.target.value)}
           />
           <TextField
+            id="input2"
             fullWidth
             type={type[1]}
             sx={{ marginBottom: "10px" }}

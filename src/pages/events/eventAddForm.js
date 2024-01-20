@@ -98,25 +98,6 @@ const Events = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="event">Event Name</InputLabel>
-                  <OutlinedInput
-                    id="event"
-                    value={values.event}
-                    name="event"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    fullWidth
-                    error={Boolean(touched.event && errors.event)}
-                  />
-                  {touched.event && errors.event && (
-                    <FormHelperText error id="helper-text-event-signup">
-                      {errors.event}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
                   <InputLabel htmlFor="eventDate">Date</InputLabel>
                   <OutlinedInput
                     fullWidth
@@ -134,6 +115,11 @@ const Events = () => {
                       {errors.eventDate}
                     </FormHelperText>
                   )}
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                    <FormRepeater label={['Event Name']} type={['text']}/>
                 </Stack>
               </Grid>
               <Grid item xs={12}>

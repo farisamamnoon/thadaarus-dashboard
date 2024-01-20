@@ -3,7 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { DeleteOutlined } from "@ant-design/icons";
 import InputLabel from "themes/overrides/InputLabel";
 
-const FormRepeater = ({ label, type }) => {
+const FormRepeater = ({ secondField, label, type }) => {
   const [formFields, setFormFields] = useState([
     { id: 1, value1: "", value2: "" },
   ]);
@@ -40,15 +40,17 @@ const FormRepeater = ({ label, type }) => {
             value={field.value1}
             onChange={(e) => handleChange(field.id, "value1", e.target.value)}
           />
-          <TextField
-            id="input2"
-            fullWidth
-            type={type[1]}
-            sx={{ marginBottom: "10px" }}
-            label={`${label[1]}`}
-            value={field.value2}
-            onChange={(e) => handleChange(field.id, "value2", e.target.value)}
-          />
+          {secondField && (
+            <TextField
+              id="input2"
+              fullWidth
+              type={type[1]}
+              sx={{ marginBottom: "10px" }}
+              label={`${label[1]}`}
+              value={field.value2}
+              onChange={(e) => handleChange(field.id, "value2", e.target.value)}
+            />
+          )}
           <Button
             variant="contained"
             color="secondary"
@@ -64,7 +66,7 @@ const FormRepeater = ({ label, type }) => {
         variant="contained"
         color="primary"
         onClick={addFormField}
-        sx={{ marginTop: "20px" }}
+        sx={{ mb: "20px" }}
       >
         Add Fields
       </Button>

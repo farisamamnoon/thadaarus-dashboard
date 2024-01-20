@@ -189,6 +189,26 @@ const Class = () => {
                   )}
                 </Stack>
               </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="fees">Fees</InputLabel>
+                  <OutlinedInput
+                    fullWidth
+                    error={Boolean(touched.fees && errors.fees)}
+                    id="fees"
+                    value={values.fees}
+                    name="fees"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    inputProps={{}}
+                  />
+                  {touched.fees && errors.fees && (
+                    <FormHelperText error id="helper-text-fees-signup">
+                      {errors.fees}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button
@@ -212,5 +232,3 @@ const Class = () => {
 };
 
 export default Class;
-
-

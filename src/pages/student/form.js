@@ -1,23 +1,13 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
 // material-ui
 import {
-  // Box,
   Button,
-  Divider,
-  // FormControl,
   FormHelperText,
   Grid,
-  Link,
-  // IconButton,
-  // InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
   Select,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 
 // third party
@@ -32,6 +22,8 @@ import AnimateButton from "components/@extended/AnimateButton";
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
+import axios from "axios";
+import { base_url } from "utils/baseurl";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
@@ -59,24 +51,38 @@ const Student = () => {
     <>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
-          submit: null,
+          name: "",
+          dob: "",
+          age: "",
+          address: "",
+          group: "",
+          phone: "",
+          classId: "",
+          prevClass: "",
+          prevMadrasa: "",
+          remarks: "",
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
+          name: Yup.string().max(255).required("Name is required"),
+          dob: Yup.date().required("Date Of Birth is required"),
+          age: Yup.number().typeError('Age must be a number').required("Age is required"),
+          address: Yup.string().max(255).required("Address is required"),
+          group: Yup.string().max(255),
+          phone: Yup.number().required("Phone Number is required"),
+          classId: Yup.number().positive('Please enter a valid class').required("Class is required"),
+          prevClass: Yup.number().positive('Please enter a valid class'),
+          prevMadrasa: Yup.string(),
+          remarks: Yup.string().max(255),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+          console.log("values:::", values);
           try {
+            const response = await axios.post(
+              `${base_url}/student/create`,
+              values
+            );
+            console.log(response.data.message);
+            alert(response.message);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -100,45 +106,21 @@ const Student = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">
-                    First Name*
-                  </InputLabel>
+                  <InputLabel htmlFor="name">Name*</InputLabel>
                   <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
+                    id="name-login"
+                    type="name"
+                    value={values.name}
+                    name="name"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder="John"
                     fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
+                    error={Boolean(touched.name && errors.name)}
                   />
-                  {touched.firstname && errors.firstname && (
-                    <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    inputProps={{}}
-                  />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
+                  {touched.name && errors.name && (
+                    <FormHelperText error id="helper-text-name">
+                      {errors.name}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -150,9 +132,8 @@ const Student = () => {
                     fullWidth
                     error={Boolean(touched.dob && errors.dob)}
                     id="dob"
-                    value={values.dob}
-                    name="dob"
                     type="date"
+                    value={values.dob}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
@@ -192,7 +173,6 @@ const Student = () => {
                     error={Boolean(touched.address && errors.address)}
                     id="address"
                     inputComponent={TextareaAutosize}
-                    rowsMin={3}
                     value={values.address}
                     name="address"
                     onBlur={handleBlur}
@@ -209,11 +189,17 @@ const Student = () => {
               <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="group">Event Group</InputLabel>
-                  <Select>
-                    <MenuItem value={1}>ابيض</MenuItem>
-                    <MenuItem value={2}>اسود</MenuItem>
-                    <MenuItem value={3}>احمر</MenuItem>
-                    <MenuItem value={4}>اخضر</MenuItem>
+                  <Select
+                    id="group"
+                    name="group"
+                    value={values.group}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  >
+                    <MenuItem value={"white"}>ابيض</MenuItem>
+                    <MenuItem value={"black"}>اسود</MenuItem>
+                    <MenuItem value={"red"}>احمر</MenuItem>
+                    <MenuItem value={"green"}>اخضر</MenuItem>
                   </Select>
                   {touched.group && errors.group && (
                     <FormHelperText error id="helper-text-group-signup">
@@ -245,21 +231,23 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="class">Applying for Class:</InputLabel>
+                  <InputLabel htmlFor="classId">
+                    Applying for ClassId:
+                  </InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.class && errors.class)}
-                    id="class"
+                    error={Boolean(touched.classId && errors.classId)}
+                    id="classId"
                     type="number"
-                    value={values.class}
-                    name="class"
+                    value={values.classId}
+                    name="classId"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.class && errors.class && (
-                    <FormHelperText error id="helper-text-class-signup">
-                      {errors.class}
+                  {touched.classId && errors.classId && (
+                    <FormHelperText error id="helper-text-classId-signup">
+                      {errors.classId}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -314,12 +302,11 @@ const Student = () => {
                   <InputLabel htmlFor="remarks">Remarks</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.prevClass && errors.prevClass)}
+                    error={Boolean(touched.remarks && errors.remarks)}
                     id="remarks"
                     value={values.remarks}
                     name="remarks"
                     inputComponent={TextareaAutosize}
-                    rowsMin={3}
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}

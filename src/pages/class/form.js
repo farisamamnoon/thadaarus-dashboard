@@ -1,4 +1,4 @@
-// import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link as RouterLink } from "react-router-dom";
 
 // material-ui
@@ -12,6 +12,10 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  Select,
+  Box,
+  Chip,
+  MenuItem,
 } from "@mui/material";
 
 // third party
@@ -20,32 +24,52 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
+import { visitLexicalEnvironment } from '../../../node_modules/typescript/lib/typescript';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Class = () => {
+  const [ subjectName, setSubjectName] = useState([]);
+
+  const names = ["hai,", "bai", "go", "nbabi", "adfkj"];
+
+  const handleSelectChange = (formik) => (event) => {
+    const {
+
+      target: { value },
+    } = event;
+
+    formik.setFieldValue('subjects', value)
+
+    setSubjectName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
   return (
     <>
       <Formik
         initialValues={{
           firstname: "",
           lastname: "",
+          subjects: [],
           email: "",
           company: "",
           password: "",
           submit: null,
         }}
-        validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
-        })}
+        // validationSchema={Yup.object().shape({
+        //   firstname: Yup.string().max(255).required("First Name is required"),
+        //   lastname: Yup.string().max(255).required("Last Name is required"),
+        //   email: Yup.string()
+        //     .email("Must be a valid email")
+        //     .max(255)
+        //     .required("Email is required"),
+        //   password: Yup.string().max(255).required("Password is required"),
+        // })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            console.log(values);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -145,6 +169,39 @@ const Class = () => {
                       {errors.subjects}
                     </FormHelperText>
                   )}
+                </Stack>
+              </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+                  <Select
+                    labelId="demo-multiple-chip-label"
+                    id="demo-multiple-chip"
+                    multiple
+                    value={subjectName}
+                    onChange={handleSelectChange(formik)}
+                    input={
+                      <OutlinedInput id="select-multiple-chip" label="Chip" />
+                    }
+                    renderValue={(selected) => (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip key={value} label={value} />
+                        ))}
+                      </Box>
+                    )}
+                    // MenuProps={MenuProps}
+                  >
+                    {names.map((name) => (
+                      <MenuItem
+                        key={name}
+                        value={name}
+                        // style={getStyles(name, personName, theme)}
+                      >
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </Stack>
               </Grid>
               <Grid item xs={6}>

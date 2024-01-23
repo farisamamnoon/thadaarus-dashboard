@@ -28,25 +28,6 @@ import { base_url } from "utils/baseurl";
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Student = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
-
   return (
     <>
       <Formik
@@ -75,13 +56,12 @@ const Student = () => {
           remarks: Yup.string().max(255),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          console.log("values:::", values);
           try {
             const response = await axios.post(
               `${base_url}/student/create`,
               values
             );
-            console.log(response.data.message);
+            // console.log(response.data.message);
             alert(response.message);
             setStatus({ success: false });
             setSubmitting(false);

@@ -1,27 +1,18 @@
 // material-ui
-import {
-  Button,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-} from "@mui/material";
+import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
-import { Formik } from "formik";
+import { Formik, Field, FieldArray } from "formik";
+import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-
-// assets
-import FormRepeater from "components/FormRepeater";
+import { base_url } from "utils/baseurl";
 
 // ============================|| TEACHER-ADDFORM ||============================ //
 
 const Teacher = () => {
-
   return (
     <Formik
       initialValues={{
@@ -38,21 +29,22 @@ const Teacher = () => {
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string().max(255).required("Name is required"),
-        age: Yup.number()
-          .typeError("Enter a Valid age")
-          .required("Age is required"),
-        email: Yup.string()
-          .email("Must be a valid email")
-          .max(255)
-          .required("Email is required"),
+        age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
+        email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
         phone: Yup.number()
           .typeError("Enter a valid phone number")
           .required("Phone Number is required"),
-        // subjects: Yup.array(),
+        subjects: Yup.array().of(
+          Yup.object().shape({
+            classId: Yup.number(),
+            subjectId: Yup.string().max(255),
+          })
+        ),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
-          console.log(values);
+          const response = await axios.post(`${base_url}/teacher/create`, values);
+          console.log(response.data.message)
           setStatus({ success: false });
           setSubmitting(false);
         } catch (err) {
@@ -63,15 +55,7 @@ const Teacher = () => {
         }
       }}
     >
-      {({
-        errors,
-        handleBlur,
-        handleChange,
-        touched,
-        handleSubmit,
-        isSubmitting,
-        values,
-      }) => (
+      {({ errors, handleBlur, handleChange, touched, handleSubmit, isSubmitting, values }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -156,75 +140,53 @@ const Teacher = () => {
                 )}
               </Stack>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="class">Name</InputLabel>
-                <OutlinedInput
-                  id="class"
-                  value={values.name}
-                  name="class"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  fullWidth
-                  error={Boolean(touched.name && errors.name)}
-                />
-                {touched.class && errors.class && (
-                  <FormHelperText error id="helper-text-name">
-                    {errors.class}
-                  </FormHelperText>
-                )}
-              </Stack>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="subject">Name</InputLabel>
-                <OutlinedInput
-                  id="subject"
-                  value={values.name}
-                  name="subject"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  fullWidth
-                  error={Boolean(touched.name && errors.name)}
-                />
-                {touched.subject && errors.subject && (
-                  <FormHelperText error id="helper-text-name">
-                    {errors.subject}
-                  </FormHelperText>
-                )}
-              </Stack>
-            </Grid>
             <Grid item xs={6}>
               <Stack spacing={1}>
-                <FormRepeater
-                  fields={[
-                    {
-                      type: "text",
-                      label: "Class",
-                      name: "subjects.classId",
-                      id: "classId",
-                      value: values.subjects.classId,
-                      handleChange: handleChange,
-                      handleBlur: handleBlur,
-                    },
-                    {
-                      type: "text",
-                      label: "Subject",
-                      name: "subjects.subjectId",
-                      id: "subjects",
-                      value: values.subjects.subjectId,
-                      handleChange: handleChange,
-                      handleBlur: handleBlur,
-                    },
-                  ]}
+                <FieldArray
+                  name="subjects"
+                  render={(arrayHelpers) => (
+                    <div>
+                      {values.subjects.map((subject, index) => (
+                        <div key={index}>
+                          <InputLabel htmlFor="classId">Class</InputLabel>
+                          <OutlinedInput
+                            fullWidth
+                            // error={Boolean(
+                            //   touched.subjects[index].classId && errors.subjects[index].classId
+                            // )}
+                            id="classId"
+                            value={values.subjects[index].classId}
+                            name={`subjects.${index}.classId`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                          />
+                          <InputLabel htmlFor="subjectId">Subject</InputLabel>
+                          <OutlinedInput
+                            fullWidth
+                            // error={Boolean(
+                            //   touched.subjects[index].subjectId && errors.subjects[index].subjectId
+                            // )}
+                            id="subjectId"
+                            value={values.subjects[index].subjectId}
+                            name={`subjects.${index}.subjectId`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                          />
+                          <Button type="button" onClick={() => arrayHelpers.remove(index)}>
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                      <Button type="button" onClick={() => arrayHelpers.push("")}>
+                        Add
+                      </Button>
+                    </div>
+                  )}
                 />
               </Stack>
             </Grid>
-            {errors.submit && (
-              <Grid item xs={12}>
-                <FormHelperText error>{errors.submit}</FormHelperText>
-              </Grid>
-            )}
             <Grid item xs={12}>
               <AnimateButton>
                 <Button

@@ -3,7 +3,7 @@ import { Button, TextField } from "@mui/material";
 import { DeleteOutlined } from "@ant-design/icons";
 import InputLabel from "themes/overrides/InputLabel";
 
-const FormRepeater = ({ secondField, label, type }) => {
+const FormRepeater = ({ fields }) => {
   const [formFields, setFormFields] = useState([
     { id: 1, value1: "", value2: "" },
   ]);
@@ -29,33 +29,27 @@ const FormRepeater = ({ secondField, label, type }) => {
 
   return (
     <div>
-      {formFields.map((field) => (
-        <div key={field.id} style={{ marginBottom: "10px" }}>
-          <TextField
-            id="input1"
-            fullWidth
-            type={type[0]}
-            sx={{ marginBottom: "10px" }}
-            label={`${label[0]}`}
-            value={field.value1}
-            onChange={(e) => handleChange(field.id, "value1", e.target.value)}
-          />
-          {secondField && (
+      {formFields.map((formField) => (
+        <div key={formField.id} style={{ marginBottom: "10px" }}>
+          {fields.map((field) => (
             <TextField
-              id="input2"
+              id={field.id}
+              name={field.name}
               fullWidth
-              type={type[1]}
+              type={field.type}
               sx={{ marginBottom: "10px" }}
-              label={`${label[1]}`}
-              value={field.value2}
-              onChange={(e) => handleChange(field.id, "value2", e.target.value)}
+              label={field.label}
+              value={field.value}
+              onChange={field.handleChange}
+              onBlur={field.handleBlur}
             />
-          )}
+          ))}
+
           <Button
             variant="contained"
             color="secondary"
             startIcon={<DeleteOutlined />}
-            onClick={() => removeFormField(field.id)}
+            onClick={() => removeFormField(formField.id)}
             sx={{ marginTop: "10px" }}
           >
             Remove

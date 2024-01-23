@@ -201,7 +201,7 @@ const Teacher = () => {
                     {
                       type: "text",
                       label: "Class",
-                      name: "classId",
+                      name: "subjects.classId",
                       id: "classId",
                       value: values.subjects.classId,
                       handleChange: handleChange,
@@ -210,7 +210,7 @@ const Teacher = () => {
                     {
                       type: "text",
                       label: "Subject",
-                      name: "subjects",
+                      name: "subjects.subjectId",
                       id: "subjects",
                       value: values.subjects.subjectId,
                       handleChange: handleChange,

@@ -10,7 +10,7 @@ import {
 
 // third party
 import * as Yup from "yup";
-import { Formik } from "formik";
+import { Formik, Field, FieldArray } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
@@ -21,7 +21,6 @@ import FormRepeater from "components/FormRepeater";
 // ============================|| TEACHER-ADDFORM ||============================ //
 
 const Teacher = () => {
-
   return (
     <Formik
       initialValues={{
@@ -156,37 +155,82 @@ const Teacher = () => {
                 )}
               </Stack>
             </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <FormRepeater
-                  fields={[
-                    {
-                      type: "text",
-                      label: "Class",
-                      name: "classId",
-                      id: "classId",
-                      value: values.subjects.classId,
-                      handleChange: handleChange,
-                      handleBlur: handleBlur,
-                    },
-                    {
-                      type: "text",
-                      label: "Subject",
-                      name: "subjects",
-                      id: "subjects",
-                      value: values.subjects.subjectId,
-                      handleChange: handleChange,
-                      handleBlur: handleBlur,
-                    },
-                  ]}
-                />
-              </Stack>
-            </Grid>
-            {errors.submit && (
-              <Grid item xs={12}>
-                <FormHelperText error>{errors.submit}</FormHelperText>
-              </Grid>
-            )}
+            <FieldArray
+              name="subjects"
+              render={(arrayHelpers) => (
+                <div>
+                  {values.subjects && values.subjects.length > 0 ? (
+                    values.subjects.map((friend, index) => (
+                      <div key={index}>
+                        <Grid item xs={6}>
+                          <Stack spacing={1}>
+                            <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
+                            <OutlinedInput
+                              fullWidth
+                              error={Boolean(touched.phone && errors.phone)}
+                              id="phone-signup"
+                              value={values.phone}
+                              name="phone"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              placeholder="+91 9876543210"
+                              inputProps={{}}
+                            />
+                            {touched.phone && errors.phone && (
+                              <FormHelperText
+                                error
+                                id="helper-text-phone-signup"
+                              >
+                                {errors.phone}
+                              </FormHelperText>
+                            )}
+                            <InputLabel htmlFor="phone-signup">
+                              Phone Number
+                            </InputLabel>
+                            <OutlinedInput
+                              fullWidth
+                              error={Boolean(touched.phone && errors.phone)}
+                              id="phone-signup"
+                              value={values.phone}
+                              name="phone"
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              placeholder="+91 9876543210"
+                              inputProps={{}}
+                            />
+                            {touched.phone && errors.phone && (
+                              <FormHelperText
+                                error
+                                id="helper-text-phone-signup"
+                              >
+                                {errors.phone}
+                              </FormHelperText>
+                            )}
+                          </Stack>
+                        </Grid>
+                        <button
+                          type="button"
+                          onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
+                        >
+                          Remove
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => arrayHelpers.insert(index, "")} // insert an empty string at a position
+                        >
+                          Add
+                        </button>
+                      </div>
+                    ))
+                  ) : (
+                    <button type="button" onClick={() => arrayHelpers.push("")}>
+                      {/* show this when user has removed all friends from the list */}
+                      Add
+                    </button>
+                  )}
+                </div>
+              )}
+            />
             <Grid item xs={12}>
               <AnimateButton>
                 <Button

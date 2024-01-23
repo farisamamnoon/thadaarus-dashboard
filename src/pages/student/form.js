@@ -25,7 +25,7 @@ import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
 import axios from "axios";
 import { base_url } from "utils/baseurl";
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+// ============================|| STUDENT- ADDFORM ||============================ //
 
 const Student = () => {
   // const [level, setLevel] = useState();

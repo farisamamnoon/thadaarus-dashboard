@@ -1,17 +1,13 @@
 import { useState } from "react";
-import { Link as RouterLink } from "react-router-dom";
 
 // material-ui
 import {
   Button,
-  Divider,
   FormHelperText,
   Grid,
-  Link,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
   Select,
   Box,
   Chip,
@@ -25,10 +21,9 @@ import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-import { visitLexicalEnvironment } from "../../../node_modules/typescript/lib/typescript";
 import { base_url } from "utils/baseurl";
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+// ============================|| CLASS- ADDFORM ||============================ //
 
 const Class = () => {
   const [subjectName, setSubjectName] = useState([]);
@@ -43,7 +38,6 @@ const Class = () => {
     formikprops.setFieldValue("subjects", value);
 
     setSubjectName(
-      // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
   };
@@ -65,13 +59,13 @@ const Class = () => {
         .required("Class is required"),
       division: Yup.string().max(255),
       teacher: Yup.string().max(255).required("A Teacher is required"),
-      subjects: Yup.string().max(255).required("Select the subjects"),
+      subjects: Yup.array().min(2, 'Select atleast two subjects').required('Subjects are required for a class'),
       batch: Yup.number().required("Enter the batch year"),
       fees: Yup.number().required("Enter the total fees of the class"),
     }),
     onSubmit: async (values, { setErrors, setStatus, setSubmitting }) => {
       try {
-        console.log("values");
+        console.log(values);
         const response = await axios.post(`${base_url}/class/create`, values);
 
         setStatus({ success: false });
@@ -161,8 +155,10 @@ const Class = () => {
               <Select
                 labelId="subjects"
                 id="subjects"
+                name="subjects"
                 multiple
                 value={formikprops.values.subjects}
+                onBlur={formikprops.handleBlur}
                 onChange={handleSelectChange}
                 input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                 renderValue={(selected) => (
@@ -184,6 +180,11 @@ const Class = () => {
                   </MenuItem>
                 ))}
               </Select>
+              {formikprops.touched.subjects && formikprops.errors.subjects && (
+                <FormHelperText error id="helper-text-subjects-signup">
+                  {formikprops.errors.subjects}
+                </FormHelperText>
+              )}
             </Stack>
           </Grid>
           <Grid item xs={6}>

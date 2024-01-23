@@ -1,12 +1,11 @@
 import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardHeader, Button } from "@mui/material";
-import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-function ManageFaq() {
-  
+function Student() {
   const rows = [
     {
       _id: 1,
@@ -48,7 +47,7 @@ function ManageFaq() {
 
   const columns = [
     {
-      flex: 0.275,
+      flex: 1,
       minWidth: 290,
       field: "studentname",
       headerName: "Student Name",
@@ -72,7 +71,7 @@ function ManageFaq() {
       },
     },
     {
-      flex: 0.275,
+      flex: 1,
       minWidth: 290,
       field: "contact",
       headerName: "Contact No.",
@@ -96,7 +95,7 @@ function ManageFaq() {
       },
     },
     {
-      flex: 0.275,
+      flex: 1,
       minWidth: 290,
       field: "addres",
       headerName: "Address",
@@ -120,7 +119,7 @@ function ManageFaq() {
       },
     },
     {
-      flex: 0.275,
+      flex: 1,
       minWidth: 290,
       field: "group",
       headerName: "Event Group",
@@ -144,7 +143,7 @@ function ManageFaq() {
       },
     },
     {
-      flex: 0.1,
+      flex: 1,
       // minWidth: 290,
       field: "attendance",
       headerName: "Attendance",
@@ -168,7 +167,7 @@ function ManageFaq() {
       },
     },
     {
-      flex: 0.1,
+      flex: 1,
       // minWidth: 290,
       field: "fees",
       headerName: "Fees",
@@ -187,6 +186,29 @@ function ManageFaq() {
             >
               {row.fees}
             </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      // minWidth: 290,
+      field: "actions",
+      headerName: "",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Button component={Link} to="add">
+              <EditOutlined />
+            </Button>
+            <Button component={Link} to="add">
+              <DeleteOutlined />
+            </Button>
           </Box>
         );
       },
@@ -262,4 +284,4 @@ function ManageFaq() {
   );
 }
 
-export default ManageFaq;
+export default Student;

@@ -1,12 +1,5 @@
 // material-ui
-import {
-  Button,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-} from "@mui/material";
+import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -37,13 +30,8 @@ const Teacher = () => {
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string().max(255).required("Name is required"),
-        age: Yup.number()
-          .typeError("Enter a Valid age")
-          .required("Age is required"),
-        email: Yup.string()
-          .email("Must be a valid email")
-          .max(255)
-          .required("Email is required"),
+        age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
+        email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
         phone: Yup.number()
           .typeError("Enter a valid phone number")
           .required("Phone Number is required"),
@@ -62,15 +50,7 @@ const Teacher = () => {
         }
       }}
     >
-      {({
-        errors,
-        handleBlur,
-        handleChange,
-        touched,
-        handleSubmit,
-        isSubmitting,
-        values,
-      }) => (
+      {({ errors, handleBlur, handleChange, touched, handleSubmit, isSubmitting, values }) => (
         <form noValidate onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -159,75 +139,62 @@ const Teacher = () => {
               name="subjects"
               render={(arrayHelpers) => (
                 <div>
-                  {values.subjects && values.subjects.length > 0 ? (
-                    values.subjects.map((friend, index) => (
-                      <div key={index}>
-                        <Grid item xs={6}>
-                          <Stack spacing={1}>
-                            <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
-                            <OutlinedInput
-                              fullWidth
-                              error={Boolean(touched.phone && errors.phone)}
-                              id="phone-signup"
-                              value={values.phone}
-                              name="phone"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              placeholder="+91 9876543210"
-                              inputProps={{}}
-                            />
-                            {touched.phone && errors.phone && (
-                              <FormHelperText
-                                error
-                                id="helper-text-phone-signup"
-                              >
-                                {errors.phone}
-                              </FormHelperText>
-                            )}
-                            <InputLabel htmlFor="phone-signup">
-                              Phone Number
-                            </InputLabel>
-                            <OutlinedInput
-                              fullWidth
-                              error={Boolean(touched.phone && errors.phone)}
-                              id="phone-signup"
-                              value={values.phone}
-                              name="phone"
-                              onBlur={handleBlur}
-                              onChange={handleChange}
-                              placeholder="+91 9876543210"
-                              inputProps={{}}
-                            />
-                            {touched.phone && errors.phone && (
-                              <FormHelperText
-                                error
-                                id="helper-text-phone-signup"
-                              >
-                                {errors.phone}
-                              </FormHelperText>
-                            )}
-                          </Stack>
-                        </Grid>
-                        <button
-                          type="button"
-                          onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
-                        >
-                          Remove
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => arrayHelpers.insert(index, "")} // insert an empty string at a position
-                        >
-                          Add
-                        </button>
-                      </div>
-                    ))
-                  ) : (
-                    <button type="button" onClick={() => arrayHelpers.push("")}>
-                      {/* show this when user has removed all friends from the list */}
+                  values.subjects.map((subject, index) => (
+                  <div key={index}>
+                    <Grid item xs={6}>
+                      <Stack spacing={1}>
+                        <InputLabel htmlFor="class">Class</InputLabel>
+                        <OutlinedInput
+                          fullWidth
+                          error={Boolean(touched.subject.classId && errors.subject.classId)}
+                          id="class"
+                          value={values.subjects[index].classId}
+                          name={`subjects[${index}].classId`}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          placeholder="+91 9876543210"
+                          inputProps={{}}
+                        />
+                        {touched.subject.classId && errors.subject.classId && (
+                          <FormHelperText error id="helper-text-class">
+                            {errors.subject.classId}
+                          </FormHelperText>
+                        )}
+                        <InputLabel htmlFor="phone-signup">Subjects</InputLabel>
+                        <OutlinedInput
+                          fullWidth
+                          error={Boolean(
+                            touched.subjects[index].subjectId && errors.subjects[index].subjectId
+                          )}
+                          id="subjectId-signup"
+                          value={values.subjects[index].subjectId}
+                          name={`subjects[${index}].subjectId`}
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          placeholder="+91 9876543210"
+                          inputProps={{}}
+                        />
+                        {touched.subjects[index].subjectId && errors.subjects[index].subjectId && (
+                          <FormHelperText error id="helper-text-subjectId-signup">
+                            {errors.subjects[index].subjectId}
+                          </FormHelperText>
+                        )}
+                      </Stack>
+                    </Grid>
+                    <Button
+                      type="button"
+                      onClick={() => arrayHelpers.remove(index)} // remove a friend from the list
+                    >
+                      Remove
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={() => arrayHelpers.insert(index, "")} // insert an empty string at a position
+                    >
                       Add
-                    </button>
-                  )}
+                    </Button>
+                  </div>
+                  ))
                 </div>
               )}
             />

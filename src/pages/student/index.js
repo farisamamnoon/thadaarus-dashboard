@@ -3,48 +3,39 @@ import { Card, CardHeader, Button } from "@mui/material";
 import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { base_url } from "utils/baseurl";
+import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
 
-function ManageFaq() {
-  
-  const rows = [
-    {
-      _id: 1,
-      name: "Faris",
-      phone: "09485094",
-      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
-      group: "زهرة",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 2,
-      name: "Faris",
-      phone: "09485094",
-      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
-      group: "زهرة",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 3,
-      name: "Faris",
-      phone: "09485094",
-      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
-      group: "زهرة",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 4,
-      name: "Faris",
-      phone: "09485094",
-      address: "Sara Manzil po muzhappilangad, edakkad, 670662",
-      group: "زهرة",
-      attendance: "78%",
-      fees: "90%",
-    },
-  ];
+function Student() {
+  const {
+    data: students,
+    error,
+    isPending,
+  } = useQuery({
+    querykey: ["studentData"],
+    queryFn: async () => fetchData("student/get-all"),
+  });
+  if (error) {
+    console.log("error", error);
+  }
+
+  if (isPending) {
+    return <p>Laoding</p>;
+  }
+
+  const rows = students;
+  //   {
+  //     _id: 1,
+  //     name: "Faris",
+  //     phone: "09485094",
+  //     address: "Sara Manzil po muzhappilangad, edakkad, 670662",
+  //     group: "زهرة",
+  //     attendance: "78%",
+  //     fees: "90%",
+  //   },
+
 
   const columns = [
     {
@@ -60,11 +51,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.name}
             </Typography>
           </Box>
@@ -84,11 +71,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.phone}
             </Typography>
           </Box>
@@ -108,11 +91,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.address}
             </Typography>
           </Box>
@@ -132,11 +111,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.group}
             </Typography>
           </Box>
@@ -156,11 +131,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.attendance}
             </Typography>
           </Box>
@@ -180,11 +151,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.fees}
             </Typography>
           </Box>
@@ -207,12 +174,7 @@ function ManageFaq() {
           title="Student List"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add New Student
               </Button>
             </div>
@@ -262,4 +224,4 @@ function ManageFaq() {
   );
 }
 
-export default ManageFaq;
+export default Student;

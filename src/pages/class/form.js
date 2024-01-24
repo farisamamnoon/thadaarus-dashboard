@@ -109,26 +109,6 @@ const Class = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="teacher">Class Teacher</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.teacher && errors.teacher)}
-                    id="teacher"
-                    value={values.teacher}
-                    name="teacher"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.teacher && errors.teacher && (
-                    <FormHelperText error id="helper-text-teacher-signup">
-                      {errors.teacher}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
                   <InputLabel htmlFor="subjects">Subjects</InputLabel>
                   <OutlinedInput
                     fullWidth

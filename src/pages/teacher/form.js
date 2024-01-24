@@ -1,5 +1,14 @@
 // material-ui
-import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
+import {
+  Button,
+  FormHelperText,
+  Grid,
+  InputLabel,
+  Select,
+  MenuItem,
+  OutlinedInput,
+  Stack,
+} from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -9,10 +18,25 @@ import axios from "axios";
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { base_url } from "utils/baseurl";
-
+import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
 // ============================|| TEACHER-ADDFORM ||============================ //
 
 const Teacher = () => {
+  const {
+    data: classes,
+    error,
+    isPending,
+  } = useQuery({
+    querykey: ['classData'],
+    queryFn: async () => await fetchData("class/get-all"),
+  });
+  if (error) {
+    console.log("error", error);
+  }
+  if (isPending) {
+    return <p>Laoding....</p>;
+  }
   return (
     <Formik
       initialValues={{
@@ -36,15 +60,16 @@ const Teacher = () => {
           .required("Phone Number is required"),
         subjects: Yup.array().of(
           Yup.object().shape({
-            classId: Yup.number(),
-            subjectId: Yup.string().max(255),
+            classId: Yup.string(),
+            subjectId: Yup.string().max(255).required("required"),
           })
         ),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
         try {
+          console.log(values)
           const response = await axios.post(`${base_url}/teacher/create`, values);
-          console.log(response.data.message)
+          // console.log(response.data.message);
           setStatus({ success: false });
           setSubmitting(false);
         } catch (err) {
@@ -146,34 +171,61 @@ const Teacher = () => {
                   name="subjects"
                   render={(arrayHelpers) => (
                     <div>
-                      {values.subjects.map((subject, index) => (
+                      {values?.subjects && values.subjects.map((subject, index) => (
                         <div key={index}>
                           <InputLabel htmlFor="classId">Class</InputLabel>
-                          <OutlinedInput
+                          <Select
                             fullWidth
-                            // error={Boolean(
-                            //   touched.subjects[index].classId && errors.subjects[index].classId
-                            // )}
                             id="classId"
                             value={values.subjects[index].classId}
                             name={`subjects.${index}.classId`}
-                            onBlur={handleBlur}
                             onChange={handleChange}
-                            inputProps={{}}
-                          />
-                          <InputLabel htmlFor="subjectId">Subject</InputLabel>
+                            onBlur={handleBlur}
+                            error={
+                              touched?.subjects &&
+                              errors?.subjects &&
+                              Boolean(
+                                touched?.subjects[index].classId && errors?.subjects[index].classId
+                              )
+                            }
+                          >
+                            {classes.map((classItem, index) => (
+                              <MenuItem key={index} value={classItem._id}>
+                                {classItem.className}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          {touched?.subjects &&
+                            touched?.subjects[index].classId &&
+                            errors?.subjects[index].classId && (
+                              <FormHelperText error id="helper-text-phone-signup">
+                                {errors?.subjects[index].classId}
+                              </FormHelperText>
+                            )}
+                          <InputLabel htmlFor="subjectId" sx={{ mt: "10px" }}>Subject</InputLabel>
                           <OutlinedInput
                             fullWidth
-                            // error={Boolean(
-                            //   touched.subjects[index].subjectId && errors.subjects[index].subjectId
-                            // )}
                             id="subjectId"
                             value={values.subjects[index].subjectId}
                             name={`subjects.${index}.subjectId`}
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            inputProps={{}}
+                            error={
+                              touched?.subjects &&
+                              errors?.subjects &&
+                              Boolean(
+                                touched?.subjects[index].subjectId &&
+                                  errors?.subjects[index].subjectId
+                              )
+                            }
                           />
+                          {touched?.subjects &&
+                            touched?.subjects[index].subjectId &&
+                            errors?.subjects[index].subjectId && (
+                              <FormHelperText error id="helper-text-phone-signup">
+                                {errors?.subjects[index].subjectId}
+                              </FormHelperText>
+                            )}
                           <Button type="button" onClick={() => arrayHelpers.remove(index)}>
                             Remove
                           </Button>

@@ -1,17 +1,8 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
 // material-ui
 import {
-  // Box,
   Button,
-  Divider,
-  // FormControl,
   FormHelperText,
   Grid,
-  Link,
-  // IconButton,
-  // InputAdornment,
   InputLabel,
   OutlinedInput,
   Stack,
@@ -24,33 +15,10 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-// import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const HomeWork = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
 
   return (
     <>

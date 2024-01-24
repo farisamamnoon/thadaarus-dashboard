@@ -4,46 +4,38 @@ import { useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
 
 function Teacher() {
-  const rows = [
-    {
-      _id: 1,
-      name: "Faris",
-      phone: "09485094",
-      class: "1",
-      classSubjects: "2 Arabic",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 2,
-      name: "Faris",
-      phone: "09485094",
-      class: "1",
-      classSubjects: "2 Arabic",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 3,
-      name: "Faris",
-      phone: "09485094",
-      class: "1",
-      classSubjects: "2 Arabic",
-      attendance: "78%",
-      fees: "90%",
-    },
-    {
-      _id: 4,
-      name: "Faris",
-      phone: "09485094",
-      class: "1",
-      classSubjects: "2 Arabic",
-      attendance: "78%",
-      fees: "90%",
-    },
-  ];
+  const {
+    data: teachers,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["teacherData"],
+    queryFn: async () => fetchData("teacher/get-all"),
+  });
+  if (error) {
+    console.log("error", error);
+  }
+
+  if (isPending) {
+    return <p>Laoding....</p>;
+  }
+
+  const rows = teachers;
+  //  [
+  //   {
+  //     _id: 1,
+  //     name: "Faris",
+  //     phone: "09485094",
+  //     class: "1",
+  //     classSubjects: "2 Arabic",
+  //     attendance: "78%",
+  //     fees: "90%",
+  //   },
+  // ];
 
   const columns = [
     {
@@ -59,11 +51,7 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.name}
             </Typography>
           </Box>
@@ -83,11 +71,7 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.phone}
             </Typography>
           </Box>
@@ -107,11 +91,7 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.class}
             </Typography>
           </Box>
@@ -131,13 +111,11 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.classSubjects}
-            </Typography>
+            {row.subjects.map((subject, index) => (
+              <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+                {`Subject: ${subject.subjectId}\tClass: ${subject.classId}`}
+              </Typography>
+            ))}
           </Box>
         );
       },
@@ -158,12 +136,7 @@ function Teacher() {
           title="Teachers"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add New Teacher
               </Button>
             </div>

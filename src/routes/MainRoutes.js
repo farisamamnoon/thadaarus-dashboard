@@ -125,6 +125,10 @@ const MainRoutes = {
       element: <StudentAdd />,
     },
     {
+      path: "student/edit/:id",
+      element: <StudentAdd />,
+    },
+    {
       path: "events",
       element: <Events />,
     },

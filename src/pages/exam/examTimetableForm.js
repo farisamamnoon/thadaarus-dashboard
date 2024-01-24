@@ -1,66 +1,36 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
 // material-ui
 import {
-  // Box,
   Button,
-  Divider,
-  // FormControl,
   FormHelperText,
   Grid,
-  Link,
-  // IconButton,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
 } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
-import { Formik } from "formik";
+import { Formik, FieldArray } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
-// assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import FormRepeater from "components/FormRepeater";
-
-// ============================|| FIREBASE - REGISTER ||============================ //
+// ============================|| THADAARUS-EXAM TIME TABLE FORM ||============================ //
 
 const Exam = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
 
   return (
     <>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
-          submit: null,
+          examName: '',
+          classId: '',
+          exams: [
+            {
+              date: '',
+              subjectId: ''
+            }
+          ]
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required("First Name is required"),
@@ -117,30 +87,72 @@ const Exam = () => {
               </Grid>
               <Grid item xs={6} >
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="class-signup">Class</InputLabel>
+                  <InputLabel htmlFor="classId">Class</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.class && errors.class)}
-                    id="class-signup"
-                    type="class"
-                    value={values.class}
-                    name="class"
+                    error={Boolean(touched.classId && errors.classId)}
+                    id="classId"
+                    value={values.classId}
+                    name="classId"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
                   />
-                  {touched.class && errors.class && (
-                    <FormHelperText error id="helper-text-class-signup">
-                      {errors.class}
+                  {touched.classId && errors.classId && (
+                    <FormHelperText error id="helper-text-classId">
+                      {errors.classId}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
               <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <FormRepeater type={['date', 'text']} label={['', 'Subject']}/>
-                </Stack>
-              </Grid>
+              <Stack spacing={1}>
+                <FieldArray
+                  name="exams"
+                  render={(arrayHelpers) => (
+                    <div>
+                      {values.exams.map((subject, index) => (
+                        <div key={index}>
+                          <InputLabel htmlFor="date">Date</InputLabel>
+                          <OutlinedInput
+                            fullWidth
+                            // error={Boolean(
+                            //   touched.exams[index].date && errors.exams[index].date
+                            // )}
+                            id="date"
+                            type='date'
+                            value={values.exams[index].date}
+                            name={`exams.${index}.date`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                          />
+                          <InputLabel htmlFor="subjectId">Subject</InputLabel>
+                          <OutlinedInput
+                            fullWidth
+                            // error={Boolean(
+                            //   touched.exams[index].subjectId && errors.exams[index].subjectId
+                            // )}
+                            id="subjectId"
+                            value={values.exams[index].subjectId}
+                            name={`exams.${index}.subjectId`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            inputProps={{}}
+                          />
+                          <Button type="button" onClick={() => arrayHelpers.remove(index)}>
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
+                      <Button type="button" onClick={() => arrayHelpers.push("")}>
+                        Add
+                      </Button>
+                    </div>
+                  )}
+                />
+              </Stack>
+            </Grid>
               <Grid item xs={12} sx={{mt: '10px'}}>
                 <AnimateButton>
                   <Button

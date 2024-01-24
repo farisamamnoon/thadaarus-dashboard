@@ -8,6 +8,7 @@ import {
   Stack,
   Select,
   MenuItem,
+  TextareaAutosize
 } from "@mui/material";
 
 // third party
@@ -16,18 +17,32 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
-// import { Select, Option } from '@mui/base';
 
 // assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
 import axios from "axios";
 import { base_url } from "utils/baseurl";
+import { useQuery } from "@tanstack/react-query";
+import { fetchData } from "utils/fetchData";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Student = () => {
+  const {
+    data: classes,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["classData"],
+    queryFn: async () => await fetchData("class/get-all"),
+  });
+  if (error) {
+    console.log("error", error);
+  }
+
+  if (isPending) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
       <Formik
@@ -46,23 +61,21 @@ const Student = () => {
         validationSchema={Yup.object().shape({
           name: Yup.string().max(255).required("Name is required"),
           dob: Yup.date().required("Date Of Birth is required"),
-          age: Yup.number().typeError('Age must be a number').required("Age is required"),
+          age: Yup.number().typeError("Age must be a number").required("Age is required"),
           address: Yup.string().max(255).required("Address is required"),
           group: Yup.string().max(255),
           phone: Yup.number().required("Phone Number is required"),
-          classId: Yup.number().positive('Please enter a valid class').required("Class is required"),
-          prevClass: Yup.number().positive('Please enter a valid class'),
+          classId: Yup.string(),
+          prevClass: Yup.number().positive("Please enter a valid class"),
           prevMadrasa: Yup.string(),
           remarks: Yup.string().max(255),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            const response = await axios.post(
-              `${base_url}/student/create`,
-              values
-            );
+          
+            const response = await axios.post(`${base_url}/student/create`, values);
             // console.log(response.data.message);
-            alert(response.message);
+            alert(response.data.message);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -73,22 +86,14 @@ const Student = () => {
           }
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="name">Name*</InputLabel>
                   <OutlinedInput
-                    id="name-login"
+                    id="name"
                     type="name"
                     value={values.name}
                     name="name"
@@ -190,11 +195,11 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
+                  <InputLabel htmlFor="phone">Phone Number</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.phone && errors.phone)}
-                    id="phone-signup"
+                    id="phone"
                     value={values.phone}
                     name="phone"
                     onBlur={handleBlur}
@@ -211,20 +216,18 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="classId">
-                    Applying for ClassId:
-                  </InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.classId && errors.classId)}
+                  <InputLabel htmlFor="classId">Class</InputLabel>
+                  <Select
                     id="classId"
-                    type="number"
-                    value={values.classId}
                     name="classId"
-                    onBlur={handleBlur}
+                    value={values.classId}
                     onChange={handleChange}
-                    inputProps={{}}
-                  />
+                    onBlur={handleBlur}
+                  >
+                    {classes.map((classItem, index) => (
+                      <MenuItem key={index} value={classItem._id}>{classItem.className}</MenuItem>
+                    ))}
+                  </Select>
                   {touched.classId && errors.classId && (
                     <FormHelperText error id="helper-text-classId-signup">
                       {errors.classId}
@@ -234,9 +237,7 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="prev-madrasa">
-                    Previous Madrasa
-                  </InputLabel>
+                  <InputLabel htmlFor="prev-madrasa">Previous Madrasa</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.prevMadrasa && errors.prevMadrasa)}
@@ -256,9 +257,7 @@ const Student = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="prev-class">
-                    Last Studied Class
-                  </InputLabel>
+                  <InputLabel htmlFor="prev-class">Last Studied Class</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.prevClass && errors.prevClass)}

@@ -4,6 +4,8 @@ import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useQuery } from "@tanstack/react-query";
+import { fetchData } from "utils/fetchData";
 
 function ManageFaq() {
   const buttonRef = useRef(null);
@@ -17,14 +19,25 @@ function ManageFaq() {
     pageSize: 15,
   });
 
-  // const [rows, setRows] = useState([]);
-
-  const rows = [
-    { _id: 1, class: "Class 1", batch: "2014-15", teacher: "Name" },
-    { _id: 2, class: "Class 2", batch: "2014-15", teacher: "Name" },
-    { _id: 3, class: "Class 3", batch: "2014-15", teacher: "Name" },
-    { _id: 4, class: "Class 4", batch: "2014-15", teacher: "Name" },
-  ];
+  const {
+    data: classes,
+    error,
+    isPending,
+  } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
+  if (error) {
+    console.log("Error");
+  }
+  if (isPending) {
+    return <p>Loading...</p>;
+  }
+  console.log(classes);
+  const rows = classes;
+  // [
+  //   { _id: 1, class: "Class 1", batch: "2014-15", teacher: "Name" },
+  //   { _id: 2, class: "Class 2", batch: "2014-15", teacher: "Name" },
+  //   { _id: 3, class: "Class 3", batch: "2014-15", teacher: "Name" },
+  //   { _id: 4, class: "Class 4", batch: "2014-15", teacher: "Name" },
+  // ];
   // const query = useDebounce(searchValue, 1000);
 
   // const fetchTableData = useCallback(
@@ -94,12 +107,8 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.class}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {row.className}
             </Typography>
           </Box>
         );
@@ -118,11 +127,7 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.batch}
             </Typography>
           </Box>
@@ -142,14 +147,28 @@ function ManageFaq() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.teacher}
             </Typography>
           </Box>
+        );
+      },
+    },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "fees",
+      headerName: "Fees",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+            {row.fees}
+          </Typography>
         );
       },
     },
@@ -165,12 +184,7 @@ function ManageFaq() {
         const { row } = params;
 
         return (
-          <Button
-            size="medium"
-            variant="contained"
-            component={Link}
-            to="/student"
-          >
+          <Button size="medium" variant="contained" component={Link} to="/student">
             View Students
           </Button>
         );
@@ -221,12 +235,7 @@ function ManageFaq() {
           title="Class List"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add Class
               </Button>
             </div>

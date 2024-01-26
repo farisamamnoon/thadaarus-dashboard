@@ -1,51 +1,67 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
 // material-ui
 import {
   Button,
-  Divider,
   FormHelperText,
   Grid,
-  Link,
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
-import { Formik } from "formik";
+import { Formik, FieldArray } from "formik";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
+import { base_url } from "utils/baseurl";
+import { fetchData } from "utils/fetchData";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Class = () => {
+  const {
+    data: teachers,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["classData"],
+    queryFn: async () => await fetchData("teacher/get-all"),
+  });
+  if(error){
+    return console.log('error')
+  }
+  if(isPending){
+    return <p>Laoding....</p>
+  }
   return (
     <>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
-          submit: null,
+          className: "",
+          division: "",
+          batch: "",
+          fees: "",
+          teacherId: "",
+          subjects: [""],
         }}
         validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
+          className: Yup.number().required("Class is required"),
+          division: Yup.string().max(255),
+          batch: Yup.number().required("Batch (year) is required"),
+          teacherId: Yup.string().required("Select a teacher"),
+          fees: Yup.number().required("Class Fees is required"),
+          subjects: Yup.array().required("Atleast one subject required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            console.log(values);
+            const response = await axios.post(`${base_url}/class/create`, values);
+            console.log(response.data.message);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -56,15 +72,7 @@ const Class = () => {
           }
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -109,66 +117,51 @@ const Class = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="subjects">Subjects</InputLabel>
-                  <OutlinedInput
+                  <InputLabel htmlFor="teacherId">Class Teacher</InputLabel>
+                  <Select
                     fullWidth
-                    error={Boolean(touched.subjects && errors.subjects)}
-                    id="subjects"
-                    value={values.subjects}
-                    name="subjects"
-                    onBlur={handleBlur}
+                    id="teacherId"
+                    value={values.teacherId}
+                    name="teacherId"
                     onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.subjects && errors.subjects && (
-                    <FormHelperText error id="helper-text-subjects-signup">
-                      {errors.subjects}
-                    </FormHelperText>
-                  )}
+                    onBlur={handleBlur}
+                    error={
+                      touched.teacherId &&
+                      errors.teacherId &&
+                      Boolean(touched.teacherId && errors.teacherId)
+                    }
+                  >
+                    {teachers.map((teacher, index) => (
+                      <MenuItem key={index} value={teacher._id}>
+                        {teacher.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </Stack>
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="batch-start">Batch Start</InputLabel>
+                  <InputLabel htmlFor="batch">Batch Start</InputLabel>
                   <OutlinedInput
                     fullWidth
-                    error={Boolean(touched.batchStart && errors.batchStart)}
-                    id="batch-start"
-                    value={values.batchStart}
-                    name="batchStart"
+                    error={Boolean(touched.batch && errors.batch)}
+                    id="batch"
+                    value={values.batch}
+                    name="batch"
+                    type="number"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     placeholder="2019"
                     inputProps={{}}
                   />
-                  {touched.batchStart && errors.batchStart && (
-                    <FormHelperText error id="helper-text-batchStart-signup">
-                      {errors.batchStart}
+                  {touched.batch && errors.batch && (
+                    <FormHelperText error id="helper-text-batch-signup">
+                      {errors.batch}
                     </FormHelperText>
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="batch-end">Batch End</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.batchEnd && errors.batchEnd)}
-                    id="batch-end"
-                    value={values.batchEnd}
-                    name="batchEnd"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="2020"
-                    inputProps={{}}
-                  />
-                  {touched.batchEnd && errors.batchEnd && (
-                    <FormHelperText error id="helper-text-batchEnd-signup">
-                      {errors.batchEnd}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
+
               <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="fees">Fees</InputLabel>
@@ -178,6 +171,7 @@ const Class = () => {
                     id="fees"
                     value={values.fees}
                     name="fees"
+                    type="number"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     inputProps={{}}
@@ -187,6 +181,51 @@ const Class = () => {
                       {errors.fees}
                     </FormHelperText>
                   )}
+                </Stack>
+              </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1} sx={{mt: '8px'}}>
+                  <FieldArray
+                    name="subjects"
+                    render={(arrayHelpers) => (
+                      <div>
+                        {values.subjects &&
+                          values.subjects.map((subject, index) => (
+                            <div key={index}>
+                              <InputLabel htmlFor={`subjects.${index}`}>Subject</InputLabel>
+                              <OutlinedInput
+                                fullWidth
+                                id={`subjects.${index}`}
+                                value={values.subjects[index]}
+                                name={`subjects.${index}`}
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                // error={
+                                //   touched.subjects[index] &&
+                                //   errors.subjects[index] &&
+                                //   Boolean(
+                                //     touched.subjects[index] &&
+                                //       errors.subjects[index]
+                                //   )
+                                // }
+                              />
+                              {/* {touched.subjects[index] &&
+                              errors.subjects[index] && (
+                                <FormHelperText error id="helper-text-phone-signup">
+                                  {errors.subjects[index]}
+                                </FormHelperText>
+                              )} */}
+                              <Button type="button" onClick={() => arrayHelpers.remove(index)}>
+                                Remove
+                              </Button>
+                            </div>
+                          ))}
+                        <Button type="button" onClick={() => arrayHelpers.push("")}>
+                          Add
+                        </Button>
+                      </div>
+                    )}
+                  />
                 </Stack>
               </Grid>
               <Grid item xs={12}>

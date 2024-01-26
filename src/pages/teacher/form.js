@@ -12,7 +12,7 @@ import {
 
 // third party
 import * as Yup from "yup";
-import { Formik, Field, FieldArray } from "formik";
+import { Formik, FieldArray } from "formik";
 import axios from "axios";
 
 // project import
@@ -28,7 +28,7 @@ const Teacher = () => {
     error,
     isPending,
   } = useQuery({
-    querykey: ['classData'],
+    querykey: ["classData"],
     queryFn: async () => await fetchData("class/get-all"),
   });
   if (error) {
@@ -50,26 +50,28 @@ const Teacher = () => {
             subjectId: "",
           },
         ],
+        submit: null,
       }}
-      validationSchema={Yup.object().shape({
-        name: Yup.string().max(255).required("Name is required"),
-        age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
-        email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-        phone: Yup.number()
-          .typeError("Enter a valid phone number")
-          .required("Phone Number is required"),
-        subjects: Yup.array().of(
-          Yup.object().shape({
-            classId: Yup.string(),
-            subjectId: Yup.string().max(255).required("required"),
-          })
-        ),
-      })}
-      onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+      // validationSchema={Yup.object().shape({
+      //   name: Yup.string().max(255).required("Name is required"),
+      //   age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
+      //   email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
+      //   phone: Yup.number()
+      //     .typeError("Enter a valid phone number")
+      //     .required("Phone Number is required"),
+      //   subjects: Yup.array().of(
+      //     Yup.object().shape({
+      //       classId: Yup.string().required,
+      //       subjectId: Yup.string().max(255).required("required"),
+      //     })
+      //   ),
+      // })}
+      onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
         try {
-          console.log(values)
           const response = await axios.post(`${base_url}/teacher/create`, values);
           // console.log(response.data.message);
+          setFieldValue('success', response.data.message, false)
+          console.log(values.success);
           setStatus({ success: false });
           setSubmitting(false);
         } catch (err) {
@@ -171,67 +173,71 @@ const Teacher = () => {
                   name="subjects"
                   render={(arrayHelpers) => (
                     <div>
-                      {values?.subjects && values.subjects.map((subject, index) => (
-                        <div key={index}>
-                          <InputLabel htmlFor="classId">Class</InputLabel>
-                          <Select
-                            fullWidth
-                            id="classId"
-                            value={values.subjects[index].classId}
-                            name={`subjects.${index}.classId`}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            error={
-                              touched?.subjects &&
-                              errors?.subjects &&
-                              Boolean(
-                                touched?.subjects[index].classId && errors?.subjects[index].classId
-                              )
-                            }
-                          >
-                            {classes.map((classItem, index) => (
-                              <MenuItem key={index} value={classItem._id}>
-                                {classItem.className}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {touched?.subjects &&
-                            touched?.subjects[index].classId &&
-                            errors?.subjects[index].classId && (
-                              <FormHelperText error id="helper-text-phone-signup">
-                                {errors?.subjects[index].classId}
-                              </FormHelperText>
-                            )}
-                          <InputLabel htmlFor="subjectId" sx={{ mt: "10px" }}>Subject</InputLabel>
-                          <OutlinedInput
-                            fullWidth
-                            id="subjectId"
-                            value={values.subjects[index].subjectId}
-                            name={`subjects.${index}.subjectId`}
-                            onBlur={handleBlur}
-                            onChange={handleChange}
-                            error={
-                              touched?.subjects &&
-                              errors?.subjects &&
-                              Boolean(
-                                touched?.subjects[index].subjectId &&
-                                  errors?.subjects[index].subjectId
-                              )
-                            }
-                          />
-                          {touched?.subjects &&
-                            touched?.subjects[index].subjectId &&
-                            errors?.subjects[index].subjectId && (
-                              <FormHelperText error id="helper-text-phone-signup">
-                                {errors?.subjects[index].subjectId}
-                              </FormHelperText>
-                            )}
-                          <Button type="button" onClick={() => arrayHelpers.remove(index)}>
-                            Remove
-                          </Button>
-                        </div>
-                      ))}
-                      <Button type="button" onClick={() => arrayHelpers.push("")}>
+                      {values.subjects &&
+                        values.subjects.map((subject, index) => (
+                          <div key={index}>
+                            <InputLabel htmlFor={`subjects.${index}.classId`}>Class</InputLabel>
+                            <Select
+                              fullWidth
+                              id={`subjects.${index}.classId`}
+                              value={values.subjects[index].classId}
+                              name={`subjects.${index}.classId`}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // error={
+                              //   touched.subjects[index].classId &&
+                              //   errors.subjects[index].classId &&
+                              //   Boolean(
+                              //     touched.subjects[index].classId && errors?.subjects[index]?.classId
+                              //   )
+                              // }
+                            >
+                              {classes.map((classItem, index) => (
+                                <MenuItem key={index} value={classItem._id}>
+                                  {classItem.className}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {/* {touched.subjects[index].classId &&
+                              errors.subjects[index].classId && (
+                                <FormHelperText error id="helper-text-phone-signup">
+                                  {errors.subjects[index].classId}
+                                </FormHelperText>
+                              )} */}
+                            <InputLabel htmlFor={`subjects.${index}.subjectId`} sx={{ mt: "10px" }}>
+                              Subject
+                            </InputLabel>
+                            <OutlinedInput
+                              fullWidth
+                              id={`subjects.${index}.subjectId`}
+                              value={values.subjects[index].subjectId}
+                              name={`subjects.${index}.subjectId`}
+                              onBlur={handleBlur}
+                              onChange={handleChange}
+                              // error={
+                              //   touched.subjects[index].subjectId &&
+                              //   errors.subjects[index].subjectId &&
+                              //   Boolean(
+                              //     touched.subjects[index].subjectId &&
+                              //       errors.subjects[index].subjectId
+                              //   )
+                              // }
+                            />
+                            {/* {touched.subjects[index].subjectId &&
+                              errors.subjects[index].subjectId && (
+                                <FormHelperText error id="helper-text-phone-signup">
+                                  {errors.subjects[index].subjectId}
+                                </FormHelperText>
+                              )} */}
+                            <Button type="button" onClick={() => arrayHelpers.remove(index)}>
+                              Remove
+                            </Button>
+                          </div>
+                        ))}
+                      <Button
+                        type="button"
+                        onClick={() => arrayHelpers.push({ classId: "", subjectId: "" })}
+                      >
                         Add
                       </Button>
                     </div>
@@ -239,6 +245,11 @@ const Teacher = () => {
                 />
               </Stack>
             </Grid>
+            {values.submit && (
+              <Grid item xs={12}>
+                <FormHelperText error>{values.submit}</FormHelperText>
+              </Grid>
+            )}
             <Grid item xs={12}>
               <AnimateButton>
                 <Button

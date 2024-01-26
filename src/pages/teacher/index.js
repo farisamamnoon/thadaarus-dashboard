@@ -23,7 +23,6 @@ function Teacher() {
   if (isPending) {
     return <p>Laoding....</p>;
   }
-
   const rows = teachers;
   //  [
   //   {
@@ -92,34 +91,34 @@ function Teacher() {
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.class}
+              {row.className}
             </Typography>
           </Box>
         );
       },
     },
-    {
-      flex: 0.275,
-      minWidth: 290,
-      field: "group",
-      headerName: "Class Subjects",
-      sortable: false,
-      disableColumnMenu: true,
+    // {
+    //   flex: 0.275,
+    //   minWidth: 290,
+    //   field: "group",
+    //   headerName: "Class Subjects",
+    //   sortable: false,
+    //   disableColumnMenu: true,
 
-      renderCell: (params) => {
-        const { row } = params;
+    //   renderCell: (params) => {
+    //     const { row } = params;
 
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            {row.subjects.map((subject, index) => (
-              <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-                {`Subject: ${subject.subjectId}\tClass: ${subject.classId}`}
-              </Typography>
-            ))}
-          </Box>
-        );
-      },
-    },
+    //     return (
+    //       <Box sx={{ display: "flex", flexDirection: "column" }}>
+    //         {row.subjects.map((subject, index) => (
+    //           <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+    //             {`Subject: ${subject.subjectId}\tClass: ${subject.classId}`}
+    //           </Typography>
+    //         ))}
+    //       </Box>
+    //     );
+    //   },
+    // },
   ];
 
   return (
@@ -151,7 +150,7 @@ function Teacher() {
           // pagination
           sortingMode="server"
           // paginationMode="server"
-          pageSizeOptions={[2]}
+          // pageSizeOptions={[2]}
           // paginationModel={paginationModel}
           // onPaginationModelChange={setPaginationModel}
           slotProps={{

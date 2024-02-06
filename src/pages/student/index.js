@@ -1,12 +1,19 @@
-import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardHeader, Button } from "@mui/material";
+//react imports
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+
+//material ui imports
+import { Card, CardHeader, Button } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
-import { base_url } from "utils/baseurl";
-import { fetchData } from "utils/fetchData";
+
+//third party 
 import { useQuery } from "@tanstack/react-query";
+
+//project imports
+import { addFees } from "utils/addFees";
+import { fetchData } from "utils/fetchData";
 
 function Student() {
   const {
@@ -17,25 +24,15 @@ function Student() {
     querykey: ["studentData"],
     queryFn: async () => fetchData("student/get-all"),
   });
+
   if (error) {
     console.log("error", error);
   }
-
   if (isPending) {
     return <p>Laoding</p>;
   }
-
+  console.log(students)
   const rows = students;
-  //   {
-  //     _id: 1,
-  //     name: "Faris",
-  //     phone: "09485094",
-  //     address: "Sara Manzil po muzhappilangad, edakkad, 670662",
-  //     group: "زهرة",
-  //     attendance: "78%",
-  //     fees: "90%",
-  //   },
-
 
   const columns = [
     {
@@ -119,8 +116,8 @@ function Student() {
       },
     },
     {
-      flex: 0.1,
-      // minWidth: 290,
+      flex: 0.275,
+      minWidth: 290,
       field: "attendance",
       headerName: "Attendance",
       sortable: false,
@@ -133,26 +130,6 @@ function Student() {
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.attendance}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 0.1,
-      // minWidth: 290,
-      field: "fees",
-      headerName: "Fees",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.fees}
             </Typography>
           </Box>
         );

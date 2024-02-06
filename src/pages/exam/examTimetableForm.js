@@ -34,14 +34,14 @@ const Exam = () => {
   //fetching class data
   const {
     data: classes,
-    error,
-    isPending,
+    error: classError,
+    isPending: classIsPending,
   } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
 
   const {
     data: subjectsData,
     error: subjectsError,
-    isFetching: subjectsIsFetching,
+    isPending: subjectsIsPending,
   } = useQuery({
     queryKey: ["subjectData", selectedClass],
     queryFn: () => {
@@ -51,23 +51,18 @@ const Exam = () => {
       return null;
     },
     enabled: !!selectedClass,
-    // onSuccess: (subjectsData) => {
-    //   setSubjects(subjectsData); // Update subjects state with the fetched data
-    //   console.log(subjectsData);
-    // },
   });
 
   useEffect(() => {
     setSubjects(subjectsData);
   }, [subjectsData]);
 
-  if (error) {
+  if (classError || subjectsError) {
     console.log("error");
   }
-  if (isPending) {
+  if (classIsPending) {
     return <p>Loading.....</p>;
   }
-
   return (
     <>
       <Formik
@@ -117,7 +112,7 @@ const Exam = () => {
                     name="examName"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="John"
+                    placeholder="First Term Exam"
                     fullWidth
                     error={Boolean(touched.examName && errors.examName)}
                   />
@@ -188,11 +183,13 @@ const Exam = () => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                             >
-                              {subjects && subjects.subjects.map((subject, index) => (
-                                <MenuItem key={index} value={subject}>
-                                  {subject}
-                                </MenuItem>
-                              ))}
+                              {subjects &&
+                                subjects.subjects &&
+                                subjects.subjects.map((subject, index) => (
+                                  <MenuItem key={index} value={subject}>
+                                    {subject}
+                                  </MenuItem>
+                                ))}
                             </Select>
                             {touched.classId && errors.classId && (
                               <FormHelperText error id="helper-text-classId-signup">
@@ -204,7 +201,10 @@ const Exam = () => {
                             </Button>
                           </div>
                         ))}
-                        <Button type="button" onClick={() => arrayHelpers.push({date: '', subjectId: ''})}>
+                        <Button
+                          type="button"
+                          onClick={() => arrayHelpers.push({ date: "", subjectId: "" })}
+                        >
                           Add
                         </Button>
                       </div>

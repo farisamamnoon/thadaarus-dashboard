@@ -42,6 +42,7 @@ const Teacher = () => {
       initialValues={{
         name: "",
         age: "",
+        classId: "",
         email: "",
         phone: "",
         subjects: [
@@ -52,25 +53,26 @@ const Teacher = () => {
         ],
         submit: null,
       }}
-      // validationSchema={Yup.object().shape({
-      //   name: Yup.string().max(255).required("Name is required"),
-      //   age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
-      //   email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-      //   phone: Yup.number()
-      //     .typeError("Enter a valid phone number")
-      //     .required("Phone Number is required"),
-      //   subjects: Yup.array().of(
-      //     Yup.object().shape({
-      //       classId: Yup.string().required,
-      //       subjectId: Yup.string().max(255).required("required"),
-      //     })
-      //   ),
-      // })}
+      validationSchema={Yup.object().shape({
+        name: Yup.string().max(255).required("Name is required"),
+        age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
+        email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
+        classId: Yup.string().required("Assign a class for the teacher"),
+        phone: Yup.number()
+          .typeError("Enter a valid phone number")
+          .required("Phone Number is required"),
+        subjects: Yup.array().of(
+          Yup.object().shape({
+            classId: Yup.string(),
+            subjectId: Yup.string(),
+          })
+        ),
+      })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
         try {
           const response = await axios.post(`${base_url}/teacher/create`, values);
           // console.log(response.data.message);
-          setFieldValue('success', response.data.message, false)
+          setFieldValue("success", response.data.message, false);
           console.log(values.success);
           setStatus({ success: false });
           setSubmitting(false);
@@ -122,6 +124,32 @@ const Teacher = () => {
                     {errors.age}
                   </FormHelperText>
                 )}
+              </Stack>
+            </Grid>
+            <Grid item xs={6}>
+              <Stack spacing={1}>
+                <InputLabel htmlFor="classId">Class</InputLabel>
+                <Select
+                  fullWidth
+                  id="classId"
+                  value={values.classId}
+                  name="classId"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  // error={
+                  //   touched.subjects[index].classId &&
+                  //   errors.subjects[index].classId &&
+                  //   Boolean(
+                  //     touched.subjects[index].classId && errors?.subjects[index]?.classId
+                  //   )
+                  // }
+                >
+                  {classes.map((classItem, index) => (
+                    <MenuItem key={index} value={classItem._id}>
+                      {classItem.className}
+                    </MenuItem>
+                  ))}
+                </Select>
               </Stack>
             </Grid>
             <Grid item xs={6}>

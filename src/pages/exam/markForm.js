@@ -15,6 +15,7 @@ import {
   OutlinedInput,
   Stack,
   Typography,
+  TableSortLabel,
 } from "@mui/material";
 
 // third party
@@ -65,10 +66,7 @@ const Exam = () => {
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required("First Name is required"),
           lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
+          email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -83,15 +81,7 @@ const Exam = () => {
           }
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={6}>
@@ -138,11 +128,16 @@ const Exam = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <FormRepeater
+                  {/* <FormRepeater
                     type={["text", "text"]}
                     label={["Subject", "Marks"]}
-                  />
+                  /> */}
                 </Stack>
+              </Grid>
+              <Grid item xs={12} sx={{ mt: "10px" }}>
+                <AnimateButton>
+                  <TableSortLabel>Class</TableSortLabel>
+                </AnimateButton>
               </Grid>
               <Grid item xs={12} sx={{ mt: "10px" }}>
                 <AnimateButton>

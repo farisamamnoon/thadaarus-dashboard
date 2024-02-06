@@ -1,122 +1,82 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import {
-  Card,
-  IconButton,
-  CardHeader,
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-} from "@mui/material";
-import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
+//react imports
+import { useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
+
+//ui imports
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Card, CardHeader, Button, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { toEditorSettings } from "../../../node_modules/typescript/lib/typescript";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+//third party
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+//utils
+import { fetchData } from "utils/fetchData";
+import { formatDate } from "utils/formatDate";
+import { base_url } from "utils/baseurl";
 
 function Exam() {
   const buttonRef = useRef(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [dialogId, setDialogId] = useState("");
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [editDialog, setEditDialog] = useState(false);
+  const [editId, setEditId] = useState("");
 
-  const [total, setTotal] = useState(0);
-  const [searchValue, setSearchValue] = useState("");
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 15,
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const handleDeleteOpen = (rowData) => {
+    setDeleteDialog(true);
+    setDeleteId(rowData._id);
+  };
+  const handleDeleteClose = (rowData) => {
+    setDeleteDialog(false);
+    setDeleteId(rowData._id);
+  };
+
+  const handleEditOpen = (rowData) => {
+    setEditDialog(true);
+    setEditId(rowData._id);
+  };
+  const handleEditClose = (rowData) => {
+    setEditDialog(false);
+    setEditId(rowData._id);
+  };
+  //api call
+  const deleteHomework = async () => {
+    const response = await axios.delete(`${base_url}/homework/${deleteId}`);
+    window.location.reload();
+    setDeleteDialog(false);
+  };
+
+  const {
+    data: homeworks,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["homeworkData"],
+    queryFn: async () => await fetchData("homework/get-all"),
   });
 
-  // const [rows, setRows] = useState([]);
-
-  const rows = [
-    {
-      _id: 1,
-      class: "Class 1",
-      date: "21/6/2011",
-      desc: "Name",
-      subject: "Arabic",
-      students: "Everyone",
-    },
-    {
-      _id: 2,
-      class: "Class 1",
-      date: "21/6/2011",
-      desc: "Name",
-      subject: "Arabic",
-      students: "Everyone",
-    },
-    {
-      _id: 3,
-      class: "Class 1",
-      date: "21/6/2011",
-      desc: "Name",
-      subject: "Arabic",
-      students: "Everyone",
-    },
-    {
-      _id: 4,
-      class: "Class 1",
-      date: "21/6/2011",
-      desc: "Name",
-      subject: "Arabic",
-      students: "Everyone",
-    },
-  ];
-  // const query = useDebounce(searchValue, 1000);
-
-  // const fetchTableData = useCallback(
-  //   async (sort, q) => {
-  //     await dataTableApi
-  //       .getFaqDataTable({ query: { sort, q, page: paginationModel.page + 1 } })
-  //       .then((res) => {
-  //         setTotal(res.data.data.totalCount);
-  //         setRows(res.data.data.faqs);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [paginationModel]
-  // );
-
-  // useEffect(() => {
-  //   fetchTableData("asc", query);
-  // }, [fetchTableData, query]);
-
-  const handleSearch = (value) => {
-    setSearchValue(value);
-  };
-
-  const deleteFaq = (id) => {
-    setOpenDeleteDialog(true);
-    setDialogId(id);
-  };
-
-  // const deleteFaqData = async (id) => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.disabled = true;
-  //   }
-
-  //   try {
-  //     const response = await faqApi.deleteFaq(id, reqAuthHeader());
-  //     toast.success(response?.data?.message);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("An error occurred.");
-  //       }
-  //     } else {
-  //       toast.error("An unexpected error occurred.");
-  //     }
-  //     if (buttonRef.current) {
-  //       buttonRef.current.disabled = false;
-  //     }
-  //   } finally {
-  //     setOpenDeleteDialog(false);
-  //   }
-  // };
+  if (error) {
+    console.log("There has been an error");
+  }
+  if (isPending) {
+    return <p>Loading...</p>;
+  }
+  const rows = homeworks;
 
   const columns = [
     {
@@ -132,12 +92,8 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.date}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {formatDate(row.date)}
             </Typography>
           </Box>
         );
@@ -147,7 +103,7 @@ function Exam() {
       flex: 1,
       minWidth: 290,
       field: "homework",
-      headerName: "HomeWork",
+      headerName: "Home Work",
       sortable: false,
       disableColumnMenu: true,
 
@@ -156,11 +112,7 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography wrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.desc}
             </Typography>
           </Box>
@@ -180,12 +132,8 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.class}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {row.classId.className}
             </Typography>
           </Box>
         );
@@ -204,7 +152,7 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography>{row.subject}</Typography>
+            <Typography>{row.subjectId}</Typography>
           </Box>
         );
       },
@@ -222,13 +170,43 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.students}
             </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "actions",
+      headerName: "",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "row" }} gap={2}>
+            <Button variant="contained">Add Students</Button>
+            <Button
+              variant="outlined"
+              startIcon={<EditOutlined />}
+              component={Link}
+              to={`edit/${row._id}`}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              startIcon={<DeleteOutlined />}
+              onClick={() => handleDeleteOpen(row)}
+            >
+              Delete
+            </Button>
           </Box>
         );
       },
@@ -249,12 +227,7 @@ function Exam() {
           title="Home Works"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add HomeWork
               </Button>
             </div>
@@ -263,15 +236,15 @@ function Exam() {
         <DataGrid
           autoHeight
           rows={rows || []}
-          rowCount={total}
+          // rowCount={total}
           columns={columns}
           getRowId={(row) => row._id}
           pagination
           sortingMode="server"
           paginationMode="server"
           pageSizeOptions={[2]}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
+          // paginationModel={paginationModel}
+          // onPaginationModelChange={setPaginationModel}
           slotProps={{
             baseButton: {
               size: "medium",
@@ -282,24 +255,48 @@ function Exam() {
               printOptions: { disableToolbarButton: true },
               showQuickFilter: true,
               quickFilterProps: { debounceMs: 1000 },
-              value: searchValue,
-              clearSearch: () => handleSearch(""),
-              onChange: (event) => handleSearch(event.target.value),
+              // value: searchValue,
+              // clearSearch: () => handleSearch(""),
+              // onChange: (event) => handleSearch(event.target.value),
             },
           }}
+          handleDeleteOpen={handleDeleteOpen}
         />
       </Card>
-
-      {/* {openDeleteDialog && (
-        <DeleteConfirmationDialog
-          id={dialogId}
-          buttonRef={buttonRef}
-          name=""
-          open={true}
-          setOpen={setOpenDeleteDialog}
-          // deleteFunction={deleteFaqData}
-        />
-      )} */}
+      <Modal
+        open={deleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Delete Homework
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to delete this homework?
+          </Typography>
+          <Button onClick={deleteHomework}>Yes</Button>
+          <Button onClick={handleDeleteClose}>No</Button>
+        </Box>
+      </Modal>
+      <Modal
+        open={editDialog}
+        onClose={handleEditClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Edit Homework
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to delete this homework?
+          </Typography>
+          <Button onClick={deleteHomework}>Yes</Button>
+          <Button onClick={handleEditClose}>No</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

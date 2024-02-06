@@ -1,5 +1,6 @@
 //react imports
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 // material-ui
 import {
@@ -23,20 +24,23 @@ import axios from 'axios';
 import AnimateButton from "components/@extended/AnimateButton";
 import { fetchData } from "utils/fetchData";
 import { base_url } from "utils/baseurl";
+import { formatDate } from "utils/formatDate";
 
 // assets
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const HomeWork = () => {
+const HomeWorkEdit = () => {
   const [subjects, setSubjects] = useState({});
   const [selectedClass, setSelectedClass] = useState("");
+  const id = useParams().id;
 
+  //api s
   const {
     data: classes,
     error: classError,
     isPending: classIsPending,
-  } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
+  } = useQuery({ queryKey: ["classData"], queryFn: async () => await fetchData("class/get-all") });
 
   const {
     data: subjectsData,
@@ -44,14 +48,17 @@ const HomeWork = () => {
     isPending: subjectsIsPending,
   } = useQuery({
     queryKey: ["subjectData", selectedClass],
-    queryFn: () => {
+    queryFn: async () => {
       if (selectedClass) {
-        return fetchData(`class/${selectedClass}/get-subjects`);
+        return await fetchData(`class/${selectedClass}/get-subjects`);
       }
       return null;
     },
     enabled: !!selectedClass,
   });
+
+  const { data: formData, error: formError, isPending: formIsPending } = useQuery({queryKey: ['formData'], queryFn: async () => await fetchData(`homework/get/${id}`)});
+  console.log(formData);
 
   useEffect(() => {
     setSubjects(subjectsData);
@@ -68,10 +75,10 @@ const HomeWork = () => {
     <>
       <Formik
         initialValues={{
-          subjectId: "",
-          date: "",
-          classId: "",
-          desc: "",
+          subjectId: "",//formData.subjectId,
+          date: "",//formData.date,
+          classId: formData.classId._id,
+          desc: formData.desc,
           submit: null,
         }}        
         validationSchema={Yup.object().shape({
@@ -216,4 +223,4 @@ const HomeWork = () => {
   );
 };
 
-export default HomeWork;
+export default HomeWorkEdit;

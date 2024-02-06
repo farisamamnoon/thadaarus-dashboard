@@ -1,9 +1,16 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Card, IconButton, CardHeader, Button } from "@mui/material";
+//react
 import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
+
+//material ui
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+
+//Third Party
+import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
 
 function Exam() {
   const buttonRef = useRef(null);
@@ -19,29 +26,19 @@ function Exam() {
 
   // const [rows, setRows] = useState([]);
 
-  const rows = [
-    { _id: 1, date: "28/12/2009", subject: "Arabic" },
-    { _id: 2, date: "28/12/2009", subject: "Arabic" },
-    { _id: 3, date: "28/12/2009", subject: "Arabic" },
-  ];
+  // const rows = [
+  //   { _id: 1, date: "28/12/2009", subject: "Arabic" },
+  //   { _id: 2, date: "28/12/2009", subject: "Arabic" },
+  //   { _id: 3, date: "28/12/2009", subject: "Arabic" },
+  // ];
   // const query = useDebounce(searchValue, 1000);
 
-  // const fetchTableData = useCallback(
-  //   async (sort, q) => {
-  //     await dataTableApi
-  //       .getFaqDataTable({ query: { sort, q, page: paginationModel.page + 1 } })
-  //       .then((res) => {
-  //         setTotal(res.data.data.totalCount);
-  //         setRows(res.data.data.faqs);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [paginationModel]
-  // );
-
-  // useEffect(() => {
-  //   fetchTableData("asc", query);
-  // }, [fetchTableData, query]);
+  const { data: exams, error, isPending} = useQuery({
+    queryKey: ['examsData'],
+    queryFn: async () => fetchData("exam/get-all")
+  })
+  console.log(exams);
+  const rows = exams;
 
   const handleSearch = (value) => {
     setSearchValue(value);
@@ -52,39 +49,12 @@ function Exam() {
     setDialogId(id);
   };
 
-  // const deleteFaqData = async (id) => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.disabled = true;
-  //   }
-
-  //   try {
-  //     const response = await faqApi.deleteFaq(id, reqAuthHeader());
-  //     toast.success(response?.data?.message);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("An error occurred.");
-  //       }
-  //     } else {
-  //       toast.error("An unexpected error occurred.");
-  //     }
-  //     if (buttonRef.current) {
-  //       buttonRef.current.disabled = false;
-  //     }
-  //   } finally {
-  //     setOpenDeleteDialog(false);
-  //   }
-  // };
-
   const columns = [
     {
       flex: 1,
-      minWidth: 290,
-      field: "date",
-      headerName: "Date",
+      // minWidth: 290,
+      field: "examName",
+      headerName: "Exam Name",
       sortable: false,
       disableColumnMenu: true,
 
@@ -98,7 +68,7 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.date}
+              {row.examName}
             </Typography>
           </Box>
         );
@@ -106,9 +76,9 @@ function Exam() {
     },
     {
       flex: 1,
-      minWidth: 290,
-      field: "subject",
-      headerName: "Subject",
+      // minWidth: 290,
+      field: "classId",
+      headerName: "Class",
       sortable: false,
       disableColumnMenu: true,
 
@@ -122,7 +92,7 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.subject}
+              {row.classId}
             </Typography>
           </Box>
         );
@@ -130,9 +100,9 @@ function Exam() {
     },
     {
       flex: 1,
-      minWidth: 290,
-      field: "subject",
-      headerName: "Subject",
+      // minWidth: 290,
+      field: "actions",
+      headerName: "",
       sortable: false,
       disableColumnMenu: true,
 
@@ -140,15 +110,7 @@ function Exam() {
         const { row } = params;
 
         return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.subject}
-            </Typography>
-          </Box>
+          <Button>View Time Table</Button>
         );
       },
     },

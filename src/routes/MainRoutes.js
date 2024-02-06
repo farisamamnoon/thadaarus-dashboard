@@ -32,6 +32,7 @@ const ExamMarksAdd = Loadable(lazy(() => import("pages/exam/markForm")));
 const Color = Loadable(lazy(() => import("pages/components-overview/Color")));
 const HomeWork = Loadable(lazy(() => import("pages/homework")));
 const HomeWorkAdd = Loadable(lazy(() => import("pages/homework/form")));
+const HomeWorkEdit = Loadable(lazy(() => import("pages/homework/editForm")));
 const Fees = Loadable(lazy(() => import("pages/fees")));
 const FeesAdd = Loadable(lazy(() => import("pages/fees/form")));
 const Test = Loadable(lazy(() => import("pages/testForm")));
@@ -82,6 +83,10 @@ const MainRoutes = {
     {
       path: "homework/add",
       element: <HomeWorkAdd />,
+    },
+    {
+      path: "homework/edit/:id",
+      element: <HomeWorkEdit />,
     },
     {
       path: "exam",

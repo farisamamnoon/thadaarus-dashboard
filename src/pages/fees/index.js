@@ -1,12 +1,21 @@
+//react imports
+import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+
+//material ui imports
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Card, IconButton, CardHeader, Button } from "@mui/material";
-import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
-import { Link } from 'react-router-dom';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
+//third party
+import { useQuery } from "@tanstack/react-query";
 
-function Exam() {
+//project imports
+import { fetchData } from "utils/fetchData";
+import { addFees } from "utils/addFees";
+
+function Fees() {
   const buttonRef = useRef(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [dialogId, setDialogId] = useState("");
@@ -18,68 +27,26 @@ function Exam() {
     pageSize: 15,
   });
 
-  // const [rows, setRows] = useState([]);
+  const getBalance = (classTotal, paid, discount) => {
+    return ( classTotal - (paid + discount) )
+  }
 
-  const rows = [
-    { _id: 1, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 2, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 3, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-    { _id: 4, class: "Class 1", name: 'Faris', discount: "1000", fees: '2300' },
-  ];
-  // const query = useDebounce(searchValue, 1000);
+  const {
+    data: studentData,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["studentData"],
+    queryFn: async () => await fetchData(`fees/get-all`),
+  });
+  if (error) {
+    console.log(error);
+  }
+  if (isPending) {
+    return <p>Loading...</p>;
+  }
 
-  // const fetchTableData = useCallback(
-  //   async (sort, q) => {
-  //     await dataTableApi
-  //       .getFaqDataTable({ query: { sort, q, page: paginationModel.page + 1 } })
-  //       .then((res) => {
-  //         setTotal(res.data.data.totalCount);
-  //         setRows(res.data.data.faqs);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [paginationModel]
-  // );
-
-  // useEffect(() => {
-  //   fetchTableData("asc", query);
-  // }, [fetchTableData, query]);
-
-  const handleSearch = (value) => {
-    setSearchValue(value);
-  };
-
-  const deleteFaq = (id) => {
-    setOpenDeleteDialog(true);
-    setDialogId(id);
-  };
-
-  // const deleteFaqData = async (id) => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.disabled = true;
-  //   }
-
-  //   try {
-  //     const response = await faqApi.deleteFaq(id, reqAuthHeader());
-  //     toast.success(response?.data?.message);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("An error occurred.");
-  //       }
-  //     } else {
-  //       toast.error("An unexpected error occurred.");
-  //     }
-  //     if (buttonRef.current) {
-  //       buttonRef.current.disabled = false;
-  //     }
-  //   } finally {
-  //     setOpenDeleteDialog(false);
-  //   }
-  // };
+  const rows = studentData;
 
   const columns = [
     {
@@ -95,11 +62,7 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.name}
             </Typography>
           </Box>
@@ -119,36 +82,8 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.class}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 1,
-      minWidth: 290,
-      field: "discount",
-      headerName: "Discount",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.discount}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {row.class.className}
             </Typography>
           </Box>
         );
@@ -167,12 +102,28 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.fees}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {addFees(row.fees).totalFees}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      flex: 1,
+      minWidth: 290,
+      field: "discount",
+      headerName: "Discount",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {addFees(row.fees).totalDiscount}
             </Typography>
           </Box>
         );
@@ -196,7 +147,7 @@ function Exam() {
               variant="body2"
               sx={{ color: "text.primary", fontWeight: 600 }}
             >
-              {row.fees}
+              {getBalance(row.class.fees, addFees(row.fees).totalFees, addFees(row.fees).totalDiscount)}
             </Typography>
           </Box>
         );
@@ -218,12 +169,7 @@ function Exam() {
           title="Exam Timetable"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add Fees
               </Button>
             </div>
@@ -252,8 +198,8 @@ function Exam() {
               showQuickFilter: true,
               quickFilterProps: { debounceMs: 1000 },
               value: searchValue,
-              clearSearch: () => handleSearch(""),
-              onChange: (event) => handleSearch(event.target.value),
+              // clearSearch: () => handleSearch(""),
+              // onChange: (event) => handleSearch(event.target.value),
             },
           }}
         />
@@ -273,4 +219,4 @@ function Exam() {
   );
 }
 
-export default Exam;
+export default Fees;

@@ -91,34 +91,12 @@ function Teacher() {
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.className}
+              {row?.class?.className}
             </Typography>
           </Box>
         );
       },
     },
-    // {
-    //   flex: 0.275,
-    //   minWidth: 290,
-    //   field: "group",
-    //   headerName: "Class Subjects",
-    //   sortable: false,
-    //   disableColumnMenu: true,
-
-    //   renderCell: (params) => {
-    //     const { row } = params;
-
-    //     return (
-    //       <Box sx={{ display: "flex", flexDirection: "column" }}>
-    //         {row.subjects.map((subject, index) => (
-    //           <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-    //             {`Subject: ${subject.subjectId}\tClass: ${subject.classId}`}
-    //           </Typography>
-    //         ))}
-    //       </Box>
-    //     );
-    //   },
-    // },
   ];
 
   return (

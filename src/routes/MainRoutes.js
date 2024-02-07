@@ -3,7 +3,6 @@ import { lazy } from "react";
 // project import
 import Loadable from "components/Loadable";
 import MainLayout from "layout/MainLayout";
-
 // render - dashboard
 const DashboardDefault = Loadable(lazy(() => import("pages/dashboard")));
 
@@ -14,27 +13,36 @@ const SamplePage = Loadable(lazy(() => import("pages/extra-pages/SamplePage")));
 const Typography = Loadable(
   lazy(() => import("pages/components-overview/Typography"))
 );
+const Class = Loadable(lazy(() => import("pages/class")));
+const ClassAdd = Loadable(lazy(() => import("pages/class/form")));
+
+const Student = Loadable(lazy(() => import("pages/student")));
+const StudentAdd = Loadable(lazy(() => import("pages/student/form")));
+const StudentEdit = Loadable(lazy(() => import("pages/student/editForm")));
+
+const Teacher = Loadable(lazy(() => import("pages/teacher")));
+const TeacherAdd = Loadable(lazy(() => import("pages/teacher/form")));
+const TeacherEdit = Loadable(lazy(() => import("pages/teacher/editForm")));
+
 const Events = Loadable(lazy(() => import("pages/events")));
 const EventsAdd = Loadable(lazy(() => import("pages/events/eventAddForm")));
 const EventsStudents = Loadable(lazy(() => import("pages/events/eventStudents")));
 const EventsGroups = Loadable(lazy(() => import("pages/events/eventGroups")));
 const EventsAddMark = Loadable(lazy(() => import("pages/events/eventAddMarksForm")));
-const Student = Loadable(lazy(() => import("pages/student")));
-const StudentAdd = Loadable(lazy(() => import("pages/student/form")));
-const Teacher = Loadable(lazy(() => import("pages/teacher")));
-const TeacherAdd = Loadable(lazy(() => import("pages/teacher/form")));
-const Class = Loadable(lazy(() => import("pages/class")));
-const ClassAdd = Loadable(lazy(() => import("pages/class/form")));
+
 const Exam = Loadable(lazy(() => import("pages/exam")));
 const ExamAdd = Loadable(lazy(() => import("pages/exam/examTimetableForm")));
 const ExamMarks = Loadable(lazy(() => import("pages/exam/marksTable")));
 const ExamMarksAdd = Loadable(lazy(() => import("pages/exam/markForm")));
-const Color = Loadable(lazy(() => import("pages/components-overview/Color")));
+
 const HomeWork = Loadable(lazy(() => import("pages/homework")));
 const HomeWorkAdd = Loadable(lazy(() => import("pages/homework/form")));
 const HomeWorkEdit = Loadable(lazy(() => import("pages/homework/editForm")));
+
 const Fees = Loadable(lazy(() => import("pages/fees")));
 const FeesAdd = Loadable(lazy(() => import("pages/fees/form")));
+
+const Color = Loadable(lazy(() => import("pages/components-overview/Color")));
 const Test = Loadable(lazy(() => import("pages/testForm")));
 const Shadow = Loadable(lazy(() => import("pages/components-overview/Shadow")));
 const AntIcons = Loadable(
@@ -114,6 +122,10 @@ const MainRoutes = {
       element: <TeacherAdd />,
     },
     {
+      path: "teacher/:id/edit",
+      element: <TeacherEdit />,
+    },
+    {
       path: "fees",
       element: <Fees />,
     },
@@ -130,8 +142,8 @@ const MainRoutes = {
       element: <StudentAdd />,
     },
     {
-      path: "student/edit/:id",
-      element: <StudentAdd />,
+      path: "student/:id/edit",
+      element: <StudentEdit />,
     },
     {
       path: "events",

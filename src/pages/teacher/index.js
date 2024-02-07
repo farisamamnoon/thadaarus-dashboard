@@ -1,13 +1,40 @@
-import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardHeader, Button, Breadcrumbs } from "@mui/material";
+//react imports
 import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+
+//mui imports
+import { DataGrid } from "@mui/x-data-grid";
+import { Card, CardHeader, Button, Breadcrumbs, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Link } from "react-router-dom";
-import { fetchData } from "utils/fetchData";
+
+//third party
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+
+//project imports
+import { fetchData } from "utils/fetchData";
+import { base_url } from "utils/baseurl";
 
 function Teacher() {
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+
+  const deleteTeacher = async () => {
+    const response = await axios.delete(`${base_url}/teacher/${deleteId._id}/delete`);
+    setDeleteDialog(false);
+    window.location.reload();
+  };
+
+  const handleDeleteOpen = (rowData) => {
+    setDeleteDialog(true);
+    setDeleteId(rowData);
+  };
+  const handleDeleteClose = (rowData) => {
+    setDeleteDialog(false);
+    setDeleteId(rowData);
+  }
+  
   const {
     data: teachers,
     error,
@@ -19,22 +46,22 @@ function Teacher() {
   if (error) {
     console.log("error", error);
   }
-
   if (isPending) {
     return <p>Laoding....</p>;
   }
   const rows = teachers;
-  //  [
-  //   {
-  //     _id: 1,
-  //     name: "Faris",
-  //     phone: "09485094",
-  //     class: "1",
-  //     classSubjects: "2 Arabic",
-  //     attendance: "78%",
-  //     fees: "90%",
-  //   },
-  // ];
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   const columns = [
     {
@@ -97,17 +124,40 @@ function Teacher() {
         );
       },
     },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "actions",
+      headerName: "",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
+            <Button variant="contained" component={Link} to={`${row._id}/edit`}>
+              Edit
+            </Button>
+            <Button variant="contained" onClick={() => handleDeleteOpen(row)}>
+              Delete
+            </Button>
+          </Box>
+        );
+      },
+    },
   ];
 
   return (
     <div>
       {/* Breadcrumbs */}
 
-      {/* <Breadcrumbs sx={{ mb: 4 }}>
+      <Breadcrumbs sx={{ mb: 4 }}>
         <Link >Home</Link>
         <Link >FAQ</Link>
         <Typography>Manage </Typography>
-      </Breadcrumbs> */}
+      </Breadcrumbs>
       <Card>
         <CardHeader
           title="Teachers"
@@ -149,16 +199,23 @@ function Teacher() {
         />
       </Card>
 
-      {/* {openDeleteDialog && (
-        <DeleteConfirmationDialog
-          id={dialogId}
-          buttonRef={buttonRef}
-          name=""
-          open={true}
-          setOpen={setOpenDeleteDialog}
-          // deleteFunction={deleteFaqData}
-        />
-      )} */}
+      <Modal
+        open={deleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Delete Student
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to delete {deleteId.name}?
+          </Typography>
+          <Button onClick={deleteTeacher}>Yes</Button>
+          <Button onClick={handleDeleteClose}>No</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

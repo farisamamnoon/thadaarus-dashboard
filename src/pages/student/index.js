@@ -1,21 +1,42 @@
 //react imports
-import { useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 //material ui imports
-import { Card, CardHeader, Button } from "@mui/material";
+import { Card, CardHeader, Button, Modal } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-//third party 
+//third party
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 //project imports
-import { addFees } from "utils/addFees";
 import { fetchData } from "utils/fetchData";
+import { base_url } from "utils/baseurl";
 
 function Student() {
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  // const [deleted, setDeleted] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [studentData, setStudentData] = useState("");
+
+  const deleteStudent = async () => {
+    const response = await axios.delete(`${base_url}/student/${deleteId._id}/delete`);
+    setDeleteDialog(false);
+    window.location.reload();
+  };
+
+  const handleDeleteOpen = (rowData) => {
+    setDeleteDialog(true);
+    setDeleteId(rowData);
+  };
+  const handleDeleteClose = (rowData) => {
+    setDeleteDialog(false);
+    setDeleteId(rowData);
+  };
+
   const {
     data: students,
     error,
@@ -31,8 +52,20 @@ function Student() {
   if (isPending) {
     return <p>Laoding</p>;
   }
-  console.log(students)
+  console.log(students);
   const rows = students;
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   const columns = [
     {
@@ -135,6 +168,29 @@ function Student() {
         );
       },
     },
+    {
+      flex: 0.275,
+      minWidth: 290,
+      field: "actions",
+      headerName: "",
+      sortable: false,
+      disableColumnMenu: true,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
+            <Button variant="contained" component={Link} to={`${row._id}/edit`}>
+              Edit
+            </Button>
+            <Button variant="contained" onClick={() => handleDeleteOpen(row)}>
+              Delete
+            </Button>
+          </Box>
+        );
+      },
+    },
   ];
 
   return (
@@ -186,17 +242,23 @@ function Student() {
           }}
         />
       </Card>
-
-      {/* {openDeleteDialog && (
-        <DeleteConfirmationDialog
-          id={dialogId}
-          buttonRef={buttonRef}
-          name=""
-          open={true}
-          setOpen={setOpenDeleteDialog}
-          // deleteFunction={deleteFaqData}
-        />
-      )} */}
+      <Modal
+        open={deleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Delete Student
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to delete {deleteId.name}?
+          </Typography>
+          <Button onClick={deleteStudent}>Yes</Button>
+          <Button onClick={handleDeleteClose}>No</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

@@ -26,29 +26,48 @@ import AnimateButton from "components/@extended/AnimateButton";
 // assets
 // import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
-import FormRepeater from "components/FormRepeater";
+import { useQuery, useQueries } from "@tanstack/react-query";
+import { fetchData } from "utils/fetchData";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Student = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
+  // const {
+  //   data: classes,
+  //   error: classError,
+  //   isPending: classIsPending,
+  // } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
 
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
+  // const {
+  //   data: studentData,
+  //   error,
+  //   isPending,
+  // } = useQuery({
+  //   queryKey: [""],
+  //   queryFn: async () => await fetchData(`fees/get-all`),
+  // });
+  const [classes, students] = useQueries({
+    queries: [
+      { queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") },
+      { queryKey: ["studentData"], queryFn: async () => fetchData(`fees/get-all`) },
+    ],
+  });
+  const { data, error, isPending } = classes;
+  const { data: studentData, error: studentError, isPending: studentIsPending } = students;
+  console.log(
+    "data",
+    data,
+    "error",
+    error,
+    "isPending",
+    isPending,
+    "studentData",
+    studentData,
+    "studentError",
+    studentError,
+    "studentIsPending",
+    studentIsPending
+  );
 
   return (
     <>
@@ -64,10 +83,7 @@ const Student = () => {
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required("First Name is required"),
           lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
+          email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -82,22 +98,12 @@ const Student = () => {
           }
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">
-                    First Name*
-                  </InputLabel>
+                  <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
                   <OutlinedInput
                     id="firstname-login"
                     type="firstname"
@@ -243,11 +249,7 @@ const Student = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <FormRepeater />
-                </Stack>
-              </Grid>
+
               <Grid item xs={12}>
                 <Typography variant="body2">
                   By Signing up, you agree to our &nbsp;

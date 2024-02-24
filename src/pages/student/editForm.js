@@ -26,6 +26,7 @@ import AnimateButton from "components/@extended/AnimateButton";
 import { base_url } from "utils/baseurl";
 import { fetchData } from "utils/fetchData";
 import { formatStringToDate } from "utils/formatDate";
+import Error from "utils/Error";
 
 // ============================|| STUDENT - ADD FORM ||============================ //
 
@@ -49,8 +50,7 @@ const StudentEdit = () => {
     queryFn: async () => await fetchData("class/get-all"),
   });
   if (error || formDataError) {
-    console.log("error", error);
-    return <p>Error fetchind data</p>
+    return <Error severity="error">An unexpected error has occured</Error>
   }
   if (isPending || formDataIsPending) {
     return <CircularProgress />

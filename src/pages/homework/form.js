@@ -11,13 +11,14 @@ import {
   Stack,
   MenuItem,
   Select,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
+import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
@@ -61,7 +62,7 @@ const HomeWork = () => {
     console.log("error");
   }
   if (classIsPending) {
-    return <p>Loading.....</p>;
+    return <CircularProgress />;
   }
 
   return (
@@ -73,7 +74,7 @@ const HomeWork = () => {
           classId: "",
           desc: "",
           submit: null,
-        }}        
+        }}
         validationSchema={Yup.object().shape({
           subjectId: Yup.string().max(255).required("Subject is required"),
           date: Yup.date().required("Enter a last submission date"),

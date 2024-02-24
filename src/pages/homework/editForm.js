@@ -12,30 +12,40 @@ import {
   Stack,
   MenuItem,
   Select,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
+import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-import { fetchData } from "utils/fetchData";
-import { base_url } from "utils/baseurl";
-import { formatDate } from "utils/formatDate";
 
 // assets
+import { base_url } from "utils/baseurl";
+import { fetchData } from "utils/fetchData";
+import { formatStringToDate } from "utils/formatDate";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const HomeWorkEdit = () => {
-  const [subjects, setSubjects] = useState({});
-  const [selectedClass, setSelectedClass] = useState("");
   const id = useParams().id;
+  const {
+    data: formData,
+    error: formError,
+    isFetching: formIsFetching,
+  } = useQuery({
+    queryKey: ["formData"],
+    queryFn: async () => await fetchData(`homework/${id}/get`),
+  });
 
-  //api s
+  const [subjects, setSubjects] = useState({});
+  const [selectedClass, setSelectedClass] = useState(formData?.classId._id);
+
+
   const {
     data: classes,
     error: classError,
@@ -45,7 +55,7 @@ const HomeWorkEdit = () => {
   const {
     data: subjectsData,
     error: subjectsError,
-    isPending: subjectsIsPending,
+    isFetching: subjectsIsFetching,
   } = useQuery({
     queryKey: ["subjectData", selectedClass],
     queryFn: async () => {
@@ -57,30 +67,28 @@ const HomeWorkEdit = () => {
     enabled: !!selectedClass,
   });
 
-  const { data: formData, error: formError, isPending: formIsPending } = useQuery({queryKey: ['formData'], queryFn: async () => await fetchData(`homework/get/${id}`)});
-  console.log(formData);
-
   useEffect(() => {
     setSubjects(subjectsData);
   }, [subjectsData]);
 
-  if (classError || subjectsError) {
-    console.log("error");
+  if (formError || subjectsError) {
+    return <p>There was an error</p>;
   }
-  if (classIsPending) {
-    return <p>Loading.....</p>;
+  if (subjectsIsFetching || formIsFetching) {
+    return <CircularProgress />;
   }
 
+  const { subjectId, date, classId, desc } = formData;
   return (
     <>
       <Formik
         initialValues={{
-          subjectId: "",//formData.subjectId,
-          date: "",//formData.date,
-          classId: formData.classId._id,
-          desc: formData.desc,
+          subjectId: subjectId, 
+          date: formatStringToDate(date), 
+          classId: classId._id,
+          desc: desc,
           submit: null,
-        }}        
+        }}
         validationSchema={Yup.object().shape({
           subjectId: Yup.string().max(255).required("Subject is required"),
           date: Yup.date().required("Enter a last submission date"),
@@ -89,8 +97,7 @@ const HomeWorkEdit = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            // console.log(values);
-            const response = await axios.post(`${base_url}/homework/create`, values);
+            const response = await axios.put(`${base_url}/homework/${id}/edit`, values);
             console.log(response.data);
             setStatus({ success: false });
             setSubmitting(false);
@@ -146,7 +153,6 @@ const HomeWorkEdit = () => {
                     onBlur={handleBlur}
                   >
                     {subjects &&
-                      subjects.subjects &&
                       subjects.subjects.map((subject, index) => (
                         <MenuItem key={index} value={subject}>
                           {subject}

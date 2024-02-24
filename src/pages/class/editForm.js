@@ -1,3 +1,6 @@
+//react imports
+import { useParams } from "react-router-dom";
+
 // material-ui
 import {
   Button,
@@ -6,8 +9,7 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Select,
-  MenuItem,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
@@ -20,19 +22,37 @@ import { useQuery } from "@tanstack/react-query";
 import AnimateButton from "components/@extended/AnimateButton";
 import { base_url } from "utils/baseurl";
 import { fetchData } from "utils/fetchData";
+import Error from "utils/Error";
+// ============================|| CLASS - EDIT FORM ||============================ //
 
-// ============================|| FIREBASE - REGISTER ||============================ //
+const ClassEdit = () => {
+  const classId = useParams().id;
+  const {
+    data: classData,
+    error: classIsError,
+    isPending: classIsPending,
+  } = useQuery({
+    queryKey: ["classData"],
+    queryFn: async () => await fetchData(`class/${classId}`),
+  });
 
-const Class = () => {
+  if (classIsPending) {
+    return <CircularProgress />;
+  }
+  if (classIsError) {
+    return <Error severity="error">There was an unexpected error</Error>;
+  }
+
+  const { className, division, batch, fees, subjects } = classData;
   return (
     <>
       <Formik
         initialValues={{
-          className: "",
-          division: "",
-          batch: "",
-          fees: "",
-          subjects: [""],
+          className: className,
+          division: division,
+          batch: batch,
+          fees: fees,
+          subjects: subjects,
         }}
         validationSchema={Yup.object().shape({
           className: Yup.number().required("Class is required"),
@@ -63,13 +83,13 @@ const Class = () => {
                 <Stack spacing={1}>
                   <InputLabel htmlFor="class-name">Class Standard</InputLabel>
                   <OutlinedInput
+                    fullWidth
                     id="class-name"
-                    type="number"
+                    ذ
                     value={values.className}
                     name="className"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    fullWidth
                     error={Boolean(touched.className && errors.className)}
                   />
                   {touched.className && errors.className && (
@@ -90,7 +110,6 @@ const Class = () => {
                     name="division"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    inputProps={{}}
                   />
                   {touched.division && errors.division && (
                     <FormHelperText error id="helper-text-division-signup">
@@ -160,13 +179,21 @@ const Class = () => {
                                 name={`subjects.${index}`}
                                 onBlur={handleBlur}
                                 onChange={handleChange}
-                                error={touched.subjects && errors.subjects}
+                                // error={
+                                //   touched.subjects[index] &&
+                                //   errors.subjects[index] &&
+                                //   Boolean(
+                                //     touched.subjects[index] &&
+                                //       errors.subjects[index]
+                                //   )
+                                // }
                               />
-                              {touched.subjects && errors.subjects && (
-                                <FormHelperText error id="helper-text-phone-signup">
-                                  {errors.subjects}
-                                </FormHelperText>
-                              )}
+                              {/* {touched.subjects[index] &&
+                                errors.subjects[index] && (
+                                  <FormHelperText error id="helper-text-phone-signup">
+                                    {errors.subjects[index]}
+                                  </FormHelperText>
+                                )} */}
                               <Button type="button" onClick={() => arrayHelpers.remove(index)}>
                                 Remove
                               </Button>
@@ -190,7 +217,7 @@ const Class = () => {
                     variant="contained"
                     color="primary"
                   >
-                    Submit
+                    Edit
                   </Button>
                 </AnimateButton>
               </Grid>
@@ -202,4 +229,4 @@ const Class = () => {
   );
 };
 
-export default Class;
+export default ClassEdit;

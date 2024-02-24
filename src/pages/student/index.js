@@ -7,6 +7,8 @@ import { Card, CardHeader, Button, Modal } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
 
 //third party
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +17,8 @@ import axios from "axios";
 //project imports
 import { fetchData } from "utils/fetchData";
 import { base_url } from "utils/baseurl";
+import Progress from "utils/Progress";
+import Error from "utils/Error";
 
 function Student() {
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -38,22 +42,17 @@ function Student() {
   };
 
   const {
-    data: students,
+    data: rows,
     error,
     isPending,
   } = useQuery({
-    querykey: ["studentData"],
+    querykey: ["studentData", 1],
     queryFn: async () => fetchData("student/get-all"),
   });
 
   if (error) {
-    console.log("error", error);
+    return <Error severity="error">There was an unexpected error</Error>;
   }
-  if (isPending) {
-    return <p>Laoding</p>;
-  }
-  console.log(students);
-  const rows = students;
 
   const style = {
     position: "absolute",
@@ -181,10 +180,20 @@ function Student() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
-            <Button variant="contained" component={Link} to={`${row._id}/edit`}>
+            <Button
+              variant="outlined"
+              startIcon={<EditOutlined />}
+              component={Link}
+              to={`${row._id}/edit`}
+            >
               Edit
             </Button>
-            <Button variant="contained" onClick={() => handleDeleteOpen(row)}>
+            <Button
+              variant="contained"
+              startIcon={<DeleteOutlined />}
+              color="error"
+              onClick={() => handleDeleteOpen(row)}
+            >
               Delete
             </Button>
           </Box>
@@ -213,7 +222,7 @@ function Student() {
             </div>
           }
         />
-        <DataGrid
+       {isPending ? (<Progress />) : (<DataGrid
           autoHeight
           rows={rows || []}
           // rowCount={total}
@@ -240,7 +249,7 @@ function Student() {
               // onChange: (event) => handleSearch(event.target.value),
             },
           }}
-        />
+        />) }
       </Card>
       <Modal
         open={deleteDialog}

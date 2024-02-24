@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // material-ui
 import {
@@ -15,24 +16,27 @@ import {
   InputLabel,
   OutlinedInput,
   Stack,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 
 // third party
-import * as Yup from 'yup';
-import { Formik } from 'formik';
+import * as Yup from "yup";
+import { Formik } from "formik";
 
 // project import
-import FirebaseSocial from './FirebaseSocial';
-import AnimateButton from 'components/@extended/AnimateButton';
+import FirebaseSocial from "./FirebaseSocial";
+import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import axios from "../../../../node_modules/axios/index";
+import { base_url } from "utils/baseurl";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const AuthLogin = () => {
   const [checked, setChecked] = React.useState(false);
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
@@ -47,16 +51,24 @@ const AuthLogin = () => {
     <>
       <Formik
         initialValues={{
-          email: 'info@codedthemes.com',
-          password: '123456',
-          submit: null
+          userName: "",
+          password: "",
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          userName: Yup.string().max(255).required("Email is required"),
+          password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            const response = await axios.post(`${base_url}/user/login`, values);
+            if (!response.data.success) {
+              setErrors({ submit: response.data.message });
+            } else {
+              navigate(`/dashboard/default`);
+              localStorage.setItem("accessToken", response.data.data.accessToken);
+              localStorage.setItem("role", response.data.data.role);
+            }
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -71,21 +83,20 @@ const AuthLogin = () => {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="user-name">User Name</InputLabel>
                   <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    id="user-name"
+                    value={values.userName}
+                    name="userName"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder="Enter User Name"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.userName && errors.userName)}
                   />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="standard-weight-helper-text-email-login">
-                      {errors.email}
+                  {touched.userName && errors.userName && (
+                    <FormHelperText error id="standard-weight-helper-text-user-name">
+                      {errors.userName}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -97,7 +108,7 @@ const AuthLogin = () => {
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
                     id="-password-login"
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={values.password}
                     name="password"
                     onBlur={handleBlur}
@@ -126,7 +137,12 @@ const AuthLogin = () => {
               </Grid>
 
               <Grid item xs={12} sx={{ mt: -1 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  spacing={2}
+                >
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -151,19 +167,27 @@ const AuthLogin = () => {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
+                  <Button
+                    disableElevation
+                    disabled={isSubmitting}
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                  >
                     Login
                   </Button>
                 </AnimateButton>
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Divider>
                   <Typography variant="caption"> Login with</Typography>
                 </Divider>
               </Grid>
               <Grid item xs={12}>
                 <FirebaseSocial />
-              </Grid>
+              </Grid> */}
             </Grid>
           </form>
         )}

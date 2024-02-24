@@ -1,12 +1,10 @@
 //react imports
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //ui imports
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Card, CardHeader, Button, Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import { DataGrid } from "@mui/x-data-grid";
+import { Card, CardHeader, Button, Modal, Box, Typography } from "@mui/material";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 //third party
@@ -17,43 +15,27 @@ import axios from "axios";
 import { fetchData } from "utils/fetchData";
 import { formatDate } from "utils/formatDate";
 import { base_url } from "utils/baseurl";
+import AddStudentsModal from "./addStudentsModal";
+import modalStyle from "../../themes/modalStyle";
 
-function Exam() {
-  const buttonRef = useRef(null);
+function HomeWork() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
-  const [editDialog, setEditDialog] = useState(false);
-  const [editId, setEditId] = useState("");
+  const [addStudentsDialog, setAddStudentsDialog] = useState(false);
+  const [homeworkData, setHomeworkData] = useState("");
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
+  const handleStudentsDialogOpen = (row) => {
+    setAddStudentsDialog(true);
+    setHomeworkData(row);
   };
+  const handleStudentsDialogClose = () => setAddStudentsDialog(false);
 
-  const handleDeleteOpen = (rowData) => {
+  const handleDeleteOpen = (row) => {
     setDeleteDialog(true);
-    setDeleteId(rowData._id);
+    setDeleteId(row._id);
   };
-  const handleDeleteClose = (rowData) => {
-    setDeleteDialog(false);
-    setDeleteId(rowData._id);
-  };
+  const handleDeleteClose = () => setDeleteDialog(false);
 
-  const handleEditOpen = (rowData) => {
-    setEditDialog(true);
-    setEditId(rowData._id);
-  };
-  const handleEditClose = (rowData) => {
-    setEditDialog(false);
-    setEditId(rowData._id);
-  };
   //api call
   const deleteHomework = async () => {
     const response = await axios.delete(`${base_url}/homework/${deleteId}`);
@@ -167,11 +149,10 @@ function Exam() {
 
       renderCell: (params) => {
         const { row } = params;
-
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.students}
+              {row.students.map(student => student.name).join(", ")}
             </Typography>
           </Box>
         );
@@ -190,12 +171,14 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "row" }} gap={2}>
-            <Button variant="contained">Add Students</Button>
+            <Button variant="contained" onClick={() => handleStudentsDialogOpen(row)}>
+              Add Students
+            </Button>
             <Button
               variant="outlined"
               startIcon={<EditOutlined />}
               component={Link}
-              to={`edit/${row._id}`}
+              to={`${row._id}/edit`}
             >
               Edit
             </Button>
@@ -263,13 +246,15 @@ function Exam() {
           handleDeleteOpen={handleDeleteOpen}
         />
       </Card>
+
+      {/* delete confirmation model */}
       <Modal
         open={deleteDialog}
         onClose={handleDeleteClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Delete Homework
           </Typography>
@@ -280,25 +265,14 @@ function Exam() {
           <Button onClick={handleDeleteClose}>No</Button>
         </Box>
       </Modal>
-      <Modal
-        open={editDialog}
-        onClose={handleEditClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Edit Homework
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete this homework?
-          </Typography>
-          <Button onClick={deleteHomework}>Yes</Button>
-          <Button onClick={handleEditClose}>No</Button>
-        </Box>
-      </Modal>
+
+      <AddStudentsModal
+        handleStudentsDialogClose={handleStudentsDialogClose}
+        addStudentsDialog={addStudentsDialog}
+        homeworkData={homeworkData}
+      />
     </div>
   );
 }
 
-export default Exam;
+export default HomeWork;

@@ -11,6 +11,7 @@ import {
   Stack,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
@@ -26,7 +27,7 @@ import { base_url } from "utils/baseurl";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const HomeWork = () => {
+const FeesForm = () => {
   const [selectedClass, setSelectedClass] = useState("");
   const [students, setStudents] = useState({});
 
@@ -59,7 +60,7 @@ const HomeWork = () => {
     console.log(classError);
   }
   if (classIsPending) {
-    return <p>Loading.....</p>;
+    return <CircularProgress />;
   }
   return (
     <>
@@ -131,12 +132,11 @@ const HomeWork = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   >
-                    {studentData &&
-                      studentData.map((item, index) => (
-                        <MenuItem key={index} value={item._id}>
-                          {item.name}
-                        </MenuItem>
-                      ))}
+                    {students.map((item, index) => (
+                      <MenuItem key={index} value={item._id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {touched.studentId && errors.studentId && (
                     <FormHelperText error id="helper-text-studentId-signup">
@@ -230,4 +230,4 @@ const HomeWork = () => {
   );
 };
 
-export default HomeWork;
+export default FeesForm;

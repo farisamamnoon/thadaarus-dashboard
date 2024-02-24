@@ -1,5 +1,5 @@
 //react imports
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //mui imports
@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardHeader, Button, Breadcrumbs, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 //third party
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +16,8 @@ import axios from "axios";
 //project imports
 import { fetchData } from "utils/fetchData";
 import { base_url } from "utils/baseurl";
+import Error from "utils/Error";
+import Progress from "utils/Progress";
 
 function Teacher() {
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -33,8 +36,8 @@ function Teacher() {
   const handleDeleteClose = (rowData) => {
     setDeleteDialog(false);
     setDeleteId(rowData);
-  }
-  
+  };
+
   const {
     data: teachers,
     error,
@@ -44,24 +47,9 @@ function Teacher() {
     queryFn: async () => fetchData("teacher/get-all"),
   });
   if (error) {
-    console.log("error", error);
-  }
-  if (isPending) {
-    return <p>Laoding....</p>;
+    return <Error severity="error">There was an unexpected error</Error>;
   }
   const rows = teachers;
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
 
   const columns = [
     {
@@ -137,10 +125,20 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
-            <Button variant="contained" component={Link} to={`${row._id}/edit`}>
+            <Button
+              variant="outlined"
+              startIcon={<EditOutlined />}
+              component={Link}
+              to={`${row._id}/edit`}
+            >
               Edit
             </Button>
-            <Button variant="contained" onClick={() => handleDeleteOpen(row)}>
+            <Button
+              variant="contained"
+              startIcon={<DeleteOutlined />}
+              color="error"
+              onClick={() => handleDeleteOpen(row)}
+            >
               Delete
             </Button>
           </Box>
@@ -149,13 +147,24 @@ function Teacher() {
     },
   ];
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
   return (
     <div>
       {/* Breadcrumbs */}
 
       <Breadcrumbs sx={{ mb: 4 }}>
-        <Link >Home</Link>
-        <Link >FAQ</Link>
+        <Link>Home</Link>
+        <Link>FAQ</Link>
         <Typography>Manage </Typography>
       </Breadcrumbs>
       <Card>
@@ -169,34 +178,38 @@ function Teacher() {
             </div>
           }
         />
-        <DataGrid
-          autoHeight
-          rows={rows || []}
-          // rowCount={total}
-          columns={columns}
-          getRowId={(row) => row._id}
-          // pagination
-          sortingMode="server"
-          // paginationMode="server"
-          // pageSizeOptions={[2]}
-          // paginationModel={paginationModel}
-          // onPaginationModelChange={setPaginationModel}
-          slotProps={{
-            baseButton: {
-              size: "medium",
-              variant: "tonal",
-            },
-            toolbar: {
-              csvOptions: { disableToolbarButton: true },
-              printOptions: { disableToolbarButton: true },
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 1000 },
-              // value: searchValue,
-              // clearSearch: () => handleSearch(""),
-              // onChange: (event) => handleSearch(event.target.value),
-            },
-          }}
-        />
+        {isPending ? (
+          <Progress />
+        ) : (
+          <DataGrid
+            autoHeight
+            rows={rows || []}
+            // rowCount={total}
+            columns={columns}
+            getRowId={(row) => row._id}
+            // pagination
+            sortingMode="server"
+            // paginationMode="server"
+            // pageSizeOptions={[2]}
+            // paginationModel={paginationModel}
+            // onPaginationModelChange={setPaginationModel}
+            slotProps={{
+              baseButton: {
+                size: "medium",
+                variant: "tonal",
+              },
+              toolbar: {
+                csvOptions: { disableToolbarButton: true },
+                printOptions: { disableToolbarButton: true },
+                showQuickFilter: true,
+                quickFilterProps: { debounceMs: 1000 },
+                // value: searchValue,
+                // clearSearch: () => handleSearch(""),
+                // onChange: (event) => handleSearch(event.target.value),
+              },
+            }}
+          />
+        )}
       </Card>
 
       <Modal

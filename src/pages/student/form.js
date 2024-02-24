@@ -8,7 +8,8 @@ import {
   Stack,
   Select,
   MenuItem,
-  TextareaAutosize
+  TextareaAutosize,
+  LinearProgress,
 } from "@mui/material";
 
 // third party
@@ -37,10 +38,6 @@ const Student = () => {
   });
   if (error) {
     console.log("error", error);
-  }
-
-  if (isPending) {
-    return <p>Loading...</p>;
   }
 
   return (
@@ -72,7 +69,6 @@ const Student = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-          
             const response = await axios.post(`${base_url}/student/create`, values);
             // console.log(response.data.message);
             alert(response.data.message);
@@ -224,9 +220,15 @@ const Student = () => {
                     onChange={handleChange}
                     onBlur={handleBlur}
                   >
-                    {classes.map((classItem, index) => (
-                      <MenuItem key={index} value={classItem._id}>{classItem.className}</MenuItem>
-                    ))}
+                    {isPending ? (
+                      <LinearProgress />
+                    ) : (
+                      classes.map((classItem, index) => (
+                        <MenuItem key={index} value={classItem._id}>
+                          {classItem.className}
+                        </MenuItem>
+                      ))
+                    )}
                   </Select>
                   {touched.classId && errors.classId && (
                     <FormHelperText error id="helper-text-classId-signup">

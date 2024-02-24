@@ -8,7 +8,7 @@ import forms from './forms';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, forms, pages, utilities, support]
+  items: [dashboard, forms(), pages, utilities, support]
 };
 
 export default menuItems;

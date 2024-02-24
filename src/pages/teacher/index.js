@@ -1,5 +1,6 @@
 //react imports
 import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //mui imports
@@ -7,6 +8,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardHeader, Button, Breadcrumbs, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 //third party
@@ -39,6 +41,8 @@ function Teacher() {
     setDeleteId(rowData);
   };
 
+  };
+
   const {
     data: teachers,
     error,
@@ -49,6 +53,7 @@ function Teacher() {
     queryFn: async () => fetchData("teacher/get-all"),
   });
   if (error) {
+    return <Error severity="error">There was an unexpected error</Error>;
     return <Error severity="error">There was an unexpected error</Error>;
   }
   const rows = teachers;
@@ -154,11 +159,24 @@ function Teacher() {
     boxShadow: 24,
     p: 4,
   };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
   return (
     <div>
       {/* Breadcrumbs */}
 
       <Breadcrumbs sx={{ mb: 4 }}>
+        <Link>Home</Link>
+        <Link>FAQ</Link>
         <Link>Home</Link>
         <Link>FAQ</Link>
         <Typography>Manage </Typography>

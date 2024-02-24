@@ -78,6 +78,7 @@ function Student() {
 
   const {
     data: rows,
+    data: rows,
     error,
     isPending,
     refetch,
@@ -87,6 +88,7 @@ function Student() {
   });
 
   if (error) {
+    return <Error severity="error">There was an unexpected error</Error>;
     return <Error severity="error">There was an unexpected error</Error>;
   }
 

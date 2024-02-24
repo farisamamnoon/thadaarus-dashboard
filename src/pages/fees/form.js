@@ -12,6 +12,7 @@ import {
   Select,
   MenuItem,
   CircularProgress,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
@@ -144,4 +145,5 @@ const FeesForm = () => {
   );
 };
 
+export default FeesForm;
 export default FeesForm;

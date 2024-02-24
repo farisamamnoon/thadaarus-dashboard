@@ -13,8 +13,12 @@ const SamplePage = Loadable(lazy(() => import("pages/extra-pages/SamplePage")));
 const Typography = Loadable(lazy(() => import("pages/components-overview/Typography")));
 const Users = Loadable(lazy(() => import("pages/users")));
 
+const Typography = Loadable(lazy(() => import("pages/components-overview/Typography")));
+const Users = Loadable(lazy(() => import("pages/users")));
+
 const Class = Loadable(lazy(() => import("pages/class")));
 const ClassAdd = Loadable(lazy(() => import("pages/class/form")));
+const ClassEdit = Loadable(lazy(() => import("pages/class/editForm")));
 const ClassEdit = Loadable(lazy(() => import("pages/class/editForm")));
 
 const Student = Loadable(lazy(() => import("pages/student")));
@@ -47,6 +51,7 @@ const FeesAdd = Loadable(lazy(() => import("pages/fees/form")));
 const Color = Loadable(lazy(() => import("pages/components-overview/Color")));
 const Test = Loadable(lazy(() => import("pages/testForm")));
 const Shadow = Loadable(lazy(() => import("pages/components-overview/Shadow")));
+const AntIcons = Loadable(lazy(() => import("pages/components-overview/AntIcons")));
 const AntIcons = Loadable(lazy(() => import("pages/components-overview/AntIcons")));
 
 // ==============================|| MAIN ROUTING ||============================== //

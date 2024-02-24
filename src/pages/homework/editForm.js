@@ -13,6 +13,7 @@ import {
   MenuItem,
   Select,
   CircularProgress,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
@@ -20,13 +21,18 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 
 // assets
 import { base_url } from "utils/baseurl";
+
+// assets
+import { base_url } from "utils/baseurl";
 import { fetchData } from "utils/fetchData";
+import { formatStringToDate } from "utils/formatDate";
 import { formatStringToDate } from "utils/formatDate";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
@@ -42,7 +48,19 @@ const HomeWorkEdit = () => {
     queryFn: async () => await fetchData(`homework/${id}/get`),
   });
 
+  const id = useParams().id;
+  const {
+    data: formData,
+    error: formError,
+    isFetching: formIsFetching,
+  } = useQuery({
+    queryKey: ["formData"],
+    queryFn: async () => await fetchData(`homework/${id}/get`),
+  });
+
   const [subjects, setSubjects] = useState({});
+  const [selectedClass, setSelectedClass] = useState(formData?.classId._id);
+
   const [selectedClass, setSelectedClass] = useState(formData?.classId._id);
 
 
@@ -55,6 +73,7 @@ const HomeWorkEdit = () => {
   const {
     data: subjectsData,
     error: subjectsError,
+    isFetching: subjectsIsFetching,
     isFetching: subjectsIsFetching,
   } = useQuery({
     queryKey: ["subjectData", selectedClass],
@@ -73,11 +92,16 @@ const HomeWorkEdit = () => {
 
   if (formError || subjectsError) {
     return <p>There was an error</p>;
+  if (formError || subjectsError) {
+    return <p>There was an error</p>;
   }
+  if (subjectsIsFetching || formIsFetching) {
+    return <CircularProgress />;
   if (subjectsIsFetching || formIsFetching) {
     return <CircularProgress />;
   }
 
+  const { subjectId, date, classId, desc } = formData;
   const { subjectId, date, classId, desc } = formData;
   return (
     <>
@@ -87,7 +111,12 @@ const HomeWorkEdit = () => {
           date: formatStringToDate(date), 
           classId: classId._id,
           desc: desc,
+          subjectId: subjectId, 
+          date: formatStringToDate(date), 
+          classId: classId._id,
+          desc: desc,
           submit: null,
+        }}
         }}
         validationSchema={Yup.object().shape({
           subjectId: Yup.string().max(255).required("Subject is required"),

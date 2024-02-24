@@ -1,5 +1,6 @@
 //react
 import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useParams } from "../../../node_modules/react-router-dom/dist/index";
 
@@ -8,6 +9,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { CardHeader, Button, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 //Third Party
@@ -82,6 +84,7 @@ function Exam() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
               {row.examName}
             </Typography>

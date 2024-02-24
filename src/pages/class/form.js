@@ -187,6 +187,7 @@ const Class = () => {
               </Grid>
               <Grid item xs={6}>
                 <Stack spacing={1} sx={{ mt: "8px" }}>
+                <Stack spacing={1} sx={{ mt: "8px" }}>
                   <FieldArray
                     name="subjects"
                     render={(arrayHelpers) => (
@@ -203,11 +204,15 @@ const Class = () => {
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 error={touched.subjects && errors.subjects}
+                                error={touched.subjects && errors.subjects}
                               />
+                              {touched.subjects && errors.subjects && (
                               {touched.subjects && errors.subjects && (
                                 <FormHelperText error id="helper-text-phone-signup">
                                   {errors.subjects}
+                                  {errors.subjects}
                                 </FormHelperText>
+                              )}
                               )}
                               <Button type="button" onClick={() => arrayHelpers.remove(index)}>
                                 Remove

@@ -12,6 +12,7 @@ import {
   OutlinedInput,
   Stack,
   LinearProgress,
+  LinearProgress,
 } from "@mui/material";
 
 // third party
@@ -147,9 +148,32 @@ const Teacher = () => {
             <Grid item xs={6}>
               <Stack spacing={1}>
                 {/* <FieldArray
+                {/* <FieldArray
                   name="subjects"
                   render={(arrayHelpers) => (
                     <div>
+                      {values.subjects?.map((subject, index) => (
+                        <div key={index}>
+                          <InputLabel htmlFor={`subjects.${index}.classId`}>Class</InputLabel>
+                          <Select
+                            fullWidth
+                            id={`subjects.${index}.classId`}
+                            value={values.subjects[index].classId}
+                            name={`subjects.${index}.classId`}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            error={
+                              touched.subjects[index].classId &&
+                              errors.subjects[index].classId &&
+                              Boolean(
+                                touched.subjects[index].classId && errors?.subjects[index]?.classId
+                              )
+                            }
+                          >
+                            {isPending ? (
+                              <LinearProgress />
+                            ) : (
+                              classes.map((classItem, index) => (
                       {values.subjects?.map((subject, index) => (
                         <div key={index}>
                           <InputLabel htmlFor={`subjects.${index}.classId`}>Class</InputLabel>
@@ -213,6 +237,44 @@ const Teacher = () => {
                           </Button>
                         </div>
                       ))}
+                              ))
+                            )}
+                          </Select>
+                          {touched.subjects[index].classId && errors.subjects[index].classId && (
+                            <FormHelperText error id="helper-text-phone-signup">
+                              {errors.subjects[index].classId}
+                            </FormHelperText>
+                          )}
+                          <InputLabel htmlFor={`subjects.${index}.subjectId`} sx={{ mt: "10px" }}>
+                            Subject
+                          </InputLabel>
+                          <OutlinedInput
+                            fullWidth
+                            id={`subjects.${index}.subjectId`}
+                            value={values.subjects[index].subjectId}
+                            name={`subjects.${index}.subjectId`}
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            error={
+                              touched.subjects[index].subjectId &&
+                              errors.subjects[index].subjectId &&
+                              Boolean(
+                                touched.subjects[index].subjectId &&
+                                  errors.subjects[index].subjectId
+                              )
+                            }
+                          />
+                          {touched.subjects[index].subjectId &&
+                            errors.subjects[index].subjectId && (
+                              <FormHelperText error id="helper-text-phone-signup">
+                                {errors.subjects[index].subjectId}
+                              </FormHelperText>
+                            )}
+                          <Button type="button" onClick={() => arrayHelpers.remove(index)}>
+                            Remove
+                          </Button>
+                        </div>
+                      ))}
                       <Button
                         type="button"
                         onClick={() => arrayHelpers.push({ classId: "", subjectId: "" })}
@@ -221,6 +283,7 @@ const Teacher = () => {
                       </Button>
                     </div>
                   )}
+                /> */}
                 /> */}
               </Stack>
             </Grid>

@@ -12,6 +12,7 @@ import {
   OutlinedInput,
   Stack,
   CircularProgress,
+  CircularProgress,
 } from "@mui/material";
 
 // third party
@@ -42,13 +43,37 @@ const Teacher = () => {
 //   const { data: teacherData, error: teacherError, isPending: teacherIsPending } = teacherResult;
 //   const { data: classData, error: classIsError, isPending: classIsPending } = classResult;
 
+//   const [ teacherResult, classResult ] = useQueries([
+//     {
+//       queryKey: ["teacherData"],
+//       queryFn: async () => await fetchData("class/get-all"),
+//     },
+//     {
+//       queryKey: ["classData"],
+//       queryFn: async () => await fetchData(`teacher/${teacherId}`),
+//     },
+//   ]);
+//   const { data: teacherData, error: teacherError, isPending: teacherIsPending } = teacherResult;
+//   const { data: classData, error: classIsError, isPending: classIsPending } = classResult;
+
   const {
     data: classData,
     error: classIsError,
     isFetched: classIsFetched,
+    isFetched: classIsFetched,
   } = useQuery({
     queryKey: ["classData"],
+    queryKey: ["classData"],
     queryFn: async () => await fetchData("class/get-all"),
+  });
+
+  const {
+    data: teacherData,
+    error: teacherError,
+    isFetched: teacherIsFetched,
+  } = useQuery({
+    queryKey: ["teacherData"],
+    queryFn: async () => await fetchData(`teacher/${teacherId}`),
   });
 
   const {
@@ -63,7 +88,9 @@ const Teacher = () => {
   if (classIsError || teacherError) {
     console.log("error");
     return <p>Error fetching data</p>;
+    return <p>Error fetching data</p>;
   }
+  if (!classIsFetched || !teacherIsFetched) {
   if (!classIsFetched || !teacherIsFetched) {
     return <CircularProgress />;
   }
@@ -74,6 +101,7 @@ const Teacher = () => {
       initialValues={{
         name: name,
         age: age,
+        classId: classId?._id || '',
         classId: classId?._id || '',
         email: email,
         phone: phone,
@@ -174,6 +202,12 @@ const Teacher = () => {
                         {classItem.className}
                       </MenuItem>
                     ))}
+                  {classData &&
+                    classData.map((classItem, index) => (
+                      <MenuItem key={index} value={classItem._id}>
+                        {classItem.className}
+                      </MenuItem>
+                    ))}
                 </Select>
               </Stack>
             </Grid>
@@ -245,6 +279,12 @@ const Teacher = () => {
                               //   )
                               // }
                             >
+                              {classData &&
+                                classData.map((classItem, index) => (
+                                  <MenuItem key={index} value={classItem._id}>
+                                    {classItem.className}
+                                  </MenuItem>
+                                ))}
                               {classData &&
                                 classData.map((classItem, index) => (
                                   <MenuItem key={index} value={classItem._id}>

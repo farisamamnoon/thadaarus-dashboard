@@ -12,3 +12,9 @@ export const formatStringToDate = (dateString) => {
   const date = dateString.slice(0, dateString.indexOf("T"));
   return date;
 }
+
+export const htmlDate = () => {
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  return formattedDate;
+};

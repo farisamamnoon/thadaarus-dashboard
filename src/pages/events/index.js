@@ -209,7 +209,7 @@ function Events() {
           pagination
           sortingMode="server"
           paginationMode="server"
-          pageSizeOptions={[2]}
+          //pageSizeOptions={[2]}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           slotProps={{

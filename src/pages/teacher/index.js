@@ -26,7 +26,7 @@ function Teacher() {
   const deleteTeacher = async () => {
     const response = await axios.delete(`${base_url}/teacher/${deleteId._id}/delete`);
     setDeleteDialog(false);
-    window.location.reload();
+    refetch();
   };
 
   const handleDeleteOpen = (rowData) => {
@@ -42,6 +42,7 @@ function Teacher() {
     data: teachers,
     error,
     isPending,
+    refetch
   } = useQuery({
     queryKey: ["teacherData"],
     queryFn: async () => fetchData("teacher/get-all"),
@@ -190,7 +191,7 @@ function Teacher() {
             // pagination
             sortingMode="server"
             // paginationMode="server"
-            // pageSizeOptions={[2]}
+            // //pageSizeOptions={[2]}
             // paginationModel={paginationModel}
             // onPaginationModelChange={setPaginationModel}
             slotProps={{

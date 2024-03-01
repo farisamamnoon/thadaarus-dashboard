@@ -1,5 +1,6 @@
 //react
 import { useState } from "react";
+import { useNavigate, useParams } from "../../../node_modules/react-router-dom/dist/index";
 
 // material-ui
 import {
@@ -24,51 +25,33 @@ import AnimateButton from "components/@extended/AnimateButton";
 import { fetchData } from "utils/fetchData";
 import { base_url } from "utils/baseurl";
 import { useEffect } from "react";
+import Error from "utils/Error";
+import Progress from "utils/Progress";
+import { LinearProgress } from "../../../node_modules/@mui/material/index";
 
 // ============================|| THADAARUS-EXAM TIME TABLE FORM ||============================ //
 
 const Exam = () => {
-  const [subjects, setSubjects] = useState({});
-  const [selectedClass, setSelectedClass] = useState("");
-
-  //fetching class data
-  const {
-    data: classes,
-    error: classError,
-    isPending: classIsPending,
-  } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
+  const navigate = useNavigate();
+  const classId = useParams().id;
 
   const {
     data: subjectsData,
     error: subjectsError,
     isPending: subjectsIsPending,
   } = useQuery({
-    queryKey: ["subjectData", selectedClass],
-    queryFn: () => {
-      if (selectedClass) {
-        return fetchData(`class/${selectedClass}/get-subjects`);
-      }
-      return null;
-    },
-    enabled: !!selectedClass,
+    queryKey: ["subjectData"],
+    queryFn: async () => await fetchData(`class/${classId}/get-subjects`),
   });
-
-  useEffect(() => {
-    setSubjects(subjectsData);
-  }, [subjectsData]);
-
-  if (classError || subjectsError) {
-    console.log("error");
+  if (subjectsError) {
+    return <Error severity="error">An unexpected error occured</Error>;
   }
-  if (classIsPending) {
-    return <p>Loading.....</p>;
-  }
+
   return (
     <>
       <Formik
         initialValues={{
           examName: "",
-          classId: "",
           exams: [
             {
               date: "",
@@ -88,7 +71,10 @@ const Exam = () => {
         // })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            values = { ...values, classId };
             const response = await axios.post(`${base_url}/exam/create`, values);
+            if (!response.data.success) setErrors({ submit: response.data.message });
+            else navigate(`/class/${classId}/exam`);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -105,7 +91,7 @@ const Exam = () => {
               <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="examName-signup">Exam Name</InputLabel>
-                  <OutlinedInput
+                  <Select
                     id="examName-login"
                     type="examName"
                     value={values.examName}
@@ -115,7 +101,17 @@ const Exam = () => {
                     placeholder="First Term Exam"
                     fullWidth
                     error={Boolean(touched.examName && errors.examName)}
-                  />
+                  >
+                    <MenuItem key="1" value="First Term Examination">
+                      First Term Examination
+                    </MenuItem>
+                    <MenuItem key="2" value="Second Term Examination">
+                      Second Term Examination
+                    </MenuItem>
+                    <MenuItem key="3" value="Annual Examination">
+                      Annual Examination
+                    </MenuItem>
+                  </Select>
                   {touched.examName && errors.examName && (
                     <FormHelperText error id="helper-text-examName-signup">
                       {errors.examName}
@@ -123,32 +119,7 @@ const Exam = () => {
                   )}
                 </Stack>
               </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="classId">Class</InputLabel>
-                  <Select
-                    id="classId"
-                    name="classId"
-                    value={values.classId}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setSelectedClass(e.target.value);
-                    }}
-                    onBlur={handleBlur}
-                  >
-                    {classes.map((classItem, index) => (
-                      <MenuItem key={index} value={classItem._id}>
-                        {classItem.className}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {touched.classId && errors.classId && (
-                    <FormHelperText error id="helper-text-classId-signup">
-                      {errors.classId}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
+
               <Grid item xs={6}>
                 <Stack spacing={1}>
                   <FieldArray
@@ -183,13 +154,15 @@ const Exam = () => {
                               onChange={handleChange}
                               onBlur={handleBlur}
                             >
-                              {subjects &&
-                                subjects.subjects &&
-                                subjects.subjects.map((subject, index) => (
+                              {subjectsIsPending ? (
+                                <LinearProgress />
+                              ) : (
+                                subjectsData.subjects.map((subject, index) => (
                                   <MenuItem key={index} value={subject}>
                                     {subject}
                                   </MenuItem>
-                                ))}
+                                ))
+                              )}
                             </Select>
                             {touched.classId && errors.classId && (
                               <FormHelperText error id="helper-text-classId-signup">
@@ -212,6 +185,11 @@ const Exam = () => {
                   />
                 </Stack>
               </Grid>
+              {errors.submit && (
+                <Grid item xs={12}>
+                  <FormHelperText error>{errors.submit}</FormHelperText>
+                </Grid>
+              )}
               <Grid item xs={12} sx={{ mt: "10px" }}>
                 <AnimateButton>
                   <Button

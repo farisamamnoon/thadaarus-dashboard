@@ -32,8 +32,8 @@ const EventsGroups = Loadable(lazy(() => import("pages/events/eventGroups")));
 const EventsAddMark = Loadable(lazy(() => import("pages/events/eventAddMarksForm")));
 
 const Exam = Loadable(lazy(() => import("pages/exam")));
-const ExamAdd = Loadable(lazy(() => import("pages/exam/timetableForm")));
-const ExamEdit = Loadable(lazy(() => import("pages/exam/timetableEditForm")));
+const ExamAdd = Loadable(lazy(() => import("pages/exam/form")));
+const ExamEdit = Loadable(lazy(() => import("pages/exam/editForm")));
 const ExamMarks = Loadable(lazy(() => import("pages/exam/examMarks")));
 const ExamMarksAdd = Loadable(lazy(() => import("pages/exam/markForm")));
 
@@ -94,11 +94,11 @@ const MainRoutes = () => {
         element: <ClassEdit />,
       },
       {
-        path: "homework",
+        path: "class/:id/homework",
         element: <HomeWork />,
       },
       {
-        path: "homework/add",
+        path: "class/:classId/homework/add",
         element: <HomeWorkAdd />,
       },
       {
@@ -106,23 +106,23 @@ const MainRoutes = () => {
         element: <HomeWorkEdit />,
       },
       {
-        path: "exam",
+        path: "class/:id/exam",
         element: <Exam />,
       },
       {
-        path: "exam/add",
+        path: "class/:id/exam/add",
         element: <ExamAdd />,
       },
       {
-        path: "exam/:id/edit",
+        path: "class/:classId/exam/:id/edit",
         element: <ExamEdit />,
       },
       {
-        path: "exam/marks",
+        path: "class/:classId/student/:id/marks",
         element: <ExamMarks />,
       },
       {
-        path: "exam/marks/add",
+        path: "class/:classId/student/:id/marks/add",
         element: <ExamMarksAdd />,
       },
 
@@ -143,11 +143,11 @@ const MainRoutes = () => {
         element: <Fees />,
       },
       {
-        path: "fees/add",
+        path: "fees/student/:id",
         element: <FeesAdd />,
       },
       {
-        path: "student",
+        path: "class/:classId/student",
         element: <Student />,
       },
       {

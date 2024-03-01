@@ -10,31 +10,56 @@ import {
   OutlinedInput,
   Stack,
   CircularProgress,
+  Select,
+  MenuItem,
+  LinearProgress,
 } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
 import { Formik, FieldArray } from "formik";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { base_url } from "utils/baseurl";
 import { fetchData } from "utils/fetchData";
 import Error from "utils/Error";
+import { useNavigate } from "../../../node_modules/react-router-dom/dist/index";
 // ============================|| CLASS - EDIT FORM ||============================ //
 
 const ClassEdit = () => {
   const classId = useParams().id;
-  const {
-    data: classData,
-    error: classIsError,
-    isPending: classIsPending,
-  } = useQuery({
-    queryKey: ["classData"],
-    queryFn: async () => await fetchData(`class/${classId}`),
+  const navigate = useNavigate();
+  const [classResult, teacherResult] = useQueries({
+    queries: [
+      {
+        queryKey: ["classData"],
+        queryFn: async () => {
+          try {
+            const data = await fetchData(`class/${classId}`);
+            return data;
+          } catch (error) {
+            throw new Error(`Failed to fetch class data: ${error.message}`);
+          }
+        },
+      },
+      {
+        queryKey: ["teacherData"],
+        queryFn: async () => {
+          try {
+            const data = await fetchData("teacher/get-all");
+            return data;
+          } catch (error) {
+            throw new Error(`Failed to fetch class data: ${error.message}`);
+          }
+        },
+      },
+    ],
   });
+  const { data: classData, error: classIsError, isPending: classIsPending } = classResult;
+  const { data: teacherData, error: teacherError, isPending: teacherIsPending } = teacherResult;
 
   if (classIsPending) {
     return <CircularProgress />;
@@ -43,7 +68,7 @@ const ClassEdit = () => {
     return <Error severity="error">There was an unexpected error</Error>;
   }
 
-  const { className, division, batch, fees, subjects } = classData;
+  const { className, division, batch, fees, subjects, teacherId } = classData;
   return (
     <>
       <Formik
@@ -53,19 +78,22 @@ const ClassEdit = () => {
           batch: batch,
           fees: fees,
           subjects: subjects,
+          teacherId: teacherId || "",
         }}
         validationSchema={Yup.object().shape({
-          className: Yup.number().required("Class is required"),
+          className: Yup.number(),
           division: Yup.string().max(255),
-          batch: Yup.number().required("Batch (year) is required"),
-          fees: Yup.number().required("Class Fees is required"),
-          subjects: Yup.array().required("Atleast one subject required"),
+          batch: Yup.number(),
+          teacherId: Yup.string(),
+          fees: Yup.number(),
+          subjects: Yup.array(),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log(values);
-            const response = await axios.post(`${base_url}/class/create`, values);
-            console.log(response.data.message);
+            const response = await axios.put(`${base_url}/class/${classId}`, values);
+            if (!response.data.success) setErrors({ submit: response.data.message });
+            else navigate(`/class`);
+
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -118,6 +146,36 @@ const ClassEdit = () => {
                   )}
                 </Stack>
               </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="teacherId">Teacher</InputLabel>
+                  <Select
+                    fullWidth
+                    id="teacherId"
+                    value={values.teacherId}
+                    name="teacherId"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.teacherId && errors.teacherId}
+                  >
+                    {teacherIsPending ? (
+                      <LinearProgress />
+                    ) : (
+                      teacherData.map((teacher) => (
+                        <MenuItem key={teacher._id} value={teacher._id}>
+                          {teacher.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                  {touched.teacherId && errors.teacherId && (
+                    <FormHelperText error id="helper-text-teacherId-signup">
+                      {errors.teacherId}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+
               <Grid item xs={6}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="batch">Batch Start</InputLabel>

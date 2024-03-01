@@ -1,3 +1,6 @@
+//react imports
+import { useNavigate } from "react-router-dom";
+
 // material-ui
 import {
   Button,
@@ -8,6 +11,7 @@ import {
   Stack,
   Select,
   MenuItem,
+  LinearProgress,
 } from "@mui/material";
 
 // third party
@@ -24,6 +28,13 @@ import { fetchData } from "utils/fetchData";
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Class = () => {
+  const navigate = useNavigate()
+  const {
+    data: teacherData,
+    error: teacherError,
+    isPending: teacherIsPending,
+  } = useQuery({ queryKey: ["teacherData"], queryFn: async () => fetchData("teacher/get-all") });
+
   return (
     <>
       <Formik
@@ -32,10 +43,12 @@ const Class = () => {
           division: "",
           batch: "",
           fees: "",
+          teacher: "",
           subjects: [""],
         }}
         validationSchema={Yup.object().shape({
           className: Yup.number().required("Class is required"),
+          teacher: Yup.string().required("Teacher is required"),
           division: Yup.string().max(255),
           batch: Yup.number().required("Batch (year) is required"),
           fees: Yup.number().required("Class Fees is required"),
@@ -43,9 +56,9 @@ const Class = () => {
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
-            console.log(values);
             const response = await axios.post(`${base_url}/class/create`, values);
-            console.log(response.data.message);
+            if (!response.data.success) setErrors({ submit: response.data.message });
+            else navigate(`/class`);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -95,6 +108,35 @@ const Class = () => {
                   {touched.division && errors.division && (
                     <FormHelperText error id="helper-text-division-signup">
                       {errors.division}
+                    </FormHelperText>
+                  )}
+                </Stack>
+              </Grid>
+              <Grid item xs={6}>
+                <Stack spacing={1}>
+                  <InputLabel htmlFor="teacher">Teacher</InputLabel>
+                  <Select
+                    fullWidth
+                    id="teacher"
+                    value={values.teacher}
+                    name="teacher"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.teacher && errors.teacher}
+                  >
+                    {teacherIsPending ? (
+                      <LinearProgress />
+                    ) : (
+                      teacherData.map((teacher, index) => (
+                        <MenuItem key={index} value={teacher._id}>
+                          {teacher.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                  {touched.teacher && errors.teacher && (
+                    <FormHelperText error id="helper-text-teacher-signup">
+                      {errors.teacher}
                     </FormHelperText>
                   )}
                 </Stack>
@@ -180,6 +222,11 @@ const Class = () => {
                   />
                 </Stack>
               </Grid>
+              {errors.submit && (
+                <Grid item xs={12}>
+                  <FormHelperText error>{errors.submit}</FormHelperText>
+                </Grid>
+              )}
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button

@@ -13,6 +13,7 @@ import {
   Chip,
   OutlinedInput,
   CircularProgress,
+  FormHelperText,
 } from "@mui/material";
 
 //third party
@@ -26,14 +27,16 @@ import { base_url } from "utils/baseurl";
 
 const AddStudentsModal = ({ handleStudentsDialogClose, addStudentsDialog, homeworkData }) => {
   const [students, setStudentsName] = useState([]);
-  const { _id } = homeworkData;
-  const { classId } = homeworkData;
+  const [formError, setFormError] = useState("");
+  const { _id, classId } = homeworkData;
+
+  useEffect(() => setStudentsName(homeworkData?.students.map((s) => s._id)), [homeworkData]);
 
   const { data, error, isPending } = useQuery({
-    queryKey: ["Students", classId?._id],
+    queryKey: ["Students", classId],
     queryFn: async () => {
       if (classId) {
-        return await fetchData(`student/${classId?._id}/get-students`);
+        return await fetchData(`student/class/${classId}`);
       }
       return null;
     },
@@ -41,8 +44,10 @@ const AddStudentsModal = ({ handleStudentsDialogClose, addStudentsDialog, homewo
   });
 
   const addStudents = async () => {
-    const values = {students: students}
+    const values = { students };
     const response = await axios.put(`${base_url}/homework/${_id}/edit`, values);
+    if (!response.data.success) setFormError(response.data.message);
+    else handleStudentsDialogClose();
   };
 
   const handleChange = (event) => {
@@ -53,6 +58,11 @@ const AddStudentsModal = ({ handleStudentsDialogClose, addStudentsDialog, homewo
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+  };
+
+  const getStudentName = (studentId) => {
+    const student = data.find((student) => student._id === studentId);
+    return student ? student.name : "Unknown";
   };
 
   return (
@@ -83,8 +93,8 @@ const AddStudentsModal = ({ handleStudentsDialogClose, addStudentsDialog, homewo
               input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
               renderValue={(selected) => (
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
+                  {selected.map((studentId) => (
+                    <Chip key={studentId} label={getStudentName(studentId)} />
                   ))}
                 </Box>
               )}
@@ -98,8 +108,9 @@ const AddStudentsModal = ({ handleStudentsDialogClose, addStudentsDialog, homewo
           </Box>
         )}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Button onClick={addStudents}>Save</Button>
           <Button onClick={handleStudentsDialogClose}>Cancel</Button>
+          <FormHelperText>{formError}</FormHelperText>
+          <Button onClick={addStudents}>Save</Button>
         </Box>
       </Box>
     </Modal>

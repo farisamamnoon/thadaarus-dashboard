@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 
 //project imports
 import { fetchData } from "utils/fetchData";
-import { addFees } from "utils/addFees";
+import { addFees, getBalance } from "utils/fees";
 
 function Fees() {
   const buttonRef = useRef(null);
@@ -26,10 +26,6 @@ function Fees() {
     page: 0,
     pageSize: 15,
   });
-
-  const getBalance = (classTotal, paid, discount) => {
-    return ( classTotal - (paid + discount) )
-  }
 
   const {
     data: studentData,
@@ -184,7 +180,7 @@ function Fees() {
           pagination
           sortingMode="server"
           paginationMode="server"
-          pageSizeOptions={[2]}
+          //pageSizeOptions={[2]}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           slotProps={{

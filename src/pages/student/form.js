@@ -54,6 +54,7 @@ const Student = () => {
           prevClass: "",
           prevMadrasa: "",
           remarks: "",
+          submit: "",
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string().max(255).required("Name is required"),
@@ -67,11 +68,14 @@ const Student = () => {
           prevMadrasa: Yup.string(),
           remarks: Yup.string().max(255),
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue, resetForm }) => {
           try {
             const response = await axios.post(`${base_url}/student/create`, values);
-            // console.log(response.data.message);
-            alert(response.data.message);
+            if(!response.data.success) setErrors({submit: response.data.message})
+            else {
+              setErrors({success: response.data.message});
+              resetForm();
+            }
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {

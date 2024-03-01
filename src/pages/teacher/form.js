@@ -1,3 +1,6 @@
+//react imports
+import { useNavigate } from "react-router-dom";
+
 // material-ui
 import {
   Button,
@@ -19,62 +22,33 @@ import axios from "axios";
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { base_url } from "utils/baseurl";
-import { fetchData } from "utils/fetchData";
-import { useQuery } from "@tanstack/react-query";
-import Progress from "utils/Progress";
-import Error from "utils/Error";
 // ============================|| TEACHER-ADDFORM ||============================ //
 
 const Teacher = () => {
-  const {
-    data: classes,
-    error,
-    isPending,
-  } = useQuery({
-    querykey: ["classData"],
-    queryFn: async () => await fetchData("class/get-all"),
-  });
-  if (error) {
-    return <Error severity="error">There was an unexpected error</Error>;
-  }
+  const navigate = useNavigate();
 
   return (
     <Formik
       initialValues={{
         name: "",
         age: "",
-        classId: "",
         email: "",
         phone: "",
-        subjects: [
-          {
-            classId: "",
-            subjectId: "",
-          },
-        ],
         submit: null,
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string().max(255).required("Name is required"),
         age: Yup.number().typeError("Enter a Valid age").required("Age is required"),
         email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-        classId: Yup.string().required("Assign a class for the teacher"),
         phone: Yup.number()
           .typeError("Enter a valid phone number")
           .required("Phone Number is required"),
-        subjects: Yup.array().of(
-          Yup.object().shape({
-            classId: Yup.string().required("required"),
-            subjectId: Yup.string(),
-          })
-        ),
       })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
         try {
           const response = await axios.post(`${base_url}/teacher/create`, values);
-          // console.log(response.data.message);
-          setFieldValue("success", response.data.message, false);
-          console.log(values.success);
+          if (!response.data.success) setErrors({ submit: response.data.message });
+          else navigate(`/teacher`);
           setStatus({ success: false });
           setSubmitting(false);
         } catch (err) {
@@ -125,30 +99,6 @@ const Teacher = () => {
                     {errors.age}
                   </FormHelperText>
                 )}
-              </Stack>
-            </Grid>
-            <Grid item xs={6}>
-              <Stack spacing={1}>
-                <InputLabel htmlFor="classId">Class</InputLabel>
-                <Select
-                  fullWidth
-                  id="classId"
-                  value={values.classId}
-                  name="classId"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  error={touched.classId && errors.classId}
-                >
-                  {isPending ? (
-                    <LinearProgress />
-                  ) : (
-                    classes.map((classItem, index) => (
-                      <MenuItem key={index} value={classItem._id}>
-                        {classItem.className}
-                      </MenuItem>
-                    ))
-                  )}
-                </Select>
               </Stack>
             </Grid>
             <Grid item xs={6}>

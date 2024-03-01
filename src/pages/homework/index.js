@@ -17,18 +17,43 @@ import { formatDate } from "utils/formatDate";
 import { base_url } from "utils/baseurl";
 import AddStudentsModal from "./addStudentsModal";
 import modalStyle from "../../themes/modalStyle";
+import { useParams } from "../../../node_modules/react-router-dom/dist/index";
+import Error from "utils/Error";
+import Progress from "utils/Progress";
+import { IconButton } from "../../../node_modules/@mui/material/index";
+import AddIcon from "@mui/icons-material/Add";
 
 function HomeWork() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [addStudentsDialog, setAddStudentsDialog] = useState(false);
   const [homeworkData, setHomeworkData] = useState("");
+  const classId = useParams().id;
+
+  const {
+    data: rows,
+    refetch,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["homeworkData"],
+    queryFn: async () => await fetchData(`homework/class/${classId}`),
+  });
+
+  const deleteHomework = async () => {
+    const response = await axios.delete(`${base_url}/homework/${deleteId}`);
+    refetch();
+    setDeleteDialog(false);
+  };
 
   const handleStudentsDialogOpen = (row) => {
     setAddStudentsDialog(true);
     setHomeworkData(row);
   };
-  const handleStudentsDialogClose = () => setAddStudentsDialog(false);
+  const handleStudentsDialogClose = () => {
+    setAddStudentsDialog(false);
+    refetch();
+  };
 
   const handleDeleteOpen = (row) => {
     setDeleteDialog(true);
@@ -36,34 +61,17 @@ function HomeWork() {
   };
   const handleDeleteClose = () => setDeleteDialog(false);
 
-  //api call
-  const deleteHomework = async () => {
-    const response = await axios.delete(`${base_url}/homework/${deleteId}`);
-    window.location.reload();
-    setDeleteDialog(false);
-  };
-
-  const {
-    data: homeworks,
-    error,
-    isPending,
-  } = useQuery({
-    queryKey: ["homeworkData"],
-    queryFn: async () => await fetchData("homework/get-all"),
-  });
-
   if (error) {
-    console.log("There has been an error");
+    return <Error severity="error">An unexpected error occured</Error>;
   }
   if (isPending) {
-    return <p>Loading...</p>;
+    return <Progress />;
   }
-  const rows = homeworks;
 
   const columns = [
     {
-      flex: 1,
-      minWidth: 290,
+      flex: 0.1,
+      // minWidth: 290,
       field: "date",
       headerName: "Date",
       sortable: false,
@@ -82,8 +90,8 @@ function HomeWork() {
       },
     },
     {
-      flex: 1,
-      minWidth: 290,
+      flex: 0.3,
+      // minWidth: 290,
       field: "homework",
       headerName: "Home Work",
       sortable: false,
@@ -102,28 +110,8 @@ function HomeWork() {
       },
     },
     {
-      flex: 1,
-      minWidth: 290,
-      field: "class",
-      headerName: "Class",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.classId.className}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 1,
-      minWidth: 290,
+      flex: 0.1,
+      // minWidth: 290,
       field: "subject",
       headerName: "Subject",
       sortable: false,
@@ -140,8 +128,8 @@ function HomeWork() {
       },
     },
     {
-      flex: 1,
-      minWidth: 290,
+      flex: 0.3,
+      // minWidth: 290,
       field: "students",
       headerName: "Completed Students",
       sortable: false,
@@ -150,19 +138,22 @@ function HomeWork() {
       renderCell: (params) => {
         const { row } = params;
         return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <IconButton variant="outlined" onClick={() => handleStudentsDialogOpen(row)}>
+              <AddIcon />
+            </IconButton>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.students.map(student => student.name).join(", ")}
+              {row?.students?.map((s) => s.name).join(", ")}
             </Typography>
           </Box>
         );
       },
     },
     {
-      flex: 1,
-      minWidth: 290,
+      flex: 0.2,
+      // minWidth: 290,
       field: "actions",
-      headerName: "",
+      headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
 
@@ -171,25 +162,12 @@ function HomeWork() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "row" }} gap={2}>
-            <Button variant="contained" onClick={() => handleStudentsDialogOpen(row)}>
-              Add Students
+            <Button component={Link} to={`${row._id}/edit`}>
+              <EditOutlined />
             </Button>
-            <Button
-              variant="outlined"
-              startIcon={<EditOutlined />}
-              component={Link}
-              to={`${row._id}/edit`}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="outlined"
-              color="error"
-              startIcon={<DeleteOutlined />}
-              onClick={() => handleDeleteOpen(row)}
-            >
-              Delete
-            </Button>
+            <IconButton variant="outlined" color="error" onClick={() => handleDeleteOpen(row)}>
+              <DeleteOutlined />
+            </IconButton>
           </Box>
         );
       },
@@ -210,7 +188,12 @@ function HomeWork() {
           title="Home Works"
           action={
             <div>
-              <Button size="medium" variant="contained" component={Link} to={`add`}>
+              <Button
+                size="medium"
+                variant="contained"
+                component={Link}
+                to={`/class/${classId}/homework/add`}
+              >
                 Add HomeWork
               </Button>
             </div>
@@ -222,10 +205,10 @@ function HomeWork() {
           // rowCount={total}
           columns={columns}
           getRowId={(row) => row._id}
-          pagination
-          sortingMode="server"
-          paginationMode="server"
-          pageSizeOptions={[2]}
+          // pagination
+          // sortingMode="server"
+          // paginationMode="server"
+          //pageSizeOptions={[2]}
           // paginationModel={paginationModel}
           // onPaginationModelChange={setPaginationModel}
           slotProps={{
@@ -266,11 +249,13 @@ function HomeWork() {
         </Box>
       </Modal>
 
-      <AddStudentsModal
-        handleStudentsDialogClose={handleStudentsDialogClose}
-        addStudentsDialog={addStudentsDialog}
-        homeworkData={homeworkData}
-      />
+      {homeworkData && (
+        <AddStudentsModal
+          handleStudentsDialogClose={handleStudentsDialogClose}
+          addStudentsDialog={addStudentsDialog}
+          homeworkData={homeworkData}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 //react imports
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "../../../node_modules/react-router-dom/dist/index";
 
 // material-ui
 import {
@@ -17,84 +18,70 @@ import {
 // third party
 import * as Yup from "yup";
 import { Formik, FieldArray } from "formik";
-import { useQueries } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
 import { fetchData } from "utils/fetchData";
 import Error from "../../utils/Error";
+import { base_url } from "utils/baseurl";
 
 // ============================|| EXAM MARK - FORM ||============================ //
 
 const ExamMarks = () => {
-  const [selectedClass, setSelectedClass] = useState("");
-  const [studentsState, setStudents] = useState({});
+  const [exams, setExams] = useState([]);
+  const navigate = useNavigate();
+  const studentId = useParams().id;
+  
+  const classId = useParams().classId;
 
-  const [classes, students, exams] = useQueries({
-    queries: [
-      { queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") },
-      {
-        queryKey: ["studentData", selectedClass],
-        queryFn: async () => {
-          if (selectedClass) {
-            return await fetchData(`student/${selectedClass}/get-students`);
-          }
-          return null;
-        },
-        enabled: !!selectedClass,
-      },
-      {
-        queryKey: ["examData", selectedClass],
-        queryFn: async () => {
-          if (selectedClass) {
-            return await fetchData(`exam/class/${selectedClass}`);
-          }
-          return null;
-        },
-        enabled: !!selectedClass,
-      },
-    ],
+  const {
+    data: examData,
+    error: examError,
+    isPending: examIsPending,
+  } = useQuery({
+    queryKey: ["examData"],
+    queryFn: async () => await fetchData(`exam/class/${classId}`),
   });
-  const { data: classData, error: classError, isPending: classIsPending } = classes;
-  const { data: studentData, error: studentError, isPending: studentIsPending } = students;
-  const { data: examData, error: examError, isPending: examIsPending } = exams;
 
-  useEffect(() => {
-    setStudents(studentData);
-  }, [studentData]);
+  const toggleExam = (event) => {
+    const exam = examData.filter((e) => e._id == event.target.value);
+    setExams(exam[0].exams);
+  };
 
-  if (classError || studentError || examError) {
-    return <Error severity="error">There was an error</Error>;
-  }
+  if (examError) return <Error severity="error">An unexpected error occured</Error>;
 
   return (
     <>
       <Formik
         initialValues={{
-          class: "",
-          name: "",
+          examName: "",
           marks: [
             {
-              examId: "",
+              subject: "",
               mark: "",
             },
           ],
           submit: null,
         }}
-        validationSchema={Yup.object().shape({
-          class: Yup.string().required("Class is required"),
-          name: Yup.string().max(255).required("Student name is required"),
-          marks: Yup.array()
-            .of(
-              Yup.object().shape({
-                examId: Yup.string().max(155).required("Select an exam"),
-                mark: Yup.number().required("Enter a mark for the exam"),
-              })
-            )
-            .compact(),
-        })}
+        // validationSchema={Yup.object().shape({
+        //   examName: Yup.string().max(255).required("Exam name is required"),
+        //   marks: Yup.array()
+        //     .of(
+        //       Yup.object().shape({
+        //         subject: Yup.string().max(155).required("Select an exam"),
+        //         mark: Yup.number().max(50).required("Enter a mark for the exam"),
+        //       })
+        //     )
+        //     .compact(),
+        // })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
+            values = { ...values, studentId};
+            const response = await axios.post(`${base_url}/student/${studentId}/marks`, values);
+            if(!response.data.success) setErrors({submit: response.data.message})
+            else navigate(`/class/${classId}/student/${studentId}/marks`)
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {
@@ -110,79 +97,23 @@ const ExamMarks = () => {
             <Grid container spacing={3}>
               <Grid item xs={6}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="classId">Class</InputLabel>
-                  <Select
-                    id="classId"
-                    name="classId"
-                    value={values.classId}
-                    onChange={(e) => {
-                      handleChange(e);
-                      setSelectedClass(e.target.value);
-                    }}
-                    onBlur={handleBlur}
-                  >
-                    {classIsPending ? (
-                      <LinearProgress />
-                    ) : (
-                      classes &&
-                      classData?.map((classItem, index) => (
-                        <MenuItem key={index} value={classItem._id}>
-                          {classItem.className}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                  {touched.classId && errors.classId && (
-                    <FormHelperText error id="classId">
-                      {errors.classId}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="studentId">Student</InputLabel>
-                  <Select
-                    id="studentId"
-                    name="studentId"
-                    value={values.studentId}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  >
-                    {studentIsPending ? (
-                      <LinearProgress />
-                    ) : (
-                      studentsState?.map((item, index) => (
-                        <MenuItem key={index} value={item._id}>
-                          {item.name}
-                        </MenuItem>
-                      ))
-                    )}
-                  </Select>
-                  {touched.studentId && errors.studentId && (
-                    <FormHelperText error id="helper-text-studentId-signup">
-                      {errors.studentId}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
                   <InputLabel htmlFor="examName">Exam</InputLabel>
                   <Select
                     id="examName"
                     name="examName"
                     value={values.examName}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      handleChange(e);
+                      toggleExam(e);
+                    }}
                     onBlur={handleBlur}
                   >
                     {examIsPending ? (
                       <LinearProgress />
                     ) : (
-                      examData &&
-                      examData?.map((item, index) => (
-                        <MenuItem key={index} value={item._id}>
-                          {item.examName}
+                      examData.map((e, k) => (
+                        <MenuItem key={k} value={e._id}>
+                          {e.examName}
                         </MenuItem>
                       ))
                     )}
@@ -202,31 +133,35 @@ const ExamMarks = () => {
                       <div>
                         {values.marks.map((mark, index) => (
                           <div key={index}>
-                            <InputLabel htmlFor={`marks?.${index}.examId`}>Subject</InputLabel>
+                            <InputLabel htmlFor={`marks?.${index}.subject`}>Subject</InputLabel>
                             <Select
                               fullWidth
-                              id={`marks?.${index}.examId`}
-                              value={values.marks[index].examId}
-                              name={`marks.${index}.examId`}
+                              id={`marks?.${index}.subject`}
+                              value={values.marks[index].subject}
+                              name={`marks.${index}.subject`}
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              error={
-                                touched.marks[index].examId &&
-                                errors.marks[index].examId &&
-                                Boolean(touched.marks[index].examId && errors?.marks[index]?.examId)
-                              }
+                              // error={
+                              //   touched.mark.subject &&
+                              //   errors.mark.subject &&
+                              //   Boolean(touched.mark.subject && errors?.mark?.subject)
+                              // }
                             >
-                              {classData?.map((classItem, index) => (
-                                <MenuItem key={index} value={classItem._id}>
-                                  {classItem.className}
-                                </MenuItem>
-                              ))}
+                              {examIsPending ? (
+                                <LinearProgress />
+                              ) : (
+                                exams.map((s, k) => (
+                                  <MenuItem key={k} value={s.subjectId}>
+                                    {s.subjectId}
+                                  </MenuItem>
+                                ))
+                              )}
                             </Select>
-                            {touched.marks[index].examId && errors.marks[index].examId && (
+                            {/* {touched.marks[index].subject && errors.marks[index].subject && (
                               <FormHelperText error id="helper-text-phone-signup">
-                                {errors.marks[index].examId}
+                                {errors.marks[index].subject}
                               </FormHelperText>
-                            )}
+                            )} */}
                             <InputLabel htmlFor={`marks?.${index}.mark`} sx={{ mt: "10px" }}>
                               Mark
                             </InputLabel>
@@ -240,11 +175,11 @@ const ExamMarks = () => {
                               onChange={handleChange}
                               // error=?
                             />
-                            {touched.marks[index].mark && errors.marks[index].mark && (
+                            {/* {touched.marks[index].mark && errors.marks[index].mark && (
                               <FormHelperText error id="helper-text-phone-signup">
                                 {errors.marks[index].mark}
                               </FormHelperText>
-                            )}
+                            )} */}
                             <Button type="button" onClick={() => arrayHelpers.remove(index)}>
                               Remove
                             </Button>
@@ -252,7 +187,7 @@ const ExamMarks = () => {
                         ))}
                         <Button
                           type="button"
-                          onClick={() => arrayHelpers.push({ examId: "", mark: "" })}
+                          onClick={() => arrayHelpers.push({ subject: "", mark: "" })}
                         >
                           Add
                         </Button>

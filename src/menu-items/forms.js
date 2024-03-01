@@ -11,65 +11,6 @@ const icons = {
 // ==============================|| MENU ITEMS - EXTRA PAGES ||============================== //
 
 const forms = () => {
-  if (localStorage.getItem("role") == "Teacher") {
-    return {
-      id: "forms",
-      title: "Forms",
-      type: "group",
-      children: [
-        {
-          id: "student",
-          title: "Student",
-          type: "item",
-          url: "/student",
-          icon: icons.BookOutlined,
-        },
-        {
-          id: "class",
-          title: "Class",
-          type: "item",
-          url: "/class",
-          icon: icons.LoginOutlined,
-        },
-        {
-          id: "exam",
-          title: "Exam",
-          type: "item",
-          url: "/exam",
-          icon: icons.BulbOutlined,
-        },
-        {
-          id: "mark",
-          title: "Exam Marks",
-          type: "item",
-          url: "/exam/marks",
-          icon: icons.BookOutlined,
-        },
-        {
-          id: "homework",
-          title: "Home Works",
-          type: "item",
-          url: "/homework",
-          icon: icons.BulbOutlined,
-        },
-        {
-          id: "events",
-          title: "Events",
-          type: "item",
-          url: "/events",
-          icon: icons.BulbOutlined,
-        },
-        {
-          id: "fees",
-          title: "Fees",
-          type: "item",
-          url: "/fees",
-          icon: icons.BulbOutlined,
-        },
-      ],
-    };
-  }
-
   return {
     id: "forms",
     title: "Forms",
@@ -77,9 +18,9 @@ const forms = () => {
     children: [
       {
         id: "student",
-        title: "Student",
+        title: "Admissions",
         type: "item",
-        url: "/student",
+        url: "/student/add",
         icon: icons.BookOutlined,
       },
       {
@@ -95,27 +36,6 @@ const forms = () => {
         type: "item",
         url: "/class",
         icon: icons.LoginOutlined,
-      },
-      {
-        id: "exam",
-        title: "Exam",
-        type: "item",
-        url: "/exam",
-        icon: icons.BulbOutlined,
-      },
-      {
-        id: "mark",
-        title: "Exam Marks",
-        type: "item",
-        url: "/exam/marks",
-        icon: icons.BookOutlined,
-      },
-      {
-        id: "homework",
-        title: "Home Works",
-        type: "item",
-        url: "/homework",
-        icon: icons.BulbOutlined,
       },
       {
         id: "events",

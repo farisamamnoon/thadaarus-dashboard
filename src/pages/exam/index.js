@@ -1,6 +1,7 @@
 //react
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useParams } from "../../../node_modules/react-router-dom/dist/index";
 
 //ui imports
 import { DataGrid } from "@mui/x-data-grid";
@@ -19,18 +20,30 @@ import { base_url } from "utils/baseurl";
 import TimeTable from "./timeTable";
 import Error from "utils/Error";
 import Progress from "utils/Progress";
+import modalStyle from "../../themes/modalStyle";
+import { IconButton } from "../../../node_modules/@mui/material/index";
 
 function Exam() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [timetableDialog, setTimetableDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [timetableId, setTimetableId] = useState("");
-  // const [examData, setExamData ] = useState([]);
-
+  const classId = useParams().id;
+  
+  const {
+    data: rows,
+    error,
+    isPending,
+    refetch,
+  } = useQuery({
+    queryKey: ["examsData"],
+    queryFn: async () => await fetchData(`exam/class/${classId}`),
+  });
+  
   const deleteExam = async () => {
     const response = await axios.delete(`${base_url}/exam/${deleteId._id}`);
     setDeleteDialog(false);
-    window.location.reload();
+    refetch();
   };
 
   const handleDeleteOpen = (rowData) => {
@@ -50,34 +63,14 @@ function Exam() {
     setTimetableDialog(false);
     setTimetableId(rowData);
   };
-  const {
-    data: rows,
-    error,
-    isPending,
-  } = useQuery({
-    queryKey: ["examsData"],
-    queryFn: async () => fetchData("exam/get-all"),
-  });
 
   if (error) {
     return <Error severity="error">There was an unexpected error</Error>;
   }
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-
   const columns = [
     {
-      flex: 1,
+      flex: 0.5,
       // minWidth: 290,
       field: "examName",
       headerName: "Exam Name",
@@ -97,30 +90,10 @@ function Exam() {
       },
     },
     {
-      flex: 1,
+      flex: 0.5,
       // minWidth: 290,
-      field: "classId",
-      headerName: "Class",
-      sortable: false,
-      disableColumnMenu: true,
-
-      renderCell: (params) => {
-        const { row } = params;
-
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row.classId.className}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      flex: 0.275,
-      minWidth: 290,
       field: "action",
-      headerName: "",
+      headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
 
@@ -133,22 +106,12 @@ function Exam() {
               <Button size="medium" variant="contained" onClick={() => handleTimetableOpen(row)}>
                 View TimeTable
               </Button>
-              <Button
-                variant="outlined"
-                startIcon={<EditOutlined />}
-                component={Link}
-                to={`${row._id}/edit`}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={<DeleteOutlined />}
-                color="error"
-                onClick={() => handleDeleteOpen(row)}
-              >
-                Delete
-              </Button>
+              <IconButton variant="outlined" component={Link} to={`/class/${classId}/exam/${row._id}/edit`}>
+                <EditOutlined />
+              </IconButton>
+              <IconButton variant="contained" color="error" onClick={() => handleDeleteOpen(row)}>
+                <DeleteOutlined />
+              </IconButton>
             </Box>
           </>
         );
@@ -165,27 +128,19 @@ function Exam() {
         <Link href={/faq}>FAQ</Link>
         <Typography>Manage </Typography>
       </Breadcrumbs> */}
-      <Box display="flex" sx={{ flexDirection: "row-reverse", mb: "2px" }}>
-        <Button size="medium" variant="contained" component={Link} to={`add`}>
-          Add Exam
-        </Button>
-      </Box>
       <Box boxShadow={4} sx={{ borderRadius: 4 }}>
         <CardHeader
           sx={{ bgcolor: "secondary.200" }}
-          title="Time Table for First Terminal Examination 2013(class specific)"
+          title={`Exams for Class `}/*${rows[0]?.classId?.className || 'Unknown Class'}*/
           action={
-            <div>
-              <Button
-                size="medium"
-                sx={{ margin: 2 }}
-                variant="contained"
-                component={Link}
-                to={`marks`}
-              >
-                View Marks
-              </Button>
-            </div>
+            <Button
+              size="medium"
+              variant="contained"
+              component={Link}
+              to={`/class/${classId}/exam/add`}
+            >
+              Add Exam
+            </Button>
           }
         />
         {isPending ? (
@@ -197,10 +152,7 @@ function Exam() {
             // rowCount={total}
             columns={columns}
             getRowId={(row) => row._id}
-            pagination
-            sortingMode="server"
-            paginationMode="server"
-            pageSizeOptions={[2]}
+            //pageSizeOptions={[2]}
             // paginationModel={paginationModel}
             // onPaginationModelChange={setPaginationModel}
             slotProps={{
@@ -229,13 +181,12 @@ function Exam() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h5" component="h2">
-            Delete Class?
+            Delete Exam?
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure you want to delete {deleteId.examName} for Class{" "}
-            {deleteId.classId?.className} ?
+            Are you sure you want to delete {deleteId.examName}
           </Typography>
           <Button onClick={deleteExam}>Yes</Button>
           <Button onClick={handleDeleteClose}>No</Button>
@@ -249,7 +200,7 @@ function Exam() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h4" component="h2">
             {timetableId.examName} for Class {timetableId.classId?.className}
           </Typography>

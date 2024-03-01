@@ -238,27 +238,6 @@ function ExamMarks() {
           rows={rows || []}
           columns={columns}
           getRowId={(row) => row._id}
-          pagination
-          sortingMode="server"
-          paginationMode="server"
-          pageSizeOptions={[2]}
-          // paginationModel={paginationModel}
-          // onPaginationModelChange={setPaginationModel}
-          slotProps={{
-            baseButton: {
-              size: "medium",
-              variant: "tonal",
-            },
-            toolbar: {
-              csvOptions: { disableToolbarButton: true },
-              printOptions: { disableToolbarButton: true },
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 1000 },
-              // value: searchValue,
-              // clearSearch: () => handleSearch(""),
-              // onChange: (event) => handleSearch(event.target.value),
-            },
-          }}
         />
       </Card>
 

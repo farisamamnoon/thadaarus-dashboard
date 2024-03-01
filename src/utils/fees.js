@@ -7,3 +7,7 @@ export const addFees = (fees) => {
   });
   return { totalFees, totalDiscount };
 };
+
+export const getBalance = (classTotal, paid, discount) => {
+  return ( classTotal - (paid + discount) )
+}

@@ -5,7 +5,7 @@ export const formatDate = (inputDate) => {
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
   const year = date.getFullYear();
 
-  return `${day} ${month} ${year}`;
+  return `${day}-${month}-${year}`;
 };
 
 export const formatStringToDate = (dateString) => {

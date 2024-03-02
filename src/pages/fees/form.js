@@ -46,7 +46,6 @@ const FeesForm = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             const response = await axios.post(`${base_url}/fees/create`, values);
-            console.log(response.data);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {

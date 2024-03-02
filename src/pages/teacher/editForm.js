@@ -98,9 +98,6 @@ const Teacher = () => {
       onSubmit={async (values, { setErrors, setStatus, setSubmitting, setFieldValue }) => {
         try {
           const response = await axios.put(`${base_url}/teacher/${teacherId}/edit`, values);
-          alert(response.data.message);
-          setFieldValue("success", response.data.message, false);
-          console.log(values.success);
           setStatus({ success: false });
           setSubmitting(false);
         } catch (err) {

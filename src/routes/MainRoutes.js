@@ -26,7 +26,7 @@ const TeacherAdd = Loadable(lazy(() => import("pages/teacher/form")));
 const TeacherEdit = Loadable(lazy(() => import("pages/teacher/editForm")));
 
 const Events = Loadable(lazy(() => import("pages/events")));
-const EventsAdd = Loadable(lazy(() => import("pages/events/eventAddForm")));
+const EventsAdd = Loadable(lazy(() => import("pages/events/form")));
 const EventsStudents = Loadable(lazy(() => import("pages/events/eventStudents")));
 const EventsGroups = Loadable(lazy(() => import("pages/events/eventGroups")));
 const EventsAddMark = Loadable(lazy(() => import("pages/events/eventAddMarksForm")));

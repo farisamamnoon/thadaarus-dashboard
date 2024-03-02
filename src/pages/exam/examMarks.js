@@ -3,69 +3,46 @@ import { Card, CardHeader, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useQuery } from "@tanstack/react-query";
+import { fetchData } from "utils/fetchData";
+import { useParams } from "react-router-dom";
+import Error from "utils/Error";
+import MarksChart from "pages/testForm/index";
 
 function ExamMarks() {
-  const rows = [
-    {
-      _id: 1,
-      name: "Faris",
-      sub1: "Thaareekh",
-      sub2: "Fiqh",
-      sub3: "Quran",
-      sub4: "Arabic",
-      total: "350/400",
-    },
-    {
-      _id: 2,
-      name: "Faris",
-      sub1: "Thaareekh",
-      sub2: "Fiqh",
-      sub3: "Quran",
-      sub4: "Arabic",
-      total: "350/400",
-    },
-    {
-      _id: 3,
-      name: "Faris",
-      sub1: "Thaareekh",
-      sub2: "Fiqh",
-      sub3: "Quran",
-      sub4: "Arabic",
-      total: "350/400",
-    },
-    {
-      _id: 4,
-      name: "Faris",
-      sub1: "Thaareekh",
-      sub2: "Fiqh",
-      sub3: "Quran",
-      sub4: "Arabic",
-      total: "350/400",
-    },
-  ];
+  const studentId = useParams().id;
+  const {
+    data: marksData,
+    error: marksError,
+    isPending: marksIsPending,
+  } = useQuery({
+    queryKey: ["marksData"],
+    queryFn: async () => fetchData(`student/${studentId}/marks`),
+  });
+  if (marksError) return <Error severity="error">An unexpected error occured</Error>;
 
-  const columns = Object.keys(rows[0])
-    .filter((key) => key !== "_id")
-    .map((key) => ({
-      flex: 1,
-      minWidth: 290,
-      field: key,
-      headerName: key.charAt(0).toUpperCase() + key.slice(1),
-      sortable: false,
-      disableColumnMenu: true,
+  // const columns = Object.keys(rows[0])
+  //   .filter((key) => key !== "_id")
+  //   .map((key) => ({
+  //     flex: 1,
+  //     minWidth: 290,
+  //     field: key,
+  //     headerName: key.charAt(0).toUpperCase() + key.slice(1),
+  //     sortable: false,
+  //     disableColumnMenu: true,
 
-      renderCell: (params) => {
-        const { row } = params;
+  //     renderCell: (params) => {
+  //       const { row } = params;
 
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row[key]}
-            </Typography>
-          </Box>
-        );
-      },
-    }));
+  //       return (
+  //         <Box sx={{ display: "flex", flexDirection: "column" }}>
+  //           <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+  //             {row[key]}
+  //           </Typography>
+  //         </Box>
+  //       );
+  //     },
+  //   }));
   // const columns = [
   //   {
   //     flex: 1,
@@ -224,7 +201,7 @@ function ExamMarks() {
       </Breadcrumbs> */}
       <Card>
         <CardHeader
-          title="Exam Timetable"
+          title="Exam Marks"
           action={
             <div>
               <Button size="medium" variant="contained" component={Link} to={`add`}>
@@ -233,14 +210,9 @@ function ExamMarks() {
             </div>
           }
         />
-        <DataGrid
-          autoHeight
-          rows={rows || []}
-          columns={columns}
-          getRowId={(row) => row._id}
-        />
+        {/* <DataGrid autoHeight rows={rows || []} columns={columns} getRowId={(row) => row._id} /> */}
+        <MarksChart id={studentId} />
       </Card>
-
       {/* {openDeleteDialog && (
         <DeleteConfirmationDialog
           id={dialogId}

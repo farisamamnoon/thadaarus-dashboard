@@ -98,7 +98,6 @@ const HomeWorkEdit = () => {
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             const response = await axios.put(`${base_url}/homework/${id}/edit`, values);
-            console.log(response.data);
             setStatus({ success: false });
             setSubmitting(false);
           } catch (err) {

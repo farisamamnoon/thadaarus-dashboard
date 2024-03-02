@@ -4,85 +4,62 @@ import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import DoneIcon from "@mui/icons-material/Done";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "utils/formatDate";
+import { Modal } from "@mui/material/index";
+import modalStyle from "themes/modalStyle";
+import axios from "axios";
+import { base_url } from "utils/baseurl";
+import { Alert, Snackbar, Switch } from "../../../node_modules/@mui/material/index";
 
 function Events() {
-  const buttonRef = useRef(null);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [dialogId, setDialogId] = useState("");
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const [error, setError] = useState("gouii");
+  const [openError, setOpenError] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  const [total, setTotal] = useState(0);
-  const [searchValue, setSearchValue] = useState("");
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 15,
+  const {
+    data: eventsData,
+    error: eventsError,
+    isPending: eventsIsPending,
+    refetch,
+  } = useQuery({
+    queryKey: ["eventsData"],
+    queryFn: async () => await fetchData("event"),
   });
 
-  // const [rows, setRows] = useState([]);
-
-  const rows = [
-    { _id: 1, event: "Song", subject: "Arabic" },
-    { _id: 2, event: "Recitatiion", subject: "Arabic" },
-    { _id: 3, event: "Quiz", subject: "Arabic" },
-  ];
-  // const query = useDebounce(searchValue, 1000);
-
-  // const fetchTableData = useCallback(
-  //   async (sort, q) => {
-  //     await dataTableApi
-  //       .getFaqDataTable({ query: { sort, q, page: paginationModel.page + 1 } })
-  //       .then((res) => {
-  //         setTotal(res.data.data.totalCount);
-  //         setRows(res.data.data.faqs);
-  //       });
-  //   },
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [paginationModel]
-  // );
-
-  // useEffect(() => {
-  //   fetchTableData("asc", query);
-  // }, [fetchTableData, query]);
-
-  const handleSearch = (value) => {
-    setSearchValue(value);
+  const deleteEvent = async () => {
+    try {
+      setDeleting(true);
+      await axios.delete(`${base_url}/event/${deleteId._id}`);
+      setDeleting(false)
+      setDeleteDialog(false);
+      refetch();
+    } catch (err) {
+      setError(err.response.data.message || "An unexpected error occured");
+      setDeleting(false);
+      setOpenError(true);
+      setDeleteDialog(false);
+    }
   };
 
-  const deleteFaq = (id) => {
-    setOpenDeleteDialog(true);
-    setDialogId(id);
+  const handleDeleteOpen = (rowData) => {
+    setDeleteDialog(true);
+    setDeleteId(rowData);
   };
-
-  // const deleteFaqData = async (id) => {
-  //   if (buttonRef.current) {
-  //     buttonRef.current.disabled = true;
-  //   }
-
-  //   try {
-  //     const response = await faqApi.deleteFaq(id, reqAuthHeader());
-  //     toast.success(response?.data?.message);
-  //     window.location.reload();
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       if (error.response) {
-  //         toast.error(error.response.data.message);
-  //       } else {
-  //         toast.error("An error occurred.");
-  //       }
-  //     } else {
-  //       toast.error("An unexpected error occurred.");
-  //     }
-  //     if (buttonRef.current) {
-  //       buttonRef.current.disabled = false;
-  //     }
-  //   } finally {
-  //     setOpenDeleteDialog(false);
-  //   }
-  // };
+  const handleDeleteClose = (rowData) => {
+    setDeleteDialog(false);
+    setDeleteId(rowData);
+  };
 
   const columns = [
     {
       flex: 1,
-      minWidth: 290,
       field: "event",
       headerName: "Event Name",
       sortable: false,
@@ -93,8 +70,8 @@ function Events() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Button size="medium" component={Link} to="addmarks">
-              {row.event}
+            <Button size="medium" component={Link} to={`${row._id}`}>
+              {row.name}
             </Button>
           </Box>
         );
@@ -102,9 +79,8 @@ function Events() {
     },
     {
       flex: 1,
-      minWidth: 290,
-      field: "gold",
-      headerName: "Gold",
+      field: "date",
+      headerName: "Date",
       sortable: false,
       disableColumnMenu: true,
 
@@ -113,12 +89,8 @@ function Events() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.gold}
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {formatDate(row.date)}
             </Typography>
           </Box>
         );
@@ -126,9 +98,8 @@ function Events() {
     },
     {
       flex: 1,
-      minWidth: 290,
-      field: "silver",
-      headerName: "Silver",
+      field: "isFinished",
+      headerName: "Finished",
       sortable: false,
       disableColumnMenu: true,
 
@@ -136,13 +107,9 @@ function Events() {
         const { row } = params;
 
         return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.silver}
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {row?.isFinished ? <DoneIcon /> : <AccessTimeIcon />}
             </Typography>
           </Box>
         );
@@ -150,9 +117,8 @@ function Events() {
     },
     {
       flex: 1,
-      minWidth: 290,
-      field: "bronze",
-      headerName: "Bronze",
+      field: "actions",
+      headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
 
@@ -160,14 +126,13 @@ function Events() {
         const { row } = params;
 
         return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography
-              noWrap
-              variant="body2"
-              sx={{ color: "text.primary", fontWeight: 600 }}
-            >
-              {row.bronze}
-            </Typography>
+          <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
+            <IconButton variant="outlined" component={Link} to={`/student/${row._id}/edit`}>
+              <EditOutlined />
+            </IconButton>
+            <IconButton variant="contained" color="error" onClick={() => handleDeleteOpen(row)}>
+              <DeleteOutlined />
+            </IconButton>
           </Box>
         );
       },
@@ -189,12 +154,7 @@ function Events() {
           title="Events"
           action={
             <div>
-              <Button
-                size="medium"
-                variant="contained"
-                component={Link}
-                to={`add`}
-              >
+              <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add Event
               </Button>
             </div>
@@ -202,44 +162,38 @@ function Events() {
         />
         <DataGrid
           autoHeight
-          rows={rows || []}
-          rowCount={total}
+          rows={eventsData || []}
           columns={columns}
           getRowId={(row) => row._id}
-          pagination
-          sortingMode="server"
-          paginationMode="server"
-          //pageSizeOptions={[2]}
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
-          slotProps={{
-            baseButton: {
-              size: "medium",
-              variant: "tonal",
-            },
-            toolbar: {
-              csvOptions: { disableToolbarButton: true },
-              printOptions: { disableToolbarButton: true },
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 1000 },
-              value: searchValue,
-              clearSearch: () => handleSearch(""),
-              onChange: (event) => handleSearch(event.target.value),
-            },
-          }}
         />
       </Box>
-
-      {/* {openDeleteDialog && (
-        <DeleteConfirmationDialog
-          id={dialogId}
-          buttonRef={buttonRef}
-          name=""
-          open={true}
-          setOpen={setOpenDeleteDialog}
-          // deleteFunction={deleteFaqData}
-        />
-      )} */}
+      <Modal
+        open={deleteDialog}
+        onClose={handleDeleteClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h3" component="h2">
+            Delete Event
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure you want to delete {deleteId.name}?
+          </Typography>
+          <Button onClick={handleDeleteClose} disabled={deleting}>No</Button>
+          <Button onClick={deleteEvent} disabled={deleting}>Yes</Button>
+        </Box>
+      </Modal>
+      <Snackbar open={openError} autoHideDuration={6000} onClose={() => setOpenError(false)}>
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

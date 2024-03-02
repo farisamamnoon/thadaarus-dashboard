@@ -18,6 +18,7 @@ import { fetchData } from "utils/fetchData";
 import { base_url } from "utils/baseurl";
 import Error from "utils/Error";
 import Progress from "utils/Progress";
+import { IconButton } from "../../../node_modules/@mui/material/index";
 
 function Teacher() {
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -54,8 +55,7 @@ function Teacher() {
 
   const columns = [
     {
-      flex: 0.275,
-      minWidth: 290,
+      flex: 0.200,
       field: "teachername",
       headerName: "Teacher Name",
       sortable: false,
@@ -74,8 +74,7 @@ function Teacher() {
       },
     },
     {
-      flex: 0.275,
-      minWidth: 290,
+      flex: 0.150,
       field: "contact",
       headerName: "Contact No.",
       sortable: false,
@@ -94,10 +93,9 @@ function Teacher() {
       },
     },
     {
-      flex: 0.275,
-      minWidth: 290,
-      field: "class",
-      headerName: "Class",
+      flex: 0.200,
+      field: "email",
+      headerName: "Email",
       sortable: false,
       disableColumnMenu: true,
 
@@ -107,17 +105,16 @@ function Teacher() {
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
-              {row?.class?.className}
+              {row?.email}
             </Typography>
           </Box>
         );
       },
     },
     {
-      flex: 0.275,
-      minWidth: 290,
+      flex: 0.150,
       field: "actions",
-      headerName: "",
+      headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
 
@@ -126,22 +123,20 @@ function Teacher() {
 
         return (
           <Box sx={{ display: "flex", flexDirection: "row", spacing: "1px" }} gap={2}>
-            <Button
+            <IconButton
               variant="outlined"
-              startIcon={<EditOutlined />}
               component={Link}
               to={`${row._id}/edit`}
             >
-              Edit
-            </Button>
-            <Button
+              <EditOutlined />
+            </IconButton>
+            <IconButton
               variant="contained"
-              startIcon={<DeleteOutlined />}
               color="error"
               onClick={() => handleDeleteOpen(row)}
             >
-              Delete
-            </Button>
+              <DeleteOutlined />
+            </IconButton>
           </Box>
         );
       },
@@ -189,26 +184,26 @@ function Teacher() {
             columns={columns}
             getRowId={(row) => row._id}
             // pagination
-            sortingMode="server"
+            // sortingMode="server"
             // paginationMode="server"
             // //pageSizeOptions={[2]}
             // paginationModel={paginationModel}
             // onPaginationModelChange={setPaginationModel}
-            slotProps={{
-              baseButton: {
-                size: "medium",
-                variant: "tonal",
-              },
-              toolbar: {
-                csvOptions: { disableToolbarButton: true },
-                printOptions: { disableToolbarButton: true },
-                showQuickFilter: true,
-                quickFilterProps: { debounceMs: 1000 },
+            // slotProps={{
+            //   baseButton: {
+            //     size: "medium",
+            //     variant: "tonal",
+            //   },
+            //   toolbar: {
+            //     csvOptions: { disableToolbarButton: true },
+            //     printOptions: { disableToolbarButton: true },
+            //     showQuickFilter: true,
+            //     quickFilterProps: { debounceMs: 1000 },
                 // value: searchValue,
                 // clearSearch: () => handleSearch(""),
                 // onChange: (event) => handleSearch(event.target.value),
-              },
-            }}
+            //   },
+            // }}
           />
         )}
       </Card>

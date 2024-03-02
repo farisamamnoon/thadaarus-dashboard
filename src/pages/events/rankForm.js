@@ -1,22 +1,5 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
 // material-ui
-import {
-  // Box,
-  Button,
-  Divider,
-  // FormControl,
-  FormHelperText,
-  Grid,
-  Link,
-  // IconButton,
-  // InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
 
 // third party
 import * as Yup from "yup";
@@ -24,52 +7,25 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-// import { TextareaAutosize } from '../../../node_modules/@mui/material/index';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
-const Events = () => {
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
-
+const Ranks = () => {
   return (
     <>
       <Formik
         initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
+          first: "",
+          second: "",
+          third: "",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
           firstname: Yup.string().max(255).required("First Name is required"),
           lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string()
-            .email("Must be a valid email")
-            .max(255)
-            .required("Email is required"),
+          email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
@@ -84,15 +40,7 @@ const Events = () => {
           }
         }}
       >
-        {({
-          errors,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          touched,
-          values,
-        }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
@@ -176,4 +124,4 @@ const Events = () => {
   );
 };
 
-export default Events;
+export default Ranks;

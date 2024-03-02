@@ -1,7 +1,5 @@
 //react imports
 import { useState } from "react";
-//react imports
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //ui imports
@@ -12,9 +10,6 @@ import { Grid } from "../../../node_modules/@mui/material/index";
 
 //third party imports
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-
-//project imports
 import axios from "axios";
 
 //project imports
@@ -30,8 +25,6 @@ const Class = () => {
   const [deleteId, setDeleteId] = useState("");
   
   const {
-    data: rows,
-    refetch,
     data: rows,
     refetch,
     error,
@@ -117,7 +110,6 @@ const Class = () => {
     </div>
   );
 };
-};
 
-export default Class;
+
 export default Class;

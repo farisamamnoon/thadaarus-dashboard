@@ -12,10 +12,6 @@ import {
   Select,
   MenuItem,
   LinearProgress,
-  Stack,
-  Select,
-  MenuItem,
-  LinearProgress,
   OutlinedInput,
 } from "@mui/material";
 
@@ -224,4 +220,4 @@ const ExamMarks = () => {
 };
 
 export default ExamMarks;
-export default ExamMarks;
+

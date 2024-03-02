@@ -13,12 +13,8 @@ const SamplePage = Loadable(lazy(() => import("pages/extra-pages/SamplePage")));
 const Typography = Loadable(lazy(() => import("pages/components-overview/Typography")));
 const Users = Loadable(lazy(() => import("pages/users")));
 
-const Typography = Loadable(lazy(() => import("pages/components-overview/Typography")));
-const Users = Loadable(lazy(() => import("pages/users")));
-
 const Class = Loadable(lazy(() => import("pages/class")));
 const ClassAdd = Loadable(lazy(() => import("pages/class/form")));
-const ClassEdit = Loadable(lazy(() => import("pages/class/editForm")));
 const ClassEdit = Loadable(lazy(() => import("pages/class/editForm")));
 
 const Student = Loadable(lazy(() => import("pages/student")));
@@ -32,8 +28,8 @@ const TeacherEdit = Loadable(lazy(() => import("pages/teacher/editForm")));
 const Events = Loadable(lazy(() => import("pages/events")));
 const EventsAdd = Loadable(lazy(() => import("pages/events/form")));
 const EventsStudents = Loadable(lazy(() => import("pages/events/eventStudents")));
-const EventsGroups = Loadable(lazy(() => import("pages/events/eventGroups")));
-const EventsAddMark = Loadable(lazy(() => import("pages/events/eventAddMarksForm")));
+const EventsPrograms = Loadable(lazy(() => import("pages/events/eventPrograms")));
+const EventsAddMark = Loadable(lazy(() => import("pages/events/rankForm")));
 
 const Exam = Loadable(lazy(() => import("pages/exam")));
 const ExamAdd = Loadable(lazy(() => import("pages/exam/form")));
@@ -52,7 +48,7 @@ const Color = Loadable(lazy(() => import("pages/components-overview/Color")));
 const Test = Loadable(lazy(() => import("pages/testForm")));
 const Shadow = Loadable(lazy(() => import("pages/components-overview/Shadow")));
 const AntIcons = Loadable(lazy(() => import("pages/components-overview/AntIcons")));
-const AntIcons = Loadable(lazy(() => import("pages/components-overview/AntIcons")));
+
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -176,11 +172,11 @@ const MainRoutes = () => {
         element: <EventsStudents />,
       },
       {
-        path: "events/groups",
-        element: <EventsGroups />,
+        path: "events/:id",
+        element: <EventsPrograms />,
       },
       {
-        path: "events/addmarks",
+        path: "events/:eventId/:programId/rank",
         element: <EventsAddMark />,
       },
       {

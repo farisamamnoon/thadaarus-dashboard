@@ -1,11 +1,8 @@
 //react imports
 import { useState } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //ui imports
-import { DataGrid } from "@mui/x-data-grid";
-import { Card, CardHeader, Button, Modal, Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardHeader, Button, Modal, Box, Typography } from "@mui/material";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
@@ -26,7 +23,6 @@ import Progress from "utils/Progress";
 import { IconButton } from "../../../node_modules/@mui/material/index";
 import AddIcon from "@mui/icons-material/Add";
 
-function HomeWork() {
 function HomeWork() {
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleteId, setDeleteId] = useState("");
@@ -244,7 +240,6 @@ function HomeWork() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
-        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Delete Homework
           </Typography>
@@ -267,5 +262,4 @@ function HomeWork() {
   );
 }
 
-export default HomeWork;
 export default HomeWork;

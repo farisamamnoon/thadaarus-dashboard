@@ -1,6 +1,5 @@
 //react imports
 import { useState } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //mui imports
@@ -8,7 +7,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Card, CardHeader, Button, Breadcrumbs, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 //third party
@@ -21,6 +19,7 @@ import { base_url } from "utils/baseurl";
 import Error from "utils/Error";
 import Progress from "utils/Progress";
 import { IconButton } from "../../../node_modules/@mui/material/index";
+import modalStyle from 'themes/modalStyle';
 
 function Teacher() {
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -41,8 +40,6 @@ function Teacher() {
     setDeleteId(rowData);
   };
 
-  };
-
   const {
     data: teachers,
     error,
@@ -53,7 +50,6 @@ function Teacher() {
     queryFn: async () => fetchData("teacher/get-all"),
   });
   if (error) {
-    return <Error severity="error">There was an unexpected error</Error>;
     return <Error severity="error">There was an unexpected error</Error>;
   }
   const rows = teachers;
@@ -148,28 +144,7 @@ function Teacher() {
     },
   ];
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
+  
   return (
     <div>
       {/* Breadcrumbs */}
@@ -201,28 +176,7 @@ function Teacher() {
             // rowCount={total}
             columns={columns}
             getRowId={(row) => row._id}
-            // pagination
-            // sortingMode="server"
-            // paginationMode="server"
-            // //pageSizeOptions={[2]}
-            // paginationModel={paginationModel}
-            // onPaginationModelChange={setPaginationModel}
-            // slotProps={{
-            //   baseButton: {
-            //     size: "medium",
-            //     variant: "tonal",
-            //   },
-            //   toolbar: {
-            //     csvOptions: { disableToolbarButton: true },
-            //     printOptions: { disableToolbarButton: true },
-            //     showQuickFilter: true,
-            //     quickFilterProps: { debounceMs: 1000 },
-                // value: searchValue,
-                // clearSearch: () => handleSearch(""),
-                // onChange: (event) => handleSearch(event.target.value),
-            //   },
-            // }}
-          />
+            />
         )}
       </Card>
 
@@ -232,7 +186,7 @@ function Teacher() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={modalStyle}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Delete Student
           </Typography>

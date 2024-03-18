@@ -1,298 +1,393 @@
-// import { useEffect, useState } from 'react';
-import { Link as RouterLink } from "react-router-dom";
-
-// material-ui
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Close";
 import {
-  // Box,
-  Button,
-  Divider,
-  FormHelperText,
-  Grid,
-  Link,
+  GridRowModes,
+  DataGrid,
+  GridToolbarContainer,
+  GridActionsCellItem,
+  GridRowEditStopReasons,
+} from "@mui/x-data-grid";
+import {
+  randomCreatedDate,
+  randomTraderName,
+  randomId,
+  randomArrayItem,
+} from "@mui/x-data-grid-generator";
+import {
+  CardHeader,
+  FormControl,
   InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
-
-// third party
-import * as Yup from "yup";
-import { Formik } from "formik";
-
-// project import
-import AnimateButton from "components/@extended/AnimateButton";
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
-
-// assets
-// import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { TextareaAutosize } from "../../../node_modules/@mui/material/index";
-import { useQuery, useQueries } from "@tanstack/react-query";
+  LinearProgress,
+  MenuItem,
+  Select,
+} from "@mui/material/index";
+import { useState } from "react";
+import Progress from "utils/Progress";
+import Error from "utils/Error";
 import { fetchData } from "utils/fetchData";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { Typography } from "../../../node_modules/@mui/material/index";
 
-// ============================|| FIREBASE - REGISTER ||============================ //
-
-const Student = () => {
-  // const {
-  //   data: classes,
-  //   error: classError,
-  //   isPending: classIsPending,
-  // } = useQuery({ queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") });
-
-  // const {
-  //   data: studentData,
-  //   error,
-  //   isPending,
-  // } = useQuery({
-  //   queryKey: [""],
-  //   queryFn: async () => await fetchData(`fees/get-all`),
-  // });
-  const [classes, students] = useQueries({
-    queries: [
-      { queryKey: ["classData"], queryFn: async () => fetchData("class/get-all") },
-      { queryKey: ["studentData"], queryFn: async () => fetchData(`fees/get-all`) },
-    ],
-  });
-  const { data, error, isPending } = classes;
-  const { data: studentData, error: studentError, isPending: studentIsPending } = students;
-  console.log(
-    "data",
-    data,
-    "error",
-    error,
-    "isPending",
-    isPending,
-    "studentData",
-    studentData,
-    "studentError",
-    studentError,
-    "studentIsPending",
-    studentIsPending
-  );
-
-  return (
-    <>
-      <Formik
-        initialValues={{
-          firstname: "",
-          lastname: "",
-          email: "",
-          company: "",
-          password: "",
-          submit: null,
-        }}
-        validationSchema={Yup.object().shape({
-          firstname: Yup.string().max(255).required("First Name is required"),
-          lastname: Yup.string().max(255).required("Last Name is required"),
-          email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-          password: Yup.string().max(255).required("Password is required"),
-        })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            setStatus({ success: false });
-            setSubmitting(false);
-          } catch (err) {
-            console.error(err);
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
-          <form noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="firstname-signup">First Name*</InputLabel>
-                  <OutlinedInput
-                    id="firstname-login"
-                    type="firstname"
-                    value={values.firstname}
-                    name="firstname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="John"
-                    fullWidth
-                    error={Boolean(touched.firstname && errors.firstname)}
-                  />
-                  {touched.firstname && errors.firstname && (
-                    <FormHelperText error id="helper-text-firstname-signup">
-                      {errors.firstname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="lastname-signup">Last Name*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.lastname && errors.lastname)}
-                    id="lastname-signup"
-                    type="lastname"
-                    value={values.lastname}
-                    name="lastname"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Doe"
-                    inputProps={{}}
-                  />
-                  {touched.lastname && errors.lastname && (
-                    <FormHelperText error id="helper-text-lastname-signup">
-                      {errors.lastname}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="age">Age</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.age && errors.age)}
-                    id="age"
-                    value={values.age}
-                    name="age"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.age && errors.age && (
-                    <FormHelperText error id="helper-text-age-signup">
-                      {errors.age}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="email-signup">Email Address*</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)}
-                    id="email-signup"
-                    type="email"
-                    value={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="demo@company.com"
-                    inputProps={{}}
-                  />
-                  {touched.email && errors.email && (
-                    <FormHelperText error id="helper-text-email-signup">
-                      {errors.email}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="address">Address</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.address && errors.address)}
-                    id="address"
-                    inputComponent={TextareaAutosize}
-                    rowsMin={3}
-                    value={values.address}
-                    name="address"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.address && errors.address && (
-                    <FormHelperText error id="helper-text-address-signup">
-                      {errors.address}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="phone-signup">Phone Number</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.phone && errors.phone)}
-                    id="phone-signup"
-                    value={values.phone}
-                    name="phone"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="+91 9876543210"
-                    inputProps={{}}
-                  />
-                  {touched.phone && errors.phone && (
-                    <FormHelperText error id="helper-text-phone-signup">
-                      {errors.phone}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="experience">Experience</InputLabel>
-                  <OutlinedInput
-                    fullWidth
-                    error={Boolean(touched.experience && errors.experience)}
-                    id="experience"
-                    value={values.experience}
-                    name="experience"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    inputProps={{}}
-                  />
-                  {touched.experience && errors.experience && (
-                    <FormHelperText error id="helper-text-experience-signup">
-                      {errors.experience}
-                    </FormHelperText>
-                  )}
-                </Stack>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Typography variant="body2">
-                  By Signing up, you agree to our &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Terms of Service
-                  </Link>
-                  &nbsp; and &nbsp;
-                  <Link variant="subtitle2" component={RouterLink} to="#">
-                    Privacy Policy
-                  </Link>
-                </Typography>
-              </Grid>
-              {errors.submit && (
-                <Grid item xs={12}>
-                  <FormHelperText error>{errors.submit}</FormHelperText>
-                </Grid>
-              )}
-              <Grid item xs={12}>
-                <AnimateButton>
-                  <Button
-                    disableElevation
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                  >
-                    Create Account
-                  </Button>
-                </AnimateButton>
-              </Grid>
-              <Grid item xs={12}>
-                <Divider>
-                  <Typography variant="caption">Sign up with</Typography>
-                </Divider>
-              </Grid>
-            </Grid>
-          </form>
-        )}
-      </Formik>
-    </>
-  );
+const roles = ["Market", "Finance", "Development"];
+const randomRole = () => {
+  return randomArrayItem(roles);
 };
 
-export default Student;
+const initialRows = [
+  {
+    id: randomId(),
+    name: randomTraderName(),
+    age: 25,
+    joinDate: randomCreatedDate(),
+    role: randomRole(),
+  },
+  {
+    id: randomId(),
+    name: randomTraderName(),
+    age: 36,
+    joinDate: randomCreatedDate(),
+    role: randomRole(),
+  },
+  {
+    id: randomId(),
+    name: randomTraderName(),
+    age: 19,
+    joinDate: randomCreatedDate(),
+    role: randomRole(),
+  },
+  {
+    id: randomId(),
+    name: randomTraderName(),
+    age: 28,
+    joinDate: randomCreatedDate(),
+    role: randomRole(),
+  },
+  {
+    id: randomId(),
+    name: randomTraderName(),
+    age: 23,
+    joinDate: randomCreatedDate(),
+    role: randomRole(),
+  },
+];
+
+function EditToolbar(props) {
+  const { setRows, setRowModesModel } = props;
+
+  const handleClick = () => {
+    const id = randomId();
+    setRows((oldRows) => [...oldRows, { id, name: "", age: "", isNew: true }]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+    }));
+  };
+
+  return (
+    <GridToolbarContainer>
+      <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
+        Add record
+      </Button>
+    </GridToolbarContainer>
+  );
+}
+
+export default function FullFeaturedCrudGrid() {
+  const [rows, setRows] = useState(initialRows);
+  const [rowModesModel, setRowModesModel] = useState({});
+  const [category, setCategory] = useState("");
+  const id = useParams().id;
+  const {
+    data: categories,
+    error: categoriesError,
+    isPending: categoriesIsPending,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => await fetchData("event/categories"),
+  });
+
+  useEffect(() => {
+    if (!categoriesIsPending) {
+      setCategory(categories[0]);
+    }
+  }, [categories, categoriesIsPending]);
+
+  const {
+    data: events,
+    error: eventsError,
+    isPending: eventsIsPending,
+  } = useQuery({
+    queryKey: ["eventsData", category],
+    queryFn: () => {
+      if (category) {
+        console.log(category._id);
+        return fetchData(`event/${id}/category/${category._id}`);
+      }
+      return null;
+    },
+    enabled: !!category,
+  });
+
+  // useEffect(() => setRows(events?.programs), [events]);
+  if (categoriesError || eventsError) {
+    return <Error severity="error">An unexpected error occured</Error>;
+  }
+  if (eventsIsPending) return <Progress />;
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDeleteClick = (id) => () => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const columns = [
+    {
+      field: "name",
+      headerName: "Event Name",
+      width: 180,
+      sortable: false,
+
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {row.programName}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "gold",
+      headerName: "Gold",
+      width: 180,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {/* {row?.ranking.at(0) || "Not Available"} */}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "silver",
+      headerName: "Silver",
+      width: 180,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {/* {row?.ranking.at(1) || "Not Available"} */}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      field: "bronze",
+      headerName: "Bronze",
+      width: 180,
+      sortable: false,
+      editable: true,
+      renderCell: (params) => {
+        const { row } = params;
+
+        return (
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography noWrap variant="body2" sx={{ color: "text.primary", fontWeight: 600 }}>
+              {/* {row?.ranking.at(2) || "Not Available"} */}
+            </Typography>
+          </Box>
+        );
+      },
+    },
+    // {
+    //   field: "gold",
+    //   headerName: "Gold",
+    //   type: "number",
+    //   width: 80,
+    //   align: "left",
+    //   headerAlign: "left",
+    //   editable: true,
+    // },
+    // {
+    //   field: "joinDate",
+    //   headerName: "Join date",
+    //   type: "date",
+    //   width: 180,
+    //   editable: true,
+    // },
+    {
+      field: "role",
+      headerName: "Department",
+      width: 220,
+      editable: true,
+      sortable: false,
+      type: "singleSelect",
+      valueOptions: ["Market", "Finance", "Development"],
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
+  ];
+
+  return (
+    <Box
+      sx={{
+        height: 500,
+        width: "100%",
+        "& .actions": {
+          color: "text.secondary",
+        },
+        "& .textPrimary": {
+          color: "text.primary",
+        },
+      }}
+    >
+      <CardHeader
+        sx={{ bgcolor: "secondary.200" }}
+        title="Events"
+        action={
+          <div>
+            <FormControl fullWidth>
+              <InputLabel id="category">Category</InputLabel>
+              <Select
+                labelId="category"
+                id="category"
+                name="category"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                {categoriesIsPending ? (
+                  <LinearProgress />
+                ) : (
+                  categories.map((c, i) => (
+                    <MenuItem key={`categories.${i}`} value={c._id}>
+                      {c.name}
+                    </MenuItem>
+                  ))
+                  // <MenuItem key={1}>Hi</MenuItem>
+                )}
+              </Select>
+            </FormControl>
+            {/* <Button size="medium" variant="contained" component={Link} to={`add`} disabled={true}>
+          Add Event
+        </Button> */}
+          </div>
+        }
+      />
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slots={{
+          toolbar: EditToolbar,
+        }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
+      />
+    </Box>
+  );
+}

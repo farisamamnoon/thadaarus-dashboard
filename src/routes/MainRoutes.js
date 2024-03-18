@@ -27,7 +27,8 @@ const TeacherEdit = Loadable(lazy(() => import("pages/teacher/editForm")));
 
 const Events = Loadable(lazy(() => import("pages/events")));
 const EventsAdd = Loadable(lazy(() => import("pages/events/form")));
-const EventsStudents = Loadable(lazy(() => import("pages/events/eventStudents")));
+const Categories = Loadable(lazy(() => import("pages/events/categories")));
+const CategoriesAdd = Loadable(lazy(() => import("pages/events/categoryForm")));
 const EventsPrograms = Loadable(lazy(() => import("pages/events/eventPrograms")));
 const EventsAddMark = Loadable(lazy(() => import("pages/events/rankForm")));
 
@@ -168,15 +169,19 @@ const MainRoutes = () => {
         element: <EventsAdd />,
       },
       {
-        path: "events/students",
-        element: <EventsStudents />,
+        path: "events/categories",
+        element: <Categories />,
+      },
+      {
+        path: "events/categories/add",
+        element: <CategoriesAdd />,
       },
       {
         path: "events/:id",
         element: <EventsPrograms />,
       },
       {
-        path: "events/:eventId/:programId/rank",
+        path: "events/:eventId/program/:programId/rank",
         element: <EventsAddMark />,
       },
       {

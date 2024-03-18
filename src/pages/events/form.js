@@ -3,40 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 // material-ui
 import { Button, FormHelperText, Grid, InputLabel, OutlinedInput, Stack } from "@mui/material";
+import AnimateButton from "components/@extended/AnimateButton";
 
 // third party
 import * as Yup from "yup";
-import { Formik, FieldArray } from "formik";
+import { Formik } from "formik";
 import axios from "axios";
 
 // project import
-import AnimateButton from "components/@extended/AnimateButton";
-
-// assets
 import { base_url } from "utils/baseurl";
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Events = () => {
   const navigate = useNavigate();
-  // const [level, setLevel] = useState();
-  // const [showPassword, setShowPassword] = useState(false);
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
-  // const handleMouseDownPassword = (event) => {
-  //   event.preventDefault();
-  // };
-
-  // const changePassword = (value) => {
-  //   const temp = strengthIndicator(value);
-  //   setLevel(strengthColor(temp));
-  // };
-
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
 
   return (
     <>
@@ -47,12 +27,10 @@ const Events = () => {
           programs: [""],
           submit: null,
         }}
-        // validationSchema={Yup.object().shape({
-        //   firstname: Yup.string().max(255).required("First Name is required"),
-        //   lastname: Yup.string().max(255).required("Last Name is required"),
-        //   email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-        //   password: Yup.string().max(255).required("Password is required"),
-        // })}
+        validationSchema={Yup.object().shape({
+          name: Yup.string().max(255).required("Event Name is required"),
+          date: Yup.date(),
+        })}
         onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
           try {
             const response = await axios.post(`${base_url}/event`, values);
@@ -108,43 +86,6 @@ const Events = () => {
                       {errors.name}
                     </FormHelperText>
                   )}
-                </Stack>
-              </Grid>
-              <Grid item xs={6}>
-                <Stack spacing={1} sx={{ mt: "8px" }}>
-                  <FieldArray
-                    name="programs"
-                    render={(arrayHelpers) => (
-                      <div>
-                        {values.programs &&
-                          values.programs.map((program, index) => (
-                            <div key={`programs.${index}`}>
-                              <InputLabel htmlFor={`programs.${index}`}>Program Name</InputLabel>
-                              <OutlinedInput
-                                fullWidth
-                                id={`programs.${index}`}
-                                value={values.programs[index]}
-                                name={`programs.${index}`}
-                                onBlur={handleBlur}
-                                onChange={handleChange}
-                                error={touched.programs && errors.programs}
-                              />
-                              {touched.programs && errors.programs && (
-                                <FormHelperText error id="helper-text-phone-signup">
-                                  {errors.programs}
-                                </FormHelperText>
-                              )}
-                              <Button type="button" onClick={() => arrayHelpers.remove(index)}>
-                                Remove
-                              </Button>
-                            </div>
-                          ))}
-                        <Button type="button" onClick={() => arrayHelpers.push("")}>
-                          Add
-                        </Button>
-                      </div>
-                    )}
-                  />
                 </Stack>
               </Grid>
               {errors.submit && (

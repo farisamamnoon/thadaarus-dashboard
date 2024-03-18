@@ -7,12 +7,26 @@ import { Formik } from "formik";
 
 // project import
 import AnimateButton from "components/@extended/AnimateButton";
+import { useQuery } from "@tanstack/react-query";
+import { fetchData } from "utils/fetchData";
+import { LinearProgress, MenuItem, Select } from "@mui/material/index";
+import Error from "utils/Error";
+import { Alert } from "../../../node_modules/@mui/material/index";
 
 // assets
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const Ranks = () => {
+  const {
+    data: students,
+    error,
+    isPending,
+  } = useQuery({
+    queryKey: ["studentsData"],
+    queryFn: async () => await fetchData("student/categories"),
+  });
+
   return (
     <>
       <Formik
@@ -46,15 +60,31 @@ const Ranks = () => {
               <Grid item xs={12}>
                 <Stack spacing={1}>
                   <InputLabel htmlFor="first">First</InputLabel>
-                  <OutlinedInput
+                  <Select
+                    labelId="first"
                     id="first"
-                    value={values.first}
                     name="first"
-                    onBlur={handleBlur}
+                    value={values.first}
                     onChange={handleChange}
-                    fullWidth
-                    error={Boolean(touched.first && errors.first)}
-                  />
+                  >
+                    {error && (
+                      <MenuItem>
+                        <Alert severity="error">An error occured</Alert>
+                      </MenuItem>
+                    )}
+                    {isPending ? (
+                      <MenuItem>
+                        <LinearProgress />
+                      </MenuItem>
+                    ) : (
+                      students.map((s, i) => (
+                        <MenuItem key={`categories.${i}`} value={s._id}>
+                          {s.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+
                   {touched.first && errors.first && (
                     <FormHelperText error id="helper-text-first-signup">
                       {errors.first}

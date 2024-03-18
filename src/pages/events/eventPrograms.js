@@ -8,27 +8,60 @@ import Error from "utils/Error";
 import Progress from "utils/Progress";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Modal } from "../../../node_modules/@mui/material/index";
-import { useState } from "react";
-import modalStyle from 'themes/modalStyle';
+import {
+  LinearProgress,
+  MenuItem,
+  Modal,
+  Select,
+  InputLabel,
+  FormControl,
+} from "../../../node_modules/@mui/material/index";
+import { useEffect, useState } from "react";
+import modalStyle from "themes/modalStyle";
 import Ranks from "./rankForm";
+import FullFeaturedCrudGrid from "pages/testForm/index";
+import AddProgram from "./addProgram";
 
-function EventGroups() {
+function EventPrograms() {
   const [rankDialog, setRankDialog] = useState(false);
   const [rowData, setRowData] = useState(null);
+  const [category, setCategory] = useState("");
   const id = useParams().id;
-
-  const { data, error, isPending } = useQuery({
-    queryKey: ["eventData"],
-    queryFn: async () => await fetchData(`event/${id}`),
+  const {
+    data: categories,
+    error: categoriesError,
+    isPending: categoriesIsPending,
+    refetch,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => await fetchData("event/categories"),
   });
-  if (error) {
+
+  useEffect(() => {
+    if (!categoriesIsPending) {
+      setCategory(categories[0]._id);
+    }
+  }, [categories]);
+
+  const {
+    data: events,
+    error: eventsError,
+    isPending: eventsIsPending,
+  } = useQuery({
+    queryKey: ["eventsData", category],
+    queryFn: () => {
+      if (category) {
+        return fetchData(`event/${id}/category/${category}`);
+      }
+      return null;
+    },
+    enabled: !!category,
+  });
+
+  if (categoriesError || eventsError) {
     return <Error severity="error">An unexpected error occured</Error>;
   }
-  if (isPending) {
-    return <Progress />;
-  }
-  
+
   const addRank = () => console.log("Rank added");
 
   const handleRankOpen = (row) => {
@@ -37,7 +70,8 @@ function EventGroups() {
   };
   const handleRankClose = () => setRankDialog(false);
 
-  const rows = data.programs;
+  if (eventsIsPending) return <Progress />;
+
   const columns = [
     {
       flex: 0.2,
@@ -151,13 +185,47 @@ function EventGroups() {
           title="Events"
           action={
             <div>
-              <Button size="medium" variant="contained" component={Link} to={`add`} disabled={true}>
-                Add Event
-              </Button>
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <FormControl fullWidth>
+                  <InputLabel id="category">Category</InputLabel>
+                  <Select
+                    labelId="category"
+                    id="category"
+                    name="category"
+                    value={category}
+                    onChange={(event) => setCategory(event.target.value)}
+                  >
+                    {categoriesIsPending ? (
+                      <LinearProgress />
+                    ) : (
+                      categories.map((c, i) => (
+                        <MenuItem key={`categories.${i}`} value={c._id}>
+                          {c.name}
+                        </MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+                {/* <Button
+                  size="medium"
+                  variant="contained"
+                  component={Link}
+                  to={`add`}
+                >
+                  Add Event
+                </Button> */}
+                <AddProgram category={category} refetch={refetch} />
+              </Box>
             </div>
           }
         />
-        <DataGrid autoHeight rows={rows || []} columns={columns} getRowId={(row) => row._id} />
+        <DataGrid
+          autoHeight
+          rows={events?.programs.filter((program) => program.category === category) || []}
+          columns={columns}
+          getRowId={(row) => row._id}
+        />
+        {/* <FullFeaturedCrudGrid /> */}
         <Modal
           open={rankDialog}
           onClose={handleRankClose}
@@ -168,7 +236,7 @@ function EventGroups() {
             <Typography id="modal-modal-title" variant="h5" component="h2">
               Delete Student
             </Typography>
-            <Ranks data={rowData}/>
+            <Ranks data={rowData} />
           </Box>
         </Modal>
       </Box>
@@ -176,4 +244,4 @@ function EventGroups() {
   );
 }
 
-export default EventGroups;
+export default EventPrograms;

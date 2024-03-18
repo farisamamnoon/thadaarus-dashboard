@@ -1,23 +1,30 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Card, IconButton, CardHeader, Button } from "@mui/material";
-import { useState, useRef, useCallback, useEffect, ChangeEvent } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+
+//ui imports
+import { DataGrid } from "@mui/x-data-grid";
+import { Card, IconButton, CardHeader, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import DoneIcon from "@mui/icons-material/Done";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { fetchData } from "utils/fetchData";
-import { useQuery } from "@tanstack/react-query";
-import { formatDate } from "utils/formatDate";
 import { Modal } from "@mui/material/index";
-import modalStyle from "themes/modalStyle";
-import axios from "axios";
-import { base_url } from "utils/baseurl";
-import { Alert, Snackbar, Switch } from "../../../node_modules/@mui/material/index";
+import { Alert, MenuItem, Select, Snackbar } from "@mui/material/index";
 
-function Events() {
+//third party
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+//project imports
+import { fetchData } from "utils/fetchData";
+import { formatDate } from "utils/formatDate";
+import modalStyle from "themes/modalStyle";
+import { base_url } from "utils/baseurl";
+
+const Events = () => {
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [category, setCategory] = useState("");
   const [deleteId, setDeleteId] = useState("");
   const [error, setError] = useState("gouii");
   const [openError, setOpenError] = useState(false);
@@ -37,7 +44,7 @@ function Events() {
     try {
       setDeleting(true);
       await axios.delete(`${base_url}/event/${deleteId._id}`);
-      setDeleting(false)
+      setDeleting(false);
       setDeleteDialog(false);
       refetch();
     } catch (err) {
@@ -154,6 +161,9 @@ function Events() {
           title="Events"
           action={
             <div>
+              <Button size="medium" variant="contained" component={Link} to={`categories`}>
+                Categories
+              </Button>
               <Button size="medium" variant="contained" component={Link} to={`add`}>
                 Add Event
               </Button>
@@ -180,8 +190,12 @@ function Events() {
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure you want to delete {deleteId.name}?
           </Typography>
-          <Button onClick={handleDeleteClose} disabled={deleting}>No</Button>
-          <Button onClick={deleteEvent} disabled={deleting}>Yes</Button>
+          <Button onClick={handleDeleteClose} disabled={deleting}>
+            No
+          </Button>
+          <Button onClick={deleteEvent} disabled={deleting}>
+            Yes
+          </Button>
         </Box>
       </Modal>
       <Snackbar open={openError} autoHideDuration={6000} onClose={() => setOpenError(false)}>
@@ -196,6 +210,6 @@ function Events() {
       </Snackbar>
     </div>
   );
-}
+};
 
 export default Events;
